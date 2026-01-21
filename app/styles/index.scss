@@ -22,6 +22,24 @@ body {
   // --primary-color: rgba(147, 112, 219, var(--gradient-opacity));
   // --secondary-color: rgba(138, 43, 226, var(--gradient-opacity));
   // --accent-color: rgba(180, 170, 220, var(--gradient-opacity));
+
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-5: 1.25rem;
+  --spacing-6: 1.5rem;
+  --spacing-8: 2rem;
+  --spacing-12: 3rem;
+  --spacing-16: 4rem;
 }
 
 .modern-scrollbar {
@@ -70,4 +88,18 @@ body {
 
   // Firefox support for inverted colors
   scrollbar-color: color-mix(in srgb, var(--bolt-elements-textPrimary), transparent 50%) transparent;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --header-height: 44px;
+
+    --font-size-sm: 0.8rem;
+    --font-size-xl: 1rem;
+    --font-size-2xl: 1.25rem;
+
+    --spacing-3: 0.75rem;
+    --spacing-4: 0.75rem;
+    --spacing-16: 3rem;
+  }
 }

@@ -322,13 +322,13 @@ export default function VercelTab() {
                 <h4 className="text-sm font-medium text-bolt-elements-textPrimary mb-3">Vercel Overview</h4>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-bolt-elements-textPrimary">
+                    <div className="font-bold text-bolt-elements-textPrimary" style={{ fontSize: 'var(--font-size-2xl)' }}>
                       {connection.stats.totalProjects}
                     </div>
                     <div className="text-xs text-bolt-elements-textSecondary">Total Projects</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-bolt-elements-textPrimary">
+                    <div className="font-bold text-bolt-elements-textPrimary" style={{ fontSize: 'var(--font-size-2xl)' }}>
                       {
                         connection.stats.projects.filter(
                           (p) => p.targets?.production?.alias && p.targets.production.alias.length > 0,
@@ -338,13 +338,13 @@ export default function VercelTab() {
                     <div className="text-xs text-bolt-elements-textSecondary">Deployed Projects</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-bolt-elements-textPrimary">
+                    <div className="font-bold text-bolt-elements-textPrimary" style={{ fontSize: 'var(--font-size-2xl)' }}>
                       {new Set(connection.stats.projects.map((p) => p.framework).filter(Boolean)).size}
                     </div>
                     <div className="text-xs text-bolt-elements-textSecondary">Frameworks Used</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-bolt-elements-textPrimary">
+                    <div className="font-bold text-bolt-elements-textPrimary" style={{ fontSize: 'var(--font-size-2xl)' }}>
                       {connection.stats.projects.filter((p) => p.latestDeployments?.[0]?.state === 'READY').length}
                     </div>
                     <div className="text-xs text-bolt-elements-textSecondary">Active Deployments</div>

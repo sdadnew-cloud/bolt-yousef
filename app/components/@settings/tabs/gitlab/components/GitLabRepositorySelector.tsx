@@ -240,7 +240,7 @@ export function GitLabRepositorySelector({ onClone, className }: GitLabRepositor
       </div>
 
       {error && repositories.length > 0 && (
-        <div className="p-3 rounded-lg bg-yellow-50 border border-yellow-200 dark:bg-yellow-900/20 dark:border-yellow-700">
+        <div className="rounded-lg bg-yellow-50 border border-yellow-200 dark:bg-yellow-900/20 dark:border-yellow-700" style={{ padding: 'var(--spacing-3)' }}>
           <p className="text-sm text-yellow-800 dark:text-yellow-200">Warning: {error}. Showing cached data.</p>
         </div>
       )}
