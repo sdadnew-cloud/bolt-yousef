@@ -57,7 +57,7 @@ export default function Signup() {
               type="email"
               autoComplete="email"
               required
-              className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+              className="sm:text-sm rounded-lg block w-full p-2.5"
               style={{
                 borderColor: 'var(--bolt-elements-borderColor)',
                 color: 'var(--bolt-elements-textPrimary)',
@@ -77,7 +77,7 @@ export default function Signup() {
               type="password"
               autoComplete="new-password"
               required
-              className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+              className="sm:text-sm rounded-lg block w-full p-2.5"
               style={{
                 borderColor: 'var(--bolt-elements-borderColor)',
                 color: 'var(--bolt-elements-textPrimary)',

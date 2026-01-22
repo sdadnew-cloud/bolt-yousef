@@ -2,6 +2,8 @@ import { useStore } from '@nanostores/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { computed } from 'nanostores';
 import { memo, useEffect, useRef, useState } from 'react';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import type { ActionState } from '~/lib/runtime/action-runner';
 import { workbenchStore } from '~/lib/stores/workbench';
 import { classNames } from '~/utils/classNames';
@@ -225,13 +227,15 @@ const ActionList = memo(({ actions }: ActionListProps) => {
                 ) : null}
               </div>
               {(type === 'shell' || type === 'start') && (
-                <pre
+                <div
                   className={classNames('mt-1 text-xs', {
                     'mb-3.5': !isLast,
                   })}
                 >
-                  {content}
-                </pre>
+                  <SyntaxHighlighter language="bash" style={vscDarkPlus}>
+                    {content || ''}
+                  </SyntaxHighlighter>
+                </div>
               )}
             </motion.li>
           );

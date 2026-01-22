@@ -28,7 +28,6 @@ import type { ElementInfo } from '~/components/workbench/Inspector';
 import type { TextUIPart, FileUIPart, Attachment } from '@ai-sdk/ui-utils';
 import { useMCPStore } from '~/lib/stores/mcp';
 import type { LlmErrorAlertType } from '~/types/actions';
-import { WeatherTool } from '../tools/WeatherTool';
 
 const logger = createScopedLogger('Chat');
 
@@ -668,9 +667,7 @@ export const ChatImpl = memo(
         selectedElement={selectedElement}
         setSelectedElement={setSelectedElement}
         addToolResult={addToolResult}
-      >
-        <WeatherTool />
-      </BaseChat>
+      />
     );
   },
 );
