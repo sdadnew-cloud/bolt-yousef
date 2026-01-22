@@ -138,10 +138,9 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
           >
             <div className="text-center space-y-2">
               <div
-                className={`font-medium transition-colors ${
+                className={`text-2xl font-medium transition-colors ${
                   font.includes(f.key) ? 'text-bolt-elements-item-contentAccent' : 'text-bolt-elements-textPrimary'
                 }`}
-                style={{ fontSize: 'var(--font-size-2xl)' }}
                 style={{ fontFamily: f.key }}
               >
                 {f.preview}
@@ -281,7 +280,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
         <Dialog>
           <div className="py-4 px-4 min-w-[480px] max-w-[90vw] max-h-[85vh] flex flex-col gap-6 overflow-hidden">
             <div className="">
-              <DialogTitle className="font-bold text-bolt-elements-textPrimary" style={{ fontSize: 'var(--font-size-2xl)' }}>
+              <DialogTitle className="text-2xl font-bold text-bolt-elements-textPrimary">
                 Design Palette & Features
               </DialogTitle>
               <DialogDescription className="text-bolt-elements-textSecondary leading-relaxed">

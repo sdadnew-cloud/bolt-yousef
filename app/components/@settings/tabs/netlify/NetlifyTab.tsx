@@ -652,25 +652,25 @@ export default function NetlifyTab() {
                 <h4 className="text-sm font-medium text-bolt-elements-textPrimary mb-3">Netlify Overview</h4>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="text-center">
-                    <div className="font-bold text-bolt-elements-textPrimary" style={{ fontSize: 'var(--font-size-2xl)' }}>
+                    <div className="text-2xl font-bold text-bolt-elements-textPrimary">
                       {connection.stats.totalSites}
                     </div>
                     <div className="text-xs text-bolt-elements-textSecondary">Total Sites</div>
                   </div>
                   <div className="text-center">
-                    <div className="font-bold text-bolt-elements-textPrimary" style={{ fontSize: 'var(--font-size-2xl)' }}>
+                    <div className="text-2xl font-bold text-bolt-elements-textPrimary">
                       {connection.stats.totalDeploys || deploymentCount}
                     </div>
                     <div className="text-xs text-bolt-elements-textSecondary">Total Deployments</div>
                   </div>
                   <div className="text-center">
-                    <div className="font-bold text-bolt-elements-textPrimary" style={{ fontSize: 'var(--font-size-2xl)' }}>
+                    <div className="text-2xl font-bold text-bolt-elements-textPrimary">
                       {connection.stats.totalBuilds || 0}
                     </div>
                     <div className="text-xs text-bolt-elements-textSecondary">Total Builds</div>
                   </div>
                   <div className="text-center">
-                    <div className="font-bold text-bolt-elements-textPrimary" style={{ fontSize: 'var(--font-size-2xl)' }}>
+                    <div className="text-2xl font-bold text-bolt-elements-textPrimary">
                       {sites.filter((site) => site.published_deploy?.state === 'ready').length}
                     </div>
                     <div className="text-xs text-bolt-elements-textSecondary">Live Sites</div>

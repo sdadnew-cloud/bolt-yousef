@@ -62,11 +62,7 @@ export const IconButton = memo(
             onClick?.(event);
           }}
         >
-          {children ? (
-            children
-          ) : (
-            <div className={classNames(icon, iconClassName)} style={{ fontSize: getIconSize(size) }}></div>
-          )}
+          {children ? children : <div className={classNames(icon, getIconSize(size), iconClassName)}></div>}
         </button>
       );
     },
@@ -75,14 +71,14 @@ export const IconButton = memo(
 
 function getIconSize(size: IconSize) {
   if (size === 'sm') {
-    return 'var(--font-size-sm)';
+    return 'text-sm';
   } else if (size === 'md') {
-    return 'var(--font-size-base)';
+    return 'text-md';
   } else if (size === 'lg') {
-    return 'var(--font-size-lg)';
+    return 'text-lg';
   } else if (size === 'xl') {
-    return 'var(--font-size-xl)';
+    return 'text-xl';
   } else {
-    return 'var(--font-size-2xl)';
+    return 'text-2xl';
   }
 }

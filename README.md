@@ -20,8 +20,6 @@ bolt.diy was originally started by [Cole Medin](https://www.youtube.com/@ColeMed
 - [Recent Major Additions](#recent-major-additions)
 - [Features](#features)
 - [Setup](#setup)
-- [Database Setup](#database-setup)
-- [Environment Variable Setup](#environment-variable-setup)
 - [Quick Installation](#quick-installation)
 - [Manual Installation](#manual-installation)
 - [Configuring API Keys and Providers](#configuring-api-keys-and-providers)
@@ -95,28 +93,6 @@ project, please check the [project management guide](./PROJECT.md) to get starte
 If you're new to installing software from GitHub, don't worry! If you encounter any issues, feel free to submit an "issue" using the provided links or improve this documentation by forking the repository, editing the instructions, and submitting a pull request. The following instruction will help you get the stable branch up and running on your local machine in no time.
 
 Let's get you up and running with the stable version of Bolt.DIY!
-
-## Database Setup
-
-This application uses Supabase for user authentication and chat history persistence. To set up the database, you will need to:
-
-1.  **Create a Supabase project:** If you don't already have one, create a new project on the [Supabase dashboard](https://supabase.com/dashboard).
-
-2.  **Run the schema script:**
-    - In your Supabase project, navigate to the **SQL Editor**.
-    - Create a new query and paste the contents of the `schema.sql` file into the editor.
-    - Run the query to create the necessary tables and policies.
-
-## Environment Variable Setup
-
-This application requires the following environment variables to be set up in a `.env.local` file in the root of the project:
-
-```bash
-VITE_SUPABASE_URL=your_supabase_project_url_here
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key_here
-```
-
-You can find these values in your Supabase project's API settings.
 
 ## Quick Installation
 

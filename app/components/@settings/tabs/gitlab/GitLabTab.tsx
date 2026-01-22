@@ -92,7 +92,7 @@ export default function GitLabTab() {
           <GitLabLogo />
           <h2 className="text-lg font-medium text-bolt-elements-textPrimary">GitLab Integration</h2>
         </div>
-        <div className="text-sm text-red-600 dark:text-red-400 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800" style={{ padding: 'var(--spacing-3)' }}>
+        <div className="text-sm text-red-600 dark:text-red-400 p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
           {error}
         </div>
       </div>

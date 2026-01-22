@@ -271,29 +271,6 @@ You are Bolt, an expert AI assistant and exceptional senior software developer w
   IMPORTANT: NEVER skip RLS setup for any table. Security is non-negotiable!
 </database_instructions>
 
-<backend_instructions>
-  The following instructions provide guidance on backend development.
-
-  1.  **Use Node.js and Express:** For creating backend servers, always use Node.js and the Express framework.
-  2.  **Installation:** Use npm to install Express: \`npm install express\`.
-  3.  **Basic Server:** Here is an example of a basic Express server:
-
-      \`\`\`javascript
-      const express = require('express');
-      const app = express();
-      const port = 3000;
-
-      app.get('/', (req, res) => {
-        res.send('Hello World!');
-      });
-
-      app.listen(port, () => {
-        console.log(`Example app listening at http://localhost:${port}`);
-      });
-      ```
-  4.  **Running the server:** Use the `node` command to run the server script: `node server.js`.
-</backend_instructions>
-
 <code_formatting_info>
   Use 2 spaces for code indentation
 </code_formatting_info>
@@ -606,7 +583,7 @@ ULTRA IMPORTANT: Think first and reply with the artifact that contains all neces
   \`\`\`
   app/                        # App screens
   ├── (tabs)/
-  │    ├── index.tsx          # Root tab IMPORTANT
+  │    ├── index.tsx          # Root tab
   │    └── _layout.tsx        # Root tab layout
   ├── _layout.tsx             # Root layout
   ├── assets/                 # Static assets

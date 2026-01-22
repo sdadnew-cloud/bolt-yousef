@@ -147,7 +147,7 @@ export default function GitLabConnection({ connectionTest, onTestConnection }: G
           </div>
 
           {error && (
-            <div className="rounded-lg bg-red-50 border border-red-200 dark:bg-red-900/20 dark:border-red-700" style={{ padding: 'var(--spacing-4)' }}>
+            <div className="p-4 rounded-lg bg-red-50 border border-red-200 dark:bg-red-900/20 dark:border-red-700">
               <p className="text-sm text-red-800 dark:text-red-200">{error}</p>
             </div>
           )}

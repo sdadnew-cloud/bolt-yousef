@@ -1,19 +1,23 @@
-import { memo, useState } from 'react';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { memo, useEffect, useState } from 'react';
+import { bundledLanguages, codeToHtml, isSpecialLang, type BundledLanguage, type SpecialLanguage } from 'shiki';
 import { classNames } from '~/utils/classNames';
+import { createScopedLogger } from '~/utils/logger';
 
 import styles from './CodeBlock.module.scss';
+
+const logger = createScopedLogger('CodeBlock');
 
 interface CodeBlockProps {
   className?: string;
   code: string;
-  language?: string;
+  language?: BundledLanguage | SpecialLanguage;
+  theme?: 'light-plus' | 'dark-plus';
   disableCopy?: boolean;
 }
 
 export const CodeBlock = memo(
-  ({ className, code, language = 'plaintext', disableCopy = false }: CodeBlockProps) => {
+  ({ className, code, language = 'plaintext', theme = 'dark-plus', disableCopy = false }: CodeBlockProps) => {
+    const [html, setHTML] = useState<string | undefined>(undefined);
     const [copied, setCopied] = useState(false);
 
     const copyToClipboard = () => {
@@ -29,6 +33,23 @@ export const CodeBlock = memo(
         setCopied(false);
       }, 2000);
     };
+
+    useEffect(() => {
+      let effectiveLanguage = language;
+
+      if (language && !isSpecialLang(language) && !(language in bundledLanguages)) {
+        logger.warn(`Unsupported language '${language}', falling back to plaintext`);
+        effectiveLanguage = 'plaintext';
+      }
+
+      logger.trace(`Language = ${effectiveLanguage}`);
+
+      const processCode = async () => {
+        setHTML(await codeToHtml(code, { lang: effectiveLanguage, theme }));
+      };
+
+      processCode();
+    }, [code, language, theme]);
 
     return (
       <div className={classNames('relative group text-left', className)}>
@@ -57,9 +78,7 @@ export const CodeBlock = memo(
             </button>
           )}
         </div>
-        <SyntaxHighlighter language={language} style={vscDarkPlus}>
-          {code}
-        </SyntaxHighlighter>
+        <div dangerouslySetInnerHTML={{ __html: html ?? '' }}></div>
       </div>
     );
   },

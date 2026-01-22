@@ -162,23 +162,23 @@ function GitHubStatsContent({
               <h4 className="text-sm font-medium text-bolt-elements-textPrimary mb-3">GitHub Overview</h4>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="text-center">
-                  <div className="font-bold text-bolt-elements-textPrimary" style={{ fontSize: 'var(--font-size-2xl)' }}>
+                  <div className="text-2xl font-bold text-bolt-elements-textPrimary">
                     {(stats.publicRepos || 0) + (stats.privateRepos || 0)}
                   </div>
                   <div className="text-xs text-bolt-elements-textSecondary">Total Repositories</div>
                 </div>
                 <div className="text-center">
-                  <div className="font-bold text-bolt-elements-textPrimary" style={{ fontSize: 'var(--font-size-2xl)' }}>{stats.totalBranches || 0}</div>
+                  <div className="text-2xl font-bold text-bolt-elements-textPrimary">{stats.totalBranches || 0}</div>
                   <div className="text-xs text-bolt-elements-textSecondary">Total Branches</div>
                 </div>
                 <div className="text-center">
-                  <div className="font-bold text-bolt-elements-textPrimary" style={{ fontSize: 'var(--font-size-2xl)' }}>
+                  <div className="text-2xl font-bold text-bolt-elements-textPrimary">
                     {stats.organizations?.length || 0}
                   </div>
                   <div className="text-xs text-bolt-elements-textSecondary">Organizations</div>
                 </div>
                 <div className="text-center">
-                  <div className="font-bold text-bolt-elements-textPrimary" style={{ fontSize: 'var(--font-size-2xl)' }}>
+                  <div className="text-2xl font-bold text-bolt-elements-textPrimary">
                     {Object.keys(stats.languages).length}
                   </div>
                   <div className="text-xs text-bolt-elements-textSecondary">Languages Used</div>

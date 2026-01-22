@@ -5,6 +5,7 @@ import { useAnimate } from 'framer-motion';
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useMessageParser, usePromptEnhancer, useShortcuts } from '~/lib/hooks';
+import { description, useChatHistory } from '~/lib/persistence';
 import { chatStore } from '~/lib/stores/chat';
 import { workbenchStore } from '~/lib/stores/workbench';
 import { DEFAULT_MODEL, DEFAULT_PROVIDER, PROMPT_COOKIE_KEY, PROVIDER_LIST } from '~/utils/constants';
@@ -22,7 +23,6 @@ import { logStore } from '~/lib/stores/logs';
 import { streamingState } from '~/lib/stores/streaming';
 import { filesToArtifacts } from '~/utils/fileUtils';
 import { supabaseConnection } from '~/lib/stores/supabase';
-import { supabase } from '~/lib/supabase';
 import { defaultDesignScheme, type DesignScheme } from '~/types/design-scheme';
 import type { ElementInfo } from '~/components/workbench/Inspector';
 import type { TextUIPart, FileUIPart, Attachment } from '@ai-sdk/ui-utils';
@@ -31,20 +31,27 @@ import type { LlmErrorAlertType } from '~/types/actions';
 
 const logger = createScopedLogger('Chat');
 
-export function Chat({ initialMessages }: { initialMessages: Message[] }) {
+export function Chat() {
   renderLogger.trace('Chat');
 
+  const { ready, initialMessages, storeMessageHistory, importChat, exportChat } = useChatHistory();
+  const title = useStore(description);
   useEffect(() => {
     workbenchStore.setReloadedMessages(initialMessages.map((m) => m.id));
   }, [initialMessages]);
 
   return (
-    <ChatImpl
-      initialMessages={initialMessages}
-      storeMessageHistory={async () => {}}
-      importChat={async () => {}}
-      exportChat={() => {}}
-    />
+    <>
+      {ready && (
+        <ChatImpl
+          description={title}
+          initialMessages={initialMessages}
+          exportChat={exportChat}
+          storeMessageHistory={storeMessageHistory}
+          importChat={importChat}
+        />
+      )}
+    </>
   );
 }
 
@@ -54,9 +61,14 @@ const processSampledMessages = createSampler(
     initialMessages: Message[];
     isLoading: boolean;
     parseMessages: (messages: Message[], isLoading: boolean) => void;
+    storeMessageHistory: (messages: Message[]) => Promise<void>;
   }) => {
-    const { messages, isLoading, parseMessages } = options;
+    const { messages, initialMessages, isLoading, parseMessages, storeMessageHistory } = options;
     parseMessages(messages, isLoading);
+
+    if (messages.length > initialMessages.length) {
+      storeMessageHistory(messages).catch((error) => toast.error(error.message));
+    }
   },
   50,
 );
@@ -70,7 +82,7 @@ interface ChatProps {
 }
 
 export const ChatImpl = memo(
-  ({ initialMessages, importChat, exportChat }: ChatProps) => {
+  ({ description, initialMessages, storeMessageHistory, importChat, exportChat }: ChatProps) => {
     useShortcuts();
 
     const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -194,25 +206,9 @@ export const ChatImpl = memo(
         initialMessages,
         isLoading,
         parseMessages,
+        storeMessageHistory,
       });
     }, [messages, isLoading, parseMessages]);
-
-    useEffect(() => {
-      if (messages.length > initialMessages.length) {
-        const newMessage = messages[messages.length - 1];
-        const saveMessage = async () => {
-          const { data: { session } } = await supabase.auth.getSession();
-          if (session) {
-            await supabase.from('messages').insert({
-              user_id: session.user.id,
-              role: newMessage.role,
-              content: newMessage.content,
-            });
-          }
-        };
-        saveMessage();
-      }
-    }, [messages]);
 
     const scrollTextArea = () => {
       const textarea = textareaRef.current;
@@ -622,6 +618,7 @@ export const ChatImpl = memo(
           debouncedCachePrompt(e);
         }}
         handleStop={abort}
+        description={description}
         importChat={importChat}
         exportChat={exportChat}
         messages={messages.map((message, i) => {

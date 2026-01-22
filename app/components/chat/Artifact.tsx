@@ -2,13 +2,24 @@ import { useStore } from '@nanostores/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { computed } from 'nanostores';
 import { memo, useEffect, useRef, useState } from 'react';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { createHighlighter, type BundledLanguage, type BundledTheme, type HighlighterGeneric } from 'shiki';
 import type { ActionState } from '~/lib/runtime/action-runner';
 import { workbenchStore } from '~/lib/stores/workbench';
 import { classNames } from '~/utils/classNames';
 import { cubicEasingFn } from '~/utils/easings';
 import { WORK_DIR } from '~/utils/constants';
+
+const highlighterOptions = {
+  langs: ['shell'],
+  themes: ['light-plus', 'dark-plus'],
+};
+
+const shellHighlighter: HighlighterGeneric<BundledLanguage, BundledTheme> =
+  import.meta.hot?.data.shellHighlighter ?? (await createHighlighter(highlighterOptions));
+
+if (import.meta.hot) {
+  import.meta.hot.data.shellHighlighter = shellHighlighter;
+}
 
 interface ArtifactProps {
   messageId: string;
@@ -146,6 +157,25 @@ export const Artifact = memo(({ artifactId }: ArtifactProps) => {
   );
 });
 
+interface ShellCodeBlockProps {
+  classsName?: string;
+  code: string;
+}
+
+function ShellCodeBlock({ classsName, code }: ShellCodeBlockProps) {
+  return (
+    <div
+      className={classNames('text-xs', classsName)}
+      dangerouslySetInnerHTML={{
+        __html: shellHighlighter.codeToHtml(code, {
+          lang: 'shell',
+          theme: 'dark-plus',
+        }),
+      }}
+    ></div>
+  );
+}
+
 interface ActionListProps {
   actions: ActionState[];
 }
@@ -227,15 +257,12 @@ const ActionList = memo(({ actions }: ActionListProps) => {
                 ) : null}
               </div>
               {(type === 'shell' || type === 'start') && (
-                <div
-                  className={classNames('mt-1 text-xs', {
+                <ShellCodeBlock
+                  classsName={classNames('mt-1', {
                     'mb-3.5': !isLast,
                   })}
-                >
-                  <SyntaxHighlighter language="bash" style={vscDarkPlus}>
-                    {content || ''}
-                  </SyntaxHighlighter>
-                </div>
+                  code={content}
+                />
               )}
             </motion.li>
           );

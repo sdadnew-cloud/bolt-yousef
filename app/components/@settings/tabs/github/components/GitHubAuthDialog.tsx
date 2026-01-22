@@ -63,7 +63,7 @@ export function GitHubAuthDialog({ isOpen, onClose, onSuccess }: GitHubAuthDialo
                 </button>
               </div>
 
-              <div className="text-xs text-bolt-elements-textSecondary bg-bolt-elements-background-depth-1 rounded-lg" style={{ padding: 'var(--spacing-3)' }}>
+              <div className="text-xs text-bolt-elements-textSecondary bg-bolt-elements-background-depth-1 p-3 rounded-lg">
                 <p className="flex items-center gap-1 mb-1">
                   <span className="i-ph:lightbulb w-3.5 h-3.5 text-bolt-elements-icon-success" />
                   <span className="font-medium">Tip:</span> You need a GitHub token to deploy repositories.
@@ -127,12 +127,12 @@ export function GitHubAuthDialog({ isOpen, onClose, onSuccess }: GitHubAuthDialo
                 </div>
 
                 {error && (
-                  <div className="rounded-lg bg-red-50 border border-red-200 dark:bg-red-900/20 dark:border-red-700" style={{ padding: 'var(--spacing-4)' }}>
+                  <div className="p-4 rounded-lg bg-red-50 border border-red-200 dark:bg-red-900/20 dark:border-red-700">
                     <p className="text-sm text-red-800 dark:text-red-200">{error}</p>
                   </div>
                 )}
 
-                <div className="flex items-center justify-end gap-3" style={{ paddingTop: 'var(--spacing-4)' }}>
+                <div className="flex items-center justify-end gap-3 pt-4">
                   <button
                     type="button"
                     onClick={handleClose}

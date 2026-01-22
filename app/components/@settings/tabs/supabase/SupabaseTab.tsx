@@ -318,25 +318,25 @@ export default function SupabaseTab() {
                 <h4 className="text-sm font-medium text-bolt-elements-textPrimary mb-3">Supabase Overview</h4>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="text-center">
-                    <div className="font-bold text-bolt-elements-textPrimary" style={{ fontSize: 'var(--font-size-2xl)' }}>
+                    <div className="text-2xl font-bold text-bolt-elements-textPrimary">
                       {connection.stats.totalProjects}
                     </div>
                     <div className="text-xs text-bolt-elements-textSecondary">Total Projects</div>
                   </div>
                   <div className="text-center">
-                    <div className="font-bold text-bolt-elements-textPrimary" style={{ fontSize: 'var(--font-size-2xl)' }}>
+                    <div className="text-2xl font-bold text-bolt-elements-textPrimary">
                       {connection.stats.projects.filter((p: SupabaseProject) => p.status === 'ACTIVE_HEALTHY').length}
                     </div>
                     <div className="text-xs text-bolt-elements-textSecondary">Active Projects</div>
                   </div>
                   <div className="text-center">
-                    <div className="font-bold text-bolt-elements-textPrimary" style={{ fontSize: 'var(--font-size-2xl)' }}>
+                    <div className="text-2xl font-bold text-bolt-elements-textPrimary">
                       {new Set(connection.stats.projects.map((p: SupabaseProject) => p.region)).size}
                     </div>
                     <div className="text-xs text-bolt-elements-textSecondary">Regions Used</div>
                   </div>
                   <div className="text-center">
-                    <div className="font-bold text-bolt-elements-textPrimary" style={{ fontSize: 'var(--font-size-2xl)' }}>
+                    <div className="text-2xl font-bold text-bolt-elements-textPrimary">
                       {connection.stats.projects.filter((p: SupabaseProject) => p.status !== 'ACTIVE_HEALTHY').length}
                     </div>
                     <div className="text-xs text-bolt-elements-textSecondary">Inactive Projects</div>

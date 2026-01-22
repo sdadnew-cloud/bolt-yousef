@@ -27,8 +27,7 @@ const CardTitle = forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLHead
     return (
       <h3
         ref={ref}
-        className={classNames('font-semibold leading-none tracking-tight', className)}
-        style={{ fontSize: 'var(--font-size-2xl)' }}
+        className={classNames('text-2xl font-semibold leading-none tracking-tight', className)}
         {...props}
       />
     );

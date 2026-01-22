@@ -309,7 +309,7 @@ export default function LocalProvidersTab() {
               <Cpu className="w-6 h-6 text-purple-500" />
             </div>
             <div>
-              <h2 className="font-semibold text-bolt-elements-textPrimary" style={{ fontSize: 'var(--font-size-2xl)' }}>Local AI Providers</h2>
+              <h2 className="text-2xl font-semibold text-bolt-elements-textPrimary">Local AI Providers</h2>
               <p className="text-sm text-bolt-elements-textSecondary">Configure and manage your local AI models</p>
             </div>
           </div>
