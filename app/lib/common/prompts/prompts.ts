@@ -583,7 +583,7 @@ ULTRA IMPORTANT: Think first and reply with the artifact that contains all neces
   \`\`\`
   app/                        # App screens
   ├── (tabs)/
-  │    ├── index.tsx          # Root tab IMPORTANT
+  │    ├── index.tsx          # Root tab
   │    └── _layout.tsx        # Root tab layout
   ├── _layout.tsx             # Root layout
   ├── assets/                 # Static assets
