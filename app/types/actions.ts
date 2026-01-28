@@ -40,6 +40,8 @@ export interface ActionAlert {
   description: string;
   content: string;
   source?: 'terminal' | 'preview'; // Add source to differentiate between terminal and preview errors
+  isFixable?: boolean;
+  onAutoFix?: () => void;
 }
 
 export interface SupabaseAlert {

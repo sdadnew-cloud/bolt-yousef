@@ -482,30 +482,37 @@ export class WorkbenchStore {
       closed: false,
       type,
       runner: new ActionRunner(
-        webcontainer,
-        () => this.boltTerminal,
-        (alert) => {
-          if (this.#reloadedMessages.has(messageId)) {
-            return;
-          }
-
-          this.actionAlert.set(alert);
-        },
-        (alert) => {
-          if (this.#reloadedMessages.has(messageId)) {
-            return;
-          }
-
-          this.supabaseAlert.set(alert);
-        },
-        (alert) => {
-          if (this.#reloadedMessages.has(messageId)) {
-            return;
-          }
-
-          this.deployAlert.set(alert);
-        },
-      ),
+          webcontainer,
+          () => this.boltTerminal,
+          (alert) => {
+            if (this.#reloadedMessages.has(messageId)) {
+              return;
+            }
+  
+            this.actionAlert.set(alert);
+          },
+          (alert) => {
+            if (this.#reloadedMessages.has(messageId)) {
+              return;
+            }
+  
+            this.supabaseAlert.set(alert);
+          },
+          (alert) => {
+            if (this.#reloadedMessages.has(messageId)) {
+              return;
+            }
+  
+            this.deployAlert.set(alert);
+          },
+          (error, command) => {
+            // Auto-fix callback - this will be implemented later
+            console.log('Auto-fix requested for error:', error);
+            if (command) {
+              console.log('Command that caused error:', command);
+            }
+          },
+        ),
     });
   }
 

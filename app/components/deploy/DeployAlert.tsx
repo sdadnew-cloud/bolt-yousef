@@ -9,7 +9,7 @@ interface DeployAlertProps {
 }
 
 export default function DeployChatAlert({ alert, clearAlert, postMessage }: DeployAlertProps) {
-  const { type, title, description, content, url, stage, buildStatus, deployStatus } = alert;
+  const { type, title, description, content, url, stage, buildStatus, deployStatus, isFixable, onAutoFix } = alert;
 
   // Determine if we should show the deployment progress
   const showProgress = stage && (buildStatus || deployStatus);
@@ -157,6 +157,22 @@ export default function DeployChatAlert({ alert, clearAlert, postMessage }: Depl
               transition={{ delay: 0.3 }}
             >
               <div className={classNames('flex gap-2')}>
+                {type === 'error' && isFixable && onAutoFix && (
+                  <button
+                    onClick={onAutoFix}
+                    className={classNames(
+                      `px-2 py-1.5 rounded-md text-sm font-medium`,
+                      'bg-bolt-elements-button-primary-background',
+                      'hover:bg-bolt-elements-button-primary-backgroundHover',
+                      'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-bolt-elements-button-danger-background',
+                      'text-bolt-elements-button-primary-text',
+                      'flex items-center gap-1.5',
+                    )}
+                  >
+                    <div className="i-ph:wrench"></div>
+                    Auto-Fix
+                  </button>
+                )}
                 {type === 'error' && (
                   <button
                     onClick={() =>

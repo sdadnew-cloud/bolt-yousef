@@ -72,6 +72,7 @@ export class ActionRunner {
   onAlert?: (alert: ActionAlert) => void;
   onSupabaseAlert?: (alert: SupabaseAlert) => void;
   onDeployAlert?: (alert: DeployAlert) => void;
+  onAutoFix?: (error: string, command?: string) => void;
   buildOutput?: { path: string; exitCode: number; output: string };
 
   constructor(
@@ -80,12 +81,14 @@ export class ActionRunner {
     onAlert?: (alert: ActionAlert) => void,
     onSupabaseAlert?: (alert: SupabaseAlert) => void,
     onDeployAlert?: (alert: DeployAlert) => void,
+    onAutoFix?: (error: string, command?: string) => void,
   ) {
     this.#webcontainer = webcontainerPromise;
     this.#shellTerminal = getShellTerminal;
     this.onAlert = onAlert;
     this.onSupabaseAlert = onSupabaseAlert;
     this.onDeployAlert = onDeployAlert;
+    this.onAutoFix = onAutoFix;
   }
 
   addAction(data: ActionCallbackData) {
@@ -202,11 +205,16 @@ export class ActionRunner {
                 return;
               }
 
+              const enhancedError = this.#createEnhancedShellError(action.content, resp?.exitCode, resp?.output);
               this.onAlert?.({
                 type: 'error',
                 title: 'Dev Server Failed',
-                description: err.header,
-                content: err.output,
+                description: enhancedError.title,
+                content: enhancedError.details,
+                isFixable: enhancedError.isFixable,
+                onAutoFix: () => {
+                  this.onAutoFix?.(enhancedError.details, action.content);
+                },
               });
             });
 
@@ -235,11 +243,16 @@ export class ActionRunner {
         return;
       }
 
+      const enhancedError = this.#createEnhancedShellError(action.content, undefined, error.output);
       this.onAlert?.({
         type: 'error',
         title: 'Dev Server Failed',
-        description: error.header,
-        content: error.output,
+        description: enhancedError.title,
+        content: enhancedError.details,
+        isFixable: enhancedError.isFixable,
+        onAutoFix: () => {
+          this.onAutoFix?.(enhancedError.details, action.content);
+        },
       });
 
       // re-throw the error to be caught in the promise chain
@@ -661,6 +674,7 @@ export class ActionRunner {
   ): {
     title: string;
     details: string;
+    isFixable?: boolean;
   } {
     const trimmedCommand = command.trim();
     const firstWord = trimmedCommand.split(/\s+/)[0];
@@ -676,6 +690,7 @@ export class ActionRunner {
 
           return `The file '${fileName}' does not exist and cannot be removed.\n\nSuggestion: Use 'ls' to check what files exist, or use 'rm -f' to ignore missing files.`;
         },
+        isFixable: true,
       },
       {
         pattern: /No such file or directory/,
@@ -690,29 +705,62 @@ export class ActionRunner {
 
           return `The specified file or directory does not exist.\n\nSuggestion: Check the path and use 'ls' to see available files.`;
         },
+        isFixable: true,
       },
       {
         pattern: /Permission denied/,
         title: 'Permission Denied',
         getMessage: () =>
           `Permission denied for '${firstWord}'.\n\nSuggestion: The file may not be executable. Try 'chmod +x filename' first.`,
+        isFixable: true,
       },
       {
         pattern: /command not found/,
         title: 'Command Not Found',
         getMessage: () =>
           `The command '${firstWord}' is not available in WebContainer.\n\nSuggestion: Check available commands or use a package manager to install it.`,
+        isFixable: false,
       },
       {
         pattern: /Is a directory/,
         title: 'Target is a Directory',
         getMessage: () =>
           `Cannot perform this operation - target is a directory.\n\nSuggestion: Use 'ls' to list directory contents or add appropriate flags.`,
+        isFixable: true,
       },
       {
         pattern: /File exists/,
         title: 'File Already Exists',
         getMessage: () => `File already exists.\n\nSuggestion: Use a different name or add '-f' flag to overwrite.`,
+        isFixable: true,
+      },
+      {
+        pattern: /Module not found/,
+        title: 'Module Not Found',
+        getMessage: () =>
+          `The module or dependency is not found.\n\nSuggestion: Try running 'npm install' to install dependencies.`,
+        isFixable: true,
+      },
+      {
+        pattern: /SyntaxError/,
+        title: 'Syntax Error',
+        getMessage: () =>
+          `There is a syntax error in your code.\n\nSuggestion: Check the file for syntax issues and fix them.`,
+        isFixable: true,
+      },
+      {
+        pattern: /ReferenceError/,
+        title: 'Reference Error',
+        getMessage: () =>
+          `A variable or function is referenced but not defined.\n\nSuggestion: Check if the variable/function is properly declared.`,
+        isFixable: true,
+      },
+      {
+        pattern: /TypeError/,
+        title: 'Type Error',
+        getMessage: () =>
+          `An operation is performed on a value of the wrong type.\n\nSuggestion: Check the data types of variables in your code.`,
+        isFixable: true,
       },
     ];
 
@@ -722,6 +770,7 @@ export class ActionRunner {
         return {
           title: errorPattern.title,
           details: errorPattern.getMessage(),
+          isFixable: errorPattern.isFixable,
         };
       }
     }
@@ -740,6 +789,7 @@ export class ActionRunner {
     return {
       title: `Command Failed (exit code: ${exitCode})`,
       details: `Command: ${trimmedCommand}\n\nOutput: ${output || 'No output available'}${suggestion}`,
+      isFixable: true,
     };
   }
 }
