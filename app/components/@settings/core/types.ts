@@ -18,7 +18,9 @@ export type TabType =
   | 'supabase'
   | 'event-logs'
   | 'mcp'
-  | 'theme';
+  | 'theme'
+  | 'upgrades'
+  | 'dashboard';
 
 export type WindowType = 'user' | 'developer';
 
@@ -83,6 +85,8 @@ export const TAB_LABELS: Record<TabType, string> = {
   'event-logs': 'Event Logs',
   mcp: 'MCP Servers',
   theme: 'Theme Designer',
+  upgrades: 'Platform Upgrades',
+  dashboard: 'Dashboard',
 };
 
 export const categoryLabels: Record<SettingCategory, string> = {

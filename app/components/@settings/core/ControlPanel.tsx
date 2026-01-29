@@ -30,6 +30,8 @@ import CloudProvidersTab from '~/components/@settings/tabs/providers/cloud/Cloud
 import LocalProvidersTab from '~/components/@settings/tabs/providers/local/LocalProvidersTab';
 import McpTab from '~/components/@settings/tabs/mcp/McpTab';
 import ThemeTab from '~/components/@settings/tabs/theme/ThemeTab';
+import UpgradesTab from '~/components/@settings/tabs/upgrades/UpgradesTab';
+import DashboardTab from '~/components/@settings/tabs/dashboard/DashboardTab';
 
 interface ControlPanelProps {
   open: boolean;
@@ -154,6 +156,10 @@ export const ControlPanel = ({ open, onClose }: ControlPanelProps) => {
         return <McpTab />;
       case 'theme':
         return <ThemeTab />;
+      case 'upgrades':
+        return <UpgradesTab />;
+      case 'dashboard':
+        return <DashboardTab />;
 
       default:
         return null;

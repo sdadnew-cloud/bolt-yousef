@@ -54,6 +54,8 @@ export const TAB_ICONS: Record<TabType, React.ComponentType<{ className?: string
   'event-logs': List,
   mcp: Wrench,
   theme: Palette,
+  upgrades: () => <div className="i-ph:arrow-circle-down" />,
+  dashboard: () => <div className="i-ph:layout" />,
 };
 
 export const TAB_LABELS: Record<TabType, string> = {
@@ -72,6 +74,8 @@ export const TAB_LABELS: Record<TabType, string> = {
   'event-logs': 'Event Logs',
   mcp: 'MCP Servers',
   theme: 'Theme Designer',
+  upgrades: 'Platform Upgrades',
+  dashboard: 'Dashboard',
 };
 
 export const TAB_DESCRIPTIONS: Record<TabType, string> = {
@@ -90,23 +94,27 @@ export const TAB_DESCRIPTIONS: Record<TabType, string> = {
   'event-logs': 'View system events and logs',
   mcp: 'Configure MCP (Model Context Protocol) servers',
   theme: 'Customize the theme of your Bolt interface',
+  upgrades: 'Check for and install platform upgrades and enhancements',
+  dashboard: 'Overview of your platform status and active features',
 };
 
 export const DEFAULT_TAB_CONFIG = [
   // User Window Tabs (Always visible by default)
-  { id: 'features', visible: true, window: 'user' as const, order: 0 },
-  { id: 'data', visible: true, window: 'user' as const, order: 1 },
-  { id: 'cloud-providers', visible: true, window: 'user' as const, order: 2 },
-  { id: 'local-providers', visible: true, window: 'user' as const, order: 3 },
-  { id: 'github', visible: true, window: 'user' as const, order: 4 },
-  { id: 'gitlab', visible: true, window: 'user' as const, order: 5 },
-  { id: 'netlify', visible: true, window: 'user' as const, order: 6 },
-  { id: 'vercel', visible: true, window: 'user' as const, order: 7 },
-  { id: 'supabase', visible: true, window: 'user' as const, order: 8 },
-  { id: 'notifications', visible: true, window: 'user' as const, order: 9 },
-  { id: 'event-logs', visible: true, window: 'user' as const, order: 10 },
-  { id: 'mcp', visible: true, window: 'user' as const, order: 11 },
-  { id: 'theme', visible: true, window: 'user' as const, order: 12 },
+  { id: 'dashboard', visible: true, window: 'user' as const, order: 0 },
+  { id: 'features', visible: true, window: 'user' as const, order: 1 },
+  { id: 'data', visible: true, window: 'user' as const, order: 2 },
+  { id: 'cloud-providers', visible: true, window: 'user' as const, order: 3 },
+  { id: 'local-providers', visible: true, window: 'user' as const, order: 4 },
+  { id: 'github', visible: true, window: 'user' as const, order: 5 },
+  { id: 'gitlab', visible: true, window: 'user' as const, order: 6 },
+  { id: 'netlify', visible: true, window: 'user' as const, order: 7 },
+  { id: 'vercel', visible: true, window: 'user' as const, order: 8 },
+  { id: 'supabase', visible: true, window: 'user' as const, order: 9 },
+  { id: 'notifications', visible: true, window: 'user' as const, order: 10 },
+  { id: 'event-logs', visible: true, window: 'user' as const, order: 11 },
+  { id: 'mcp', visible: true, window: 'user' as const, order: 12 },
+  { id: 'theme', visible: true, window: 'user' as const, order: 13 },
+  { id: 'upgrades', visible: true, window: 'user' as const, order: 14 },
 
   // User Window Tabs (In dropdown, initially hidden)
 ];
