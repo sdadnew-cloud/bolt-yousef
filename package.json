@@ -19,9 +19,9 @@
     "lint": "NODE_OPTIONS=--max-old-space-size=8192 eslint --cache --cache-location ./node_modules/.cache/eslint app",
     "lint:fix": "npm run lint -- --fix && prettier app --write",
     "start:windows": "wrangler pages dev ./build/client",
-    "start:unix": "bindings=$(./bindings.sh) && wrangler pages dev ./build/client $bindings",
+    "start:unix": "bindings=--binding DEEPSEEK_API_KEY=sk-9e093af3c01144ecb4ff4a3c25aac499 && wrangler pages dev ./build/client ",
     "start": "node -e \"const { spawn } = require('child_process'); const isWindows = process.platform === 'win32'; const cmd = isWindows ? 'npm run start:windows' : 'npm run start:unix'; const child = spawn(cmd, { shell: true, stdio: 'inherit' }); child.on('exit', code => process.exit(code));\"",
-    "dockerstart": "bindings=$(./bindings.sh) && wrangler pages dev ./build/client $bindings --ip 0.0.0.0 --port 5173 --no-show-interactive-dev-session",
+    "dockerstart": "bindings=--binding DEEPSEEK_API_KEY=sk-9e093af3c01144ecb4ff4a3c25aac499 && wrangler pages dev ./build/client  --ip 0.0.0.0 --port 5173 --no-show-interactive-dev-session",
     "dockerrun": "docker run -it -d --name bolt-ai-live -p 5173:5173 --env-file .env.local bolt-ai",
     "dockerbuild:prod": "docker build -t bolt-ai:production -t bolt-ai:latest --target bolt-ai-production .",
     "dockerbuild": "docker build -t bolt-ai:development -t bolt-ai:latest --target development .",
@@ -163,10 +163,13 @@
     "@blitz/eslint-plugin": "0.1.0",
     "@cloudflare/workers-types": "^4.20251011.0",
     "@electron/notarize": "^2.5.0",
+    "@esbuild/android-arm64": "^0.27.2",
     "@iconify-json/ph": "^1.2.1",
     "@iconify/types": "^2.0.0",
     "@remix-run/dev": "^2.17.4",
     "@remix-run/serve": "^2.15.2",
+    "@rollup/rollup-android-arm64": "^4.57.0",
+    "@rollup/rollup-linux-arm64-musl": "^4.57.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
     "@types/diff": "^5.2.3",
@@ -185,6 +188,7 @@
     "crypto-browserify": "^3.12.1",
     "electron": "^33.2.0",
     "electron-builder": "^26.0.12",
+    "esbuild": "^0.27.2",
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-prettier": "^5.2.6",
     "fast-glob": "^3.3.2",
@@ -196,7 +200,7 @@
     "postcss": "^8.5.6",
     "prettier": "^3.5.3",
     "rimraf": "^4.4.1",
-    "sass-embedded": "^1.81.0",
+    "sass": "^1.97.3",
     "stream-browserify": "^3.0.0",
     "tailwindcss": "^4.1.18",
     "typescript": "^5.7.2",
@@ -210,7 +214,8 @@
     "wrangler": "^3.28.2"
   },
   "resolutions": {
-    "@typescript-eslint/utils": "^8.0.0-alpha.30"
+    "@typescript-eslint/utils": "^8.0.0-alpha.30",
+    "esbuild": "^0.27.2"
   },
   "packageManager": "pnpm@9.14.4"
 }
