@@ -136,4 +136,6 @@ export function initDesignScheme() {
 }
 
 // Initialize the design scheme when module loads
-initDesignScheme();
+if (typeof window !== 'undefined') {
+  initDesignScheme();
+}

@@ -71,6 +71,8 @@ export const Head = createHead(() => (
   </>
 ));
 
+import { ThemeProvider } from './contexts/ThemeContext';
+
 export function Layout({ children }: { children: React.ReactNode }) {
   const theme = useStore(themeStore);
 
@@ -83,7 +85,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   }, [theme]);
 
   return (
-    <>
+    <ThemeProvider>
       <ClientOnly>{() => <DndProvider backend={HTML5Backend}>{children}</DndProvider>}</ClientOnly>
       <ToastContainer
         closeButton={({ closeToast }) => {
@@ -112,7 +114,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       />
       <ScrollRestoration />
       <Scripts />
-    </>
+    </ThemeProvider>
   );
 }
 
