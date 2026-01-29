@@ -76,6 +76,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     document.querySelector('html')?.setAttribute('data-theme', theme);
+    // Reapply design scheme when theme changes
+    import('./lib/stores/theme').then(({ applyDesignScheme }) => {
+      applyDesignScheme();
+    });
   }, [theme]);
 
   return (
@@ -123,6 +127,11 @@ export default function App() {
       platform: navigator.platform,
       userAgent: navigator.userAgent,
       timestamp: new Date().toISOString(),
+    });
+
+    // Apply the design scheme when the app initializes
+    import('./lib/stores/theme').then(({ applyDesignScheme }) => {
+      applyDesignScheme();
     });
 
     // Initialize debug logging with improved error handling

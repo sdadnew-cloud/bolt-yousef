@@ -1,0 +1,58 @@
+/* Dynamic Theme Variables */
+/* These variables will be set by JavaScript based on the selected theme */
+
+:root {
+  /* Default fallback colors if no custom theme is applied */
+  --color-primary: #9E7FFF;
+  --color-secondary: #38bdf8;
+  --color-accent: #f472b6;
+  --color-background: #171717;
+  --color-surface: #262626;
+  --color-text: #FFFFFF;
+  --color-textSecondary: #A3A3A3;
+  --color-border: #2F2F2F;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  
+  /* Font Settings */
+  --font-family: system-ui, sans-serif;
+  
+  /* Component-specific variables derived from theme colors */
+  --bolt-elements-bg-depth-1: var(--color-background);
+  --bolt-elements-bg-depth-2: var(--color-surface);
+  --bolt-elements-textPrimary: var(--color-text);
+  --bolt-elements-textSecondary: var(--color-textSecondary);
+  --bolt-elements-borderColor: var(--color-border);
+  --bolt-elements-icon-success: var(--color-success);
+  --bolt-elements-icon-error: var(--color-error);
+  --bolt-elements-button-primary-background: color-mix(in srgb, var(--color-primary), transparent 90%);
+  --bolt-elements-button-primary-text: var(--color-primary);
+  --bolt-elements-button-secondary-background: color-mix(in srgb, var(--color-text), transparent 95%);
+  --bolt-elements-button-secondary-text: var(--color-text);
+}
+
+/* Class-based modifiers for design features */
+.rounded-corners {
+  --bolt-elements-radius-factor: 0.5; /* Factor to multiply base radius by */
+}
+
+.subtle-borders {
+  --bolt-elements-border-thickness: 1px;
+  --bolt-elements-borderColor: color-mix(in srgb, var(--color-border), transparent 20%);
+}
+
+.gradient-accent {
+  --bolt-elements-gradient-start: var(--color-primary);
+  --bolt-elements-gradient-end: var(--color-secondary);
+}
+
+.soft-shadow {
+  --bolt-elements-shadow: 0 1px 3px 0 color-mix(in srgb, var(--color-text), transparent 80%), 
+                           0 1px 2px -1px color-mix(in srgb, var(--color-text), transparent 80%);
+}
+
+.frosted-glass {
+  --bolt-elements-backdrop-filter: blur(10px);
+  --bolt-elements-bg-opacity: 0.8;
+}
