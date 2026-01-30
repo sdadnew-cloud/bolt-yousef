@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createScopedLogger } from '~/utils/logger';
 import { scheduledTasksService, type ScheduledTask } from '~/lib/services/scheduledTasksService';
+import { ScheduledTaskDialog } from './ScheduledTaskDialog';
 
 const logger = createScopedLogger('ScheduledTasks');
 
@@ -14,6 +15,8 @@ export const ScheduledTasks = ({ onTaskClick }: ScheduledTasksProps) => {
   const [filter, setFilter] = useState<string>('all');
   const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [selectedTask, setSelectedTask] = useState<ScheduledTask | null>(null);
+  const [showTaskDialog, setShowTaskDialog] = useState<boolean>(false);
 
   useEffect(() => {
     loadTasks();
@@ -134,6 +137,14 @@ export const ScheduledTasks = ({ onTaskClick }: ScheduledTasksProps) => {
 
   const statistics = scheduledTasksService.getStatistics();
 
+  const getFilterButtonClass = (filterName: string) => {
+    const baseClass = 'px-3 py-1.5 text-sm rounded-lg transition-colors';
+    if (filter === filterName) {
+      return `${baseClass} bg-bolt-elements-primary text-white`;
+    }
+    return `${baseClass} bg-bolt-elements-background-depth-2 hover:bg-bolt-elements-background-depth-3`;
+  };
+
   return (
     <div className="flex flex-col h-full bg-bolt-elements-background-depth-1 rounded-lg border border-bolt-elements-borderColor">
       {/* Header */}
@@ -207,51 +218,31 @@ export const ScheduledTasks = ({ onTaskClick }: ScheduledTasksProps) => {
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setFilter('all')}
-            className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${\
-              filter === 'all' 
-                ? 'bg-bolt-elements-primary text-white' 
-                : 'bg-bolt-elements-background-depth-2 hover:bg-bolt-elements-background-depth-3'
-            }`}
+            className={getFilterButtonClass('all')}
           >
             All
           </button>
           <button
             onClick={() => setFilter('pending')}
-            className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${\
-              filter === 'pending' 
-                ? 'bg-bolt-elements-primary text-white' 
-                : 'bg-bolt-elements-background-depth-2 hover:bg-bolt-elements-background-depth-3'
-            }`}
+            className={getFilterButtonClass('pending')}
           >
             Pending
           </button>
           <button
             onClick={() => setFilter('running')}
-            className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${\
-              filter === 'running' 
-                ? 'bg-bolt-elements-primary text-white' 
-                : 'bg-bolt-elements-background-depth-2 hover:bg-bolt-elements-background-depth-3'
-            }`}
+            className={getFilterButtonClass('running')}
           >
             Running
           </button>
           <button
             onClick={() => setFilter('completed')}
-            className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${\
-              filter === 'completed' 
-                ? 'bg-bolt-elements-primary text-white' 
-                : 'bg-bolt-elements-background-depth-2 hover:bg-bolt-elements-background-depth-3'
-            }`}
+            className={getFilterButtonClass('completed')}
           >
             Completed
           </button>
           <button
             onClick={() => setFilter('failed')}
-            className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${\
-              filter === 'failed' 
-                ? 'bg-bolt-elements-primary text-white' 
-                : 'bg-bolt-elements-background-depth-2 hover:bg-bolt-elements-background-depth-3'
-            }`}
+            className={getFilterButtonClass('failed')}
           >
             Failed
           </button>
@@ -287,7 +278,12 @@ export const ScheduledTasks = ({ onTaskClick }: ScheduledTasksProps) => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.3 }}
-                  className="p-3 bg-bolt-elements-background-depth-2 rounded-lg border border-bolt-elements-borderColor hover:border-bolt-elements-primary/50 transition-colors"
+                  className="p-3 bg-bolt-elements-background-depth-2 rounded-lg border border-bolt-elements-borderColor hover:border-bolt-elements-primary/50 transition-colors cursor-pointer"
+                  onClick={() => {
+                    setSelectedTask(task);
+                    setShowTaskDialog(true);
+                    onTaskClick?.(task);
+                  }}
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -342,7 +338,7 @@ export const ScheduledTasks = ({ onTaskClick }: ScheduledTasksProps) => {
                           {task.status}
                         </span>
                       </div>
-                      <div className="flex gap-1">
+                      <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
                         {task.status === 'pending' && (
                           <button
                             onClick={() => handleCancelTask(task.id)}
@@ -388,6 +384,17 @@ export const ScheduledTasks = ({ onTaskClick }: ScheduledTasksProps) => {
           onTaskCreated={loadTasks}
         />
       )}
+
+      {/* Task Detail Dialog */}
+      <ScheduledTaskDialog
+        task={selectedTask}
+        isOpen={showTaskDialog}
+        onClose={() => {
+          setShowTaskDialog(false);
+          setSelectedTask(null);
+        }}
+        onTaskUpdated={loadTasks}
+      />
     </div>
   );
 };
