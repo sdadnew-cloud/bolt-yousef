@@ -47,7 +47,7 @@ export const AIPairProgrammer = ({ isActive, onStop }: AIPairProgrammerProps) =>
       const firstStep: ReasoningStep = {
         id: `step-${Date.now()}`,
         type: 'thought',
-        content: 'I need to understand the current codebase structure first...',
+        content: 'I need to understand the current codebase structure first and analyze Android-specific requirements...',
         timestamp: Date.now(),
         completed: false
       };
@@ -62,7 +62,7 @@ export const AIPairProgrammer = ({ isActive, onStop }: AIPairProgrammerProps) =>
       const planStep: ReasoningStep = {
         id: `step-${Date.now()}`,
         type: 'plan',
-        content: '1. Analyze project requirements\n2. Identify key components\n3. Design implementation approach\n4. Write and test code\n5. Optimize for performance',
+        content: '1. Analyze Android Material Design 3 guidelines\n2. Identify key components and responsive requirements\n3. Design implementation approach with Android-specific features\n4. Write and test code with Android device emulation\n5. Optimize for Android performance and responsiveness',
         timestamp: Date.now(),
         completed: false
       };
@@ -78,7 +78,7 @@ export const AIPairProgrammer = ({ isActive, onStop }: AIPairProgrammerProps) =>
       const codeStep: ReasoningStep = {
         id: `step-${Date.now()}`,
         type: 'code',
-        content: 'Implementing the main feature component...',
+        content: 'Implementing Android Material Design 3 components...\n- Creating responsive layouts\n- Adding Android-style animations\n- Implementing touch-friendly interactions\n- Ensuring proper contrast ratios',
         timestamp: Date.now(),
         completed: false
       };
@@ -88,12 +88,12 @@ export const AIPairProgrammer = ({ isActive, onStop }: AIPairProgrammerProps) =>
       setProgress(50);
     }, 4000);
 
-    // Simulate debugging
+    // Simulate Android-specific debugging
     const debugTimer = setTimeout(() => {
       const debugStep: ReasoningStep = {
         id: `step-${Date.now()}`,
         type: 'debug',
-        content: 'Testing functionality and identifying issues...',
+        content: 'Testing Android-specific functionality...\n- Checking responsive behavior on various Android devices\n- Verifying touch interaction responsiveness\n- Testing performance on low-end Android devices\n- Ensuring Material Design 3 compliance',
         timestamp: Date.now(),
         completed: false
       };
@@ -103,12 +103,12 @@ export const AIPairProgrammer = ({ isActive, onStop }: AIPairProgrammerProps) =>
       setProgress(75);
     }, 6000);
 
-    // Simulate optimization
+    // Simulate Android-specific optimization
     const optimizeTimer = setTimeout(() => {
       const optimizeStep: ReasoningStep = {
         id: `step-${Date.now()}`,
         type: 'optimization',
-        content: 'Optimizing code for performance and readability...',
+        content: 'Optimizing for Android performance...\n- Reducing render times for Android devices\n- Optimizing image loading and caching\n- Implementing efficient state management\n- Ensuring smooth animations at 60fps',
         timestamp: Date.now(),
         completed: false
       };
