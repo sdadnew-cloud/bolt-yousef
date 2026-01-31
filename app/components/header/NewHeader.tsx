@@ -71,6 +71,21 @@ export function NewHeader() {
           error: '#ef4444',
         }
       },
+      android: {
+        palette: {
+          primary: '#1E88E5', // Android Blue - Material Design 3
+          secondary: '#42A5F5', // Light Blue - Material Design 3
+          accent: '#FFC107', // Amber - Material Design 3
+          background: '#000000', // Dark background for AMOLED screens
+          surface: '#121212', // Material Design dark surface
+          text: '#FFFFFF', // White text
+          textSecondary: '#B3B3B3', // Light gray text
+          border: '#212121', // Dark border
+          success: '#4CAF50', // Material Green
+          warning: '#FF9800', // Material Orange
+          error: '#F44336', // Material Red
+        }
+      },
       ocean: {
         palette: {
           primary: '#3b82f6',
@@ -183,6 +198,12 @@ export function NewHeader() {
                       className="block w-full text-left px-4 py-2 text-sm hover:bg-[var(--color-primary)]/[0.2] transition-colors"
                     >
                       Default Theme
+                    </button>
+                    <button
+                      onClick={() => applyCustomTheme('android')}
+                      className="block w-full text-left px-4 py-2 text-sm hover:bg-[var(--color-primary)]/[0.2] transition-colors"
+                    >
+                      Android Material
                     </button>
                     <button
                       onClick={() => applyCustomTheme('ocean')}
