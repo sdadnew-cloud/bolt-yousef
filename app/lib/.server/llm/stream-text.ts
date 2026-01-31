@@ -11,6 +11,7 @@ import { createFilesContext, extractPropertiesFromMessage } from './utils';
 import { discussPrompt } from '~/lib/common/prompts/discuss-prompt';
 import type { DesignScheme } from '~/types/design-scheme';
 import { PromptManager } from '~/lib/modules/llm/prompt-manager';
+import { agentSystem } from '~/lib/agents/agent-system';
 
 export type Messages = Message[];
 
@@ -150,7 +151,7 @@ export async function streamText(props: {
     `Token limits for model ${modelDetails.name}: maxTokens=${safeMaxTokens}, maxTokenAllowed=${modelDetails.maxTokenAllowed}, maxCompletionTokens=${modelDetails.maxCompletionTokens}`,
   );
 
-  let baseSystemPrompt =
+  const baseSystemPrompt =
     PromptLibrary.getPropmtFromLibrary(promptId || 'default', {
       cwd: WORK_DIR,
       allowedHtmlElements: allowedHTMLElements,
@@ -163,11 +164,7 @@ export async function streamText(props: {
       },
     }) ?? getSystemPrompt();
 
-  let systemPrompt = PromptManager.enhanceSystemPrompt(
-    baseSystemPrompt,
-    provider.name,
-    (options as any)?.promptPreset,
-  );
+  let systemPrompt = PromptManager.enhanceSystemPrompt(baseSystemPrompt, provider.name, (options as any)?.promptPreset);
 
   if (chatMode === 'build' && contextFiles && contextOptimization) {
     const codeContext = createFilesContext(contextFiles, true);
@@ -316,6 +313,19 @@ export async function streamText(props: {
       2,
     ),
   );
+
+  if ((options as any)?.multiAgent) {
+    const task = processedMessages[processedMessages.length - 1].content;
+    const fileList = files ? Object.keys(files) : [];
+
+    /*
+     * Trigger multi-agent workflow in the background or handle it
+     * Note: This is a simplified integration.
+     * In a full implementation, this would return a specialized stream.
+     */
+    console.log('Triggering Multi-Agent Workflow');
+    agentSystem.runWorkflow(task, fileList);
+  }
 
   return await _streamText(streamParams);
 }

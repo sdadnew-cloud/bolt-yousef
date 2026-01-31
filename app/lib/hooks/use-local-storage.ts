@@ -18,10 +18,13 @@ import { useState, useEffect, useCallback } from 'react';
 export interface UseLocalStorageOptions<T> {
   /** القيمة الافتراضية */
   defaultValue?: T;
+
   /** دالة لتحويل القيمة قبل الحفظ */
   serialize?: (value: T) => string;
+
   /** دالة لتحويل النص المخزن إلى قيمة */
   deserialize?: (value: string) => T;
+
   /** تنفيذ callback عند تغيير القيمة */
   onChange?: (value: T) => void;
 }
@@ -34,14 +37,9 @@ export interface UseLocalStorageOptions<T> {
 
 export function useLocalStorage<T>(
   key: string,
-  options: UseLocalStorageOptions<T> = {}
+  options: UseLocalStorageOptions<T> = {},
 ): [T, (value: T | ((prev: T) => T)) => void, () => void] {
-  const {
-    defaultValue,
-    serialize = JSON.stringify,
-    deserialize = JSON.parse,
-    onChange,
-  } = options;
+  const { defaultValue, serialize = JSON.stringify, deserialize = JSON.parse, onChange } = options;
 
   // قراءة القيمة المخزنة أو استخدام القيمة الافتراضية
   const readValue = useCallback((): T => {
@@ -51,6 +49,7 @@ export function useLocalStorage<T>(
 
     try {
       const item = window.localStorage.getItem(key);
+
       if (item) {
         return deserialize(item);
       }
@@ -85,13 +84,14 @@ export function useLocalStorage<T>(
         console.warn(`Error setting localStorage key "${key}":`, error);
       }
     },
-    [key, storedValue, serialize, onChange]
+    [key, storedValue, serialize, onChange],
   );
 
   // إزالة القيمة
   const removeValue = useCallback(() => {
     try {
       setStoredValue(defaultValue as T);
+
       if (typeof window !== 'undefined') {
         window.localStorage.removeItem(key);
       }
@@ -117,6 +117,7 @@ export function useLocalStorage<T>(
     };
 
     window.addEventListener('storage', handleStorageChange);
+
     return () => window.removeEventListener('storage', handleStorageChange);
   }, [key, defaultValue, deserialize, onChange]);
 
@@ -131,14 +132,9 @@ export function useLocalStorage<T>(
 
 export function useSessionStorage<T>(
   key: string,
-  options: UseLocalStorageOptions<T> = {}
+  options: UseLocalStorageOptions<T> = {},
 ): [T, (value: T | ((prev: T) => T)) => void, () => void] {
-  const {
-    defaultValue,
-    serialize = JSON.stringify,
-    deserialize = JSON.parse,
-    onChange,
-  } = options;
+  const { defaultValue, serialize = JSON.stringify, deserialize = JSON.parse, onChange } = options;
 
   const readValue = useCallback((): T => {
     if (typeof window === 'undefined') {
@@ -147,6 +143,7 @@ export function useSessionStorage<T>(
 
     try {
       const item = window.sessionStorage.getItem(key);
+
       if (item) {
         return deserialize(item);
       }
@@ -174,12 +171,13 @@ export function useSessionStorage<T>(
         console.warn(`Error setting sessionStorage key "${key}":`, error);
       }
     },
-    [key, storedValue, serialize, onChange]
+    [key, storedValue, serialize, onChange],
   );
 
   const removeValue = useCallback(() => {
     try {
       setStoredValue(defaultValue as T);
+
       if (typeof window !== 'undefined') {
         window.sessionStorage.removeItem(key);
       }
@@ -204,6 +202,7 @@ export function useSessionStorage<T>(
     };
 
     window.addEventListener('storage', handleStorageChange);
+
     return () => window.removeEventListener('storage', handleStorageChange);
   }, [key, defaultValue, deserialize, onChange]);
 
@@ -221,7 +220,7 @@ export type StorageType = 'local' | 'session';
 export function useStorage<T>(
   key: string,
   type: StorageType = 'local',
-  options: UseLocalStorageOptions<T> = {}
+  options: UseLocalStorageOptions<T> = {},
 ): [T, (value: T | ((prev: T) => T)) => void, () => void] {
   const hook = type === 'local' ? useLocalStorage : useSessionStorage;
   return hook(key, options);

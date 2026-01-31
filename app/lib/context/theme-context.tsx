@@ -21,14 +21,19 @@ export type ResolvedTheme = 'light' | 'dark';
 export interface ThemeContextValue {
   /** المظهر المحدد */
   theme: Theme;
+
   /** المظهر الفعلي المطبق */
   resolvedTheme: ResolvedTheme;
+
   /** تعيين المظهر */
   setTheme: (theme: Theme) => void;
+
   /** تبديل المظهر */
   toggleTheme: () => void;
+
   /** هل المظهر الحالي داكن */
   isDark: boolean;
+
   /** هل المظهر الحالي فاتح */
   isLight: boolean;
 }
@@ -36,14 +41,19 @@ export interface ThemeContextValue {
 export interface ThemeProviderProps {
   /** العناصر الفرعية */
   children: React.ReactNode;
+
   /** المظهر الافتراضي */
   defaultTheme?: Theme;
+
   /** مفتاح التخزين المحلي */
   storageKey?: string;
+
   /** تطبيق المظهر على عنصر محدد */
   attribute?: string;
+
   /** تطبيق class بدلاً من attribute */
   enableSystem?: boolean;
+
   /** تعطيل التحولات عند تغيير المظهر */
   disableTransitionOnChange?: boolean;
 }
@@ -77,22 +87,25 @@ export function ThemeProvider({
   // قراءة المظهر المخزن عند التحميل
   useEffect(() => {
     const stored = localStorage.getItem(storageKey) as Theme | null;
+
     if (stored) {
       setThemeState(stored);
     }
+
     setMounted(true);
   }, [storageKey]);
 
   // تحديد المظهر الفعلي
   useEffect(() => {
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
 
     const resolveTheme = (): ResolvedTheme => {
       if (theme === 'system' && enableSystem) {
-        return window.matchMedia('(prefers-color-scheme: dark)').matches
-          ? 'dark'
-          : 'light';
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
       }
+
       return theme as ResolvedTheme;
     };
 
@@ -124,7 +137,9 @@ export function ThemeProvider({
 
   // الاستماع لتغييرات نظام المظهر
   useEffect(() => {
-    if (!enableSystem || theme !== 'system') return;
+    if (!enableSystem || theme !== 'system') {
+      return;
+    }
 
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
@@ -133,6 +148,7 @@ export function ThemeProvider({
       setResolvedTheme(resolved);
 
       const root = document.documentElement;
+
       if (attribute === 'class') {
         root.classList.remove('light', 'dark');
         root.classList.add(resolved);
@@ -142,6 +158,7 @@ export function ThemeProvider({
     };
 
     mediaQuery.addEventListener('change', handleChange);
+
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, [theme, enableSystem, attribute]);
 
@@ -151,7 +168,7 @@ export function ThemeProvider({
       setThemeState(newTheme);
       localStorage.setItem(storageKey, newTheme);
     },
-    [storageKey]
+    [storageKey],
   );
 
   // تبديل المظهر
@@ -159,6 +176,7 @@ export function ThemeProvider({
     setTheme((prev) => {
       const newTheme = prev === 'light' ? 'dark' : 'light';
       localStorage.setItem(storageKey, newTheme);
+
       return newTheme;
     });
   }, [storageKey]);
@@ -205,9 +223,11 @@ export function ThemeProvider({
 
 export function useTheme(): ThemeContextValue {
   const context = useContext(ThemeContext);
+
   if (context === undefined) {
     throw new Error('useTheme must be used within a ThemeProvider');
   }
+
   return context;
 }
 
@@ -230,6 +250,7 @@ export function useResolvedTheme(): ResolvedTheme {
 export interface ThemeToggleProps {
   /** حجم الزر */
   size?: 'sm' | 'md' | 'lg';
+
   /** تنسيق مخصص */
   className?: string;
 }
@@ -262,12 +283,7 @@ export function ThemeToggle({ size = 'md', className = '' }: ThemeToggleProps) {
     >
       {resolvedTheme === 'dark' ? (
         // أيقونة الشمس
-        <svg
-          className="w-5 h-5"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -277,12 +293,7 @@ export function ThemeToggle({ size = 'md', className = '' }: ThemeToggleProps) {
         </svg>
       ) : (
         // أيقونة القمر
-        <svg
-          className="w-5 h-5"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"

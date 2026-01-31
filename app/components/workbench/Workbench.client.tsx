@@ -20,6 +20,7 @@ import { cubicEasingFn } from '~/utils/easings';
 import { renderLogger } from '~/utils/logger';
 import { EditorPanel } from './EditorPanel';
 import { Preview } from './Preview';
+import { ProjectActions } from './ProjectActions';
 import useViewport from '~/lib/hooks';
 
 import { usePreviewStore } from '~/lib/stores/previews';
@@ -38,6 +39,7 @@ interface WorkspaceProps {
   };
   updateChatMestaData?: (metadata: any) => void;
   setSelectedElement?: (element: ElementInfo | null) => void;
+  onSendMessage?: (message: string) => void;
 }
 
 const viewTransition = { ease: cubicEasingFn };
@@ -287,6 +289,7 @@ export const Workbench = memo(
     metadata: _metadata,
     updateChatMestaData: _updateChatMestaData,
     setSelectedElement,
+    onSendMessage,
   }: WorkspaceProps) => {
     renderLogger.trace('Workbench');
 
@@ -505,6 +508,7 @@ export const Workbench = memo(
                     <Preview setSelectedElement={setSelectedElement} />
                   </View>
                 </div>
+                <ProjectActions onSendMessage={onSendMessage} />
               </div>
             </div>
           </div>

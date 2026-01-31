@@ -20,8 +20,9 @@ export const ScheduledTasks = ({ onTaskClick }: ScheduledTasksProps) => {
 
   useEffect(() => {
     loadTasks();
+
     const interval = setInterval(loadTasks, 30000); // Refresh every 30 seconds
-    
+
     return () => clearInterval(interval);
   }, []);
 
@@ -36,9 +37,7 @@ export const ScheduledTasks = ({ onTaskClick }: ScheduledTasksProps) => {
     }
   };
 
-  const filteredTasks = filter === 'all' 
-    ? tasks 
-    : tasks.filter(task => task.status === filter);
+  const filteredTasks = filter === 'all' ? tasks : tasks.filter((task) => task.status === filter);
 
   const getStatusIcon = (status: ScheduledTask['status']) => {
     switch (status) {
@@ -102,15 +101,18 @@ export const ScheduledTasks = ({ onTaskClick }: ScheduledTasksProps) => {
   };
 
   const formatDuration = (duration: number | undefined) => {
-    if (!duration) return 'N/A';
-    
+    if (!duration) {
+      return 'N/A';
+    }
+
     const seconds = Math.floor(duration / 1000);
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
-    
+
     if (minutes > 0) {
       return `${minutes}m ${remainingSeconds}s`;
     }
+
     return `${seconds}s`;
   };
 
@@ -139,9 +141,11 @@ export const ScheduledTasks = ({ onTaskClick }: ScheduledTasksProps) => {
 
   const getFilterButtonClass = (filterName: string) => {
     const baseClass = 'px-3 py-1.5 text-sm rounded-lg transition-colors';
+
     if (filter === filterName) {
       return `${baseClass} bg-bolt-elements-primary text-white`;
     }
+
     return `${baseClass} bg-bolt-elements-background-depth-2 hover:bg-bolt-elements-background-depth-3`;
   };
 
@@ -150,9 +154,7 @@ export const ScheduledTasks = ({ onTaskClick }: ScheduledTasksProps) => {
       {/* Header */}
       <div className="p-4 border-b border-bolt-elements-borderColor">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-bolt-elements-textPrimary">
-            Scheduled Tasks
-          </h3>
+          <h3 className="text-lg font-semibold text-bolt-elements-textPrimary">Scheduled Tasks</h3>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowCreateModal(true)}
@@ -179,36 +181,28 @@ export const ScheduledTasks = ({ onTaskClick }: ScheduledTasksProps) => {
               <i className="i-ph:calendar text-blue-500"></i>
               <span className="text-bolt-elements-textSecondary">Total</span>
             </div>
-            <div className="text-lg font-semibold text-bolt-elements-textPrimary">
-              {statistics.total}
-            </div>
+            <div className="text-lg font-semibold text-bolt-elements-textPrimary">{statistics.total}</div>
           </div>
           <div className="p-2 bg-bolt-elements-background-depth-2 rounded-lg">
             <div className="flex items-center gap-2">
               <i className="i-ph:clock text-yellow-500"></i>
               <span className="text-bolt-elements-textSecondary">Pending</span>
             </div>
-            <div className="text-lg font-semibold text-bolt-elements-textPrimary">
-              {statistics.pending}
-            </div>
+            <div className="text-lg font-semibold text-bolt-elements-textPrimary">{statistics.pending}</div>
           </div>
           <div className="p-2 bg-bolt-elements-background-depth-2 rounded-lg">
             <div className="flex items-center gap-2">
               <i className="i-ph:spinner animate-spin text-blue-500"></i>
               <span className="text-bolt-elements-textSecondary">Running</span>
             </div>
-            <div className="text-lg font-semibold text-bolt-elements-textPrimary">
-              {statistics.running}
-            </div>
+            <div className="text-lg font-semibold text-bolt-elements-textPrimary">{statistics.running}</div>
           </div>
           <div className="p-2 bg-bolt-elements-background-depth-2 rounded-lg">
             <div className="flex items-center gap-2">
               <i className="i-ph:check-circle text-green-500"></i>
               <span className="text-bolt-elements-textSecondary">Completed</span>
             </div>
-            <div className="text-lg font-semibold text-bolt-elements-textPrimary">
-              {statistics.completed}
-            </div>
+            <div className="text-lg font-semibold text-bolt-elements-textPrimary">{statistics.completed}</div>
           </div>
         </div>
       </div>
@@ -216,34 +210,19 @@ export const ScheduledTasks = ({ onTaskClick }: ScheduledTasksProps) => {
       {/* Filter */}
       <div className="p-3 border-b border-bolt-elements-borderColor">
         <div className="flex flex-wrap gap-2">
-          <button
-            onClick={() => setFilter('all')}
-            className={getFilterButtonClass('all')}
-          >
+          <button onClick={() => setFilter('all')} className={getFilterButtonClass('all')}>
             All
           </button>
-          <button
-            onClick={() => setFilter('pending')}
-            className={getFilterButtonClass('pending')}
-          >
+          <button onClick={() => setFilter('pending')} className={getFilterButtonClass('pending')}>
             Pending
           </button>
-          <button
-            onClick={() => setFilter('running')}
-            className={getFilterButtonClass('running')}
-          >
+          <button onClick={() => setFilter('running')} className={getFilterButtonClass('running')}>
             Running
           </button>
-          <button
-            onClick={() => setFilter('completed')}
-            className={getFilterButtonClass('completed')}
-          >
+          <button onClick={() => setFilter('completed')} className={getFilterButtonClass('completed')}>
             Completed
           </button>
-          <button
-            onClick={() => setFilter('failed')}
-            className={getFilterButtonClass('failed')}
-          >
+          <button onClick={() => setFilter('failed')} className={getFilterButtonClass('failed')}>
             Failed
           </button>
         </div>
@@ -263,9 +242,7 @@ export const ScheduledTasks = ({ onTaskClick }: ScheduledTasksProps) => {
             <i className="i-ph:calendar text-4xl mb-2"></i>
             <p>No tasks found</p>
             <p className="text-sm mt-1">
-              {filter === 'all' 
-                ? 'Create your first scheduled task' 
-                : 'No tasks with this status'}
+              {filter === 'all' ? 'Create your first scheduled task' : 'No tasks with this status'}
             </p>
           </div>
         ) : (
@@ -291,7 +268,11 @@ export const ScheduledTasks = ({ onTaskClick }: ScheduledTasksProps) => {
                         <i className={`${getTypeIcon(task.type)} text-blue-500`}></i>
                         <h4 className="font-medium text-bolt-elements-textPrimary">{task.name}</h4>
                         <i className={`${getPriorityColor(task.priority)} text-sm`} title={task.priority}>
-                          {task.priority === 'high' ? 'i-ph:warning' : task.priority === 'medium' ? 'i-ph:exclamation' : 'i-ph:info'}
+                          {task.priority === 'high'
+                            ? 'i-ph:warning'
+                            : task.priority === 'medium'
+                              ? 'i-ph:exclamation'
+                              : 'i-ph:info'}
                         </i>
                       </div>
                       <p className="text-sm text-bolt-elements-textSecondary mb-2">{task.description}</p>
@@ -332,11 +313,11 @@ export const ScheduledTasks = ({ onTaskClick }: ScheduledTasksProps) => {
                     </div>
                     <div className="flex flex-col items-end gap-2 ml-4">
                       <div className="flex items-center gap-2">
-                        <i className={`${getStatusIcon(task.status)} ${getStatusColor(task.status)}`} 
-                           title={task.status}></i>
-                        <span className="text-xs text-bolt-elements-textSecondary capitalize">
-                          {task.status}
-                        </span>
+                        <i
+                          className={`${getStatusIcon(task.status)} ${getStatusColor(task.status)}`}
+                          title={task.status}
+                        ></i>
+                        <span className="text-xs text-bolt-elements-textSecondary capitalize">{task.status}</span>
                       </div>
                       <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
                         {task.status === 'pending' && (
@@ -371,19 +352,16 @@ export const ScheduledTasks = ({ onTaskClick }: ScheduledTasksProps) => {
       {tasks.length > 0 && (
         <div className="p-3 border-t border-bolt-elements-borderColor bg-bolt-elements-background-depth-2">
           <div className="flex items-center justify-between text-xs text-bolt-elements-textSecondary">
-            <span>Showing {filteredTasks.length} of {tasks.length} tasks</span>
+            <span>
+              Showing {filteredTasks.length} of {tasks.length} tasks
+            </span>
             <span>Avg duration: {formatDuration(statistics.averageDuration)}</span>
           </div>
         </div>
       )}
 
       {/* Create Task Modal */}
-      {showCreateModal && (
-        <CreateTaskModal
-          onClose={() => setShowCreateModal(false)}
-          onTaskCreated={loadTasks}
-        />
-      )}
+      {showCreateModal && <CreateTaskModal onClose={() => setShowCreateModal(false)} onTaskCreated={loadTasks} />}
 
       {/* Task Detail Dialog */}
       <ScheduledTaskDialog
@@ -413,12 +391,12 @@ const CreateTaskModal = ({ onClose, onTaskCreated }: CreateTaskModalProps) => {
     priority: 'medium' as ScheduledTask['priority'],
     scheduledTime: Date.now() + 3600000, // 1 hour from now
     notifications: true,
-    recurrence: 'none' as ScheduledTask['recurrence']
+    recurrence: 'none' as ScheduledTask['recurrence'],
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
       scheduledTasksService.createTask(taskData);
       onTaskCreated();
@@ -434,19 +412,14 @@ const CreateTaskModal = ({ onClose, onTaskCreated }: CreateTaskModalProps) => {
       <div className="bg-white rounded-lg p-6 w-full max-w-md">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold">Create New Task</h3>
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
-          >
+          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
             <i className="i-ph:x"></i>
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Task Name
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Task Name</label>
             <input
               type="text"
               required
@@ -458,9 +431,7 @@ const CreateTaskModal = ({ onClose, onTaskCreated }: CreateTaskModalProps) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Description
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
             <textarea
               value={taskData.description}
               onChange={(e) => setTaskData({ ...taskData, description: e.target.value })}
@@ -471,9 +442,7 @@ const CreateTaskModal = ({ onClose, onTaskCreated }: CreateTaskModalProps) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Task Type
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Task Type</label>
             <select
               value={taskData.type}
               onChange={(e) => setTaskData({ ...taskData, type: e.target.value as ScheduledTask['type'] })}
@@ -488,9 +457,7 @@ const CreateTaskModal = ({ onClose, onTaskCreated }: CreateTaskModalProps) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Priority
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
             <select
               value={taskData.priority}
               onChange={(e) => setTaskData({ ...taskData, priority: e.target.value as ScheduledTask['priority'] })}
@@ -503,25 +470,23 @@ const CreateTaskModal = ({ onClose, onTaskCreated }: CreateTaskModalProps) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Scheduled Time
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Scheduled Time</label>
             <input
               type="datetime-local"
               required
               value={new Date(taskData.scheduledTime).toISOString().slice(0, 16)}
-              onChange={(e) => setTaskData({ 
-                ...taskData, 
-                scheduledTime: new Date(e.target.value).getTime() 
-              })}
+              onChange={(e) =>
+                setTaskData({
+                  ...taskData,
+                  scheduledTime: new Date(e.target.value).getTime(),
+                })
+              }
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Recurrence
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Recurrence</label>
             <select
               value={taskData.recurrence}
               onChange={(e) => setTaskData({ ...taskData, recurrence: e.target.value as ScheduledTask['recurrence'] })}

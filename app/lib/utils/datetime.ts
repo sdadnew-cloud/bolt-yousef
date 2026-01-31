@@ -42,7 +42,10 @@ export interface TimeUnit {
  * @returns كائن Date
  */
 export function toDate(input: DateInput): Date {
-  if (input instanceof Date) return input;
+  if (input instanceof Date) {
+    return input;
+  }
+
   return new Date(input);
 }
 
@@ -71,6 +74,7 @@ export function now(): number {
 export function today(): Date {
   const date = new Date();
   date.setHours(0, 0, 0, 0);
+
   return date;
 }
 
@@ -89,13 +93,33 @@ export function today(): Date {
 export function add(date: DateInput, unit: TimeUnit): Date {
   const result = toDate(date);
 
-  if (unit.years) result.setFullYear(result.getFullYear() + unit.years);
-  if (unit.months) result.setMonth(result.getMonth() + unit.months);
-  if (unit.days) result.setDate(result.getDate() + unit.days);
-  if (unit.hours) result.setHours(result.getHours() + unit.hours);
-  if (unit.minutes) result.setMinutes(result.getMinutes() + unit.minutes);
-  if (unit.seconds) result.setSeconds(result.getSeconds() + unit.seconds);
-  if (unit.milliseconds) result.setMilliseconds(result.getMilliseconds() + unit.milliseconds);
+  if (unit.years) {
+    result.setFullYear(result.getFullYear() + unit.years);
+  }
+
+  if (unit.months) {
+    result.setMonth(result.getMonth() + unit.months);
+  }
+
+  if (unit.days) {
+    result.setDate(result.getDate() + unit.days);
+  }
+
+  if (unit.hours) {
+    result.setHours(result.getHours() + unit.hours);
+  }
+
+  if (unit.minutes) {
+    result.setMinutes(result.getMinutes() + unit.minutes);
+  }
+
+  if (unit.seconds) {
+    result.setSeconds(result.getSeconds() + unit.seconds);
+  }
+
+  if (unit.milliseconds) {
+    result.setMilliseconds(result.getMilliseconds() + unit.milliseconds);
+  }
 
   return result;
 }
@@ -108,11 +132,13 @@ export function add(date: DateInput, unit: TimeUnit): Date {
  */
 export function subtract(date: DateInput, unit: TimeUnit): Date {
   const negativeUnit: TimeUnit = {};
+
   for (const [key, value] of Object.entries(unit)) {
     if (value !== undefined) {
       (negativeUnit as Record<string, number>)[key] = -value;
     }
   }
+
   return add(date, negativeUnit);
 }
 
@@ -123,11 +149,7 @@ export function subtract(date: DateInput, unit: TimeUnit): Date {
  * @param unit - وحدة الفرق (افتراضي: milliseconds)
  * @returns قيمة الفرق
  */
-export function diff(
-  date1: DateInput,
-  date2: DateInput,
-  unit: keyof TimeUnit = 'milliseconds'
-): number {
+export function diff(date1: DateInput, date2: DateInput, unit: keyof TimeUnit = 'milliseconds'): number {
   const d1 = toDate(date1).getTime();
   const d2 = toDate(date2).getTime();
   const diffMs = d1 - d2;
@@ -201,9 +223,8 @@ export function isBetween(date: DateInput, start: DateInput, end: DateInput): bo
 export function isToday(date: DateInput): boolean {
   const d = toDate(date);
   const t = today();
-  return d.getFullYear() === t.getFullYear() &&
-         d.getMonth() === t.getMonth() &&
-         d.getDate() === t.getDate();
+
+  return d.getFullYear() === t.getFullYear() && d.getMonth() === t.getMonth() && d.getDate() === t.getDate();
 }
 
 /**
@@ -214,9 +235,12 @@ export function isToday(date: DateInput): boolean {
 export function isYesterday(date: DateInput): boolean {
   const yesterday = add(today(), { days: -1 });
   const d = toDate(date);
-  return d.getFullYear() === yesterday.getFullYear() &&
-         d.getMonth() === yesterday.getMonth() &&
-         d.getDate() === yesterday.getDate();
+
+  return (
+    d.getFullYear() === yesterday.getFullYear() &&
+    d.getMonth() === yesterday.getMonth() &&
+    d.getDate() === yesterday.getDate()
+  );
 }
 
 /**
@@ -227,9 +251,12 @@ export function isYesterday(date: DateInput): boolean {
 export function isTomorrow(date: DateInput): boolean {
   const tomorrow = add(today(), { days: 1 });
   const d = toDate(date);
-  return d.getFullYear() === tomorrow.getFullYear() &&
-         d.getMonth() === tomorrow.getMonth() &&
-         d.getDate() === tomorrow.getDate();
+
+  return (
+    d.getFullYear() === tomorrow.getFullYear() &&
+    d.getMonth() === tomorrow.getMonth() &&
+    d.getDate() === tomorrow.getDate()
+  );
 }
 
 /**
@@ -245,11 +272,7 @@ export function isTomorrow(date: DateInput): boolean {
  * @param locale - اللغة والمنطقة
  * @returns النص المنسق
  */
-export function format(
-  date: DateInput,
-  format: string = 'YYYY-MM-DD',
-  locale: string = 'ar-SA'
-): string {
+export function format(date: DateInput, format: string = 'YYYY-MM-DD', locale: string = 'ar-SA'): string {
   const d = toDate(date);
 
   const tokens: Record<string, string> = {
@@ -291,11 +314,26 @@ export function formatRelative(date: DateInput, locale: string = 'ar-SA'): strin
 
   const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
 
-  if (diffSec < 60) return rtf.format(-diffSec, 'second');
-  if (diffMin < 60) return rtf.format(-diffMin, 'minute');
-  if (diffHour < 24) return rtf.format(-diffHour, 'hour');
-  if (diffDay < 30) return rtf.format(-diffDay, 'day');
-  if (diffDay < 365) return rtf.format(-Math.floor(diffDay / 30), 'month');
+  if (diffSec < 60) {
+    return rtf.format(-diffSec, 'second');
+  }
+
+  if (diffMin < 60) {
+    return rtf.format(-diffMin, 'minute');
+  }
+
+  if (diffHour < 24) {
+    return rtf.format(-diffHour, 'hour');
+  }
+
+  if (diffDay < 30) {
+    return rtf.format(-diffDay, 'day');
+  }
+
+  if (diffDay < 365) {
+    return rtf.format(-Math.floor(diffDay / 30), 'month');
+  }
+
   return rtf.format(-Math.floor(diffDay / 365), 'year');
 }
 
@@ -313,6 +351,7 @@ export function formatRelative(date: DateInput, locale: string = 'ar-SA'): strin
 export function startOfDay(date: DateInput): Date {
   const d = toDate(date);
   d.setHours(0, 0, 0, 0);
+
   return d;
 }
 
@@ -324,6 +363,7 @@ export function startOfDay(date: DateInput): Date {
 export function endOfDay(date: DateInput): Date {
   const d = toDate(date);
   d.setHours(23, 59, 59, 999);
+
   return d;
 }
 
@@ -336,6 +376,7 @@ export function startOfWeek(date: DateInput): Date {
   const d = toDate(date);
   const day = d.getDay();
   const diff = d.getDate() - day;
+
   return startOfDay(new Date(d.setDate(diff)));
 }
 
@@ -348,6 +389,7 @@ export function endOfWeek(date: DateInput): Date {
   const d = toDate(date);
   const day = d.getDay();
   const diff = d.getDate() + (6 - day);
+
   return endOfDay(new Date(d.setDate(diff)));
 }
 
@@ -359,6 +401,7 @@ export function endOfWeek(date: DateInput): Date {
 export function startOfMonth(date: DateInput): Date {
   const d = toDate(date);
   d.setDate(1);
+
   return startOfDay(d);
 }
 
@@ -371,6 +414,7 @@ export function endOfMonth(date: DateInput): Date {
   const d = toDate(date);
   d.setMonth(d.getMonth() + 1);
   d.setDate(0);
+
   return endOfDay(d);
 }
 
@@ -503,7 +547,7 @@ export function toTimeZone(date: DateInput, timeZone: string): Date {
   });
 
   return new Date(
-    `${dateParts.year}-${dateParts.month}-${dateParts.day}T${dateParts.hour}:${dateParts.minute}:${dateParts.second}`
+    `${dateParts.year}-${dateParts.month}-${dateParts.day}T${dateParts.hour}:${dateParts.minute}:${dateParts.second}`,
   );
 }
 

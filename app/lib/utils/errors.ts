@@ -87,12 +87,12 @@ export interface AppErrorOptions {
 }
 
 export class AppError extends Error {
-  public readonly code: ErrorCode;
-  public readonly statusCode: number;
-  public readonly details: Record<string, unknown>;
-  public readonly cause?: Error;
-  public readonly recoverable: boolean;
-  public readonly timestamp: Date;
+  readonly code: ErrorCode;
+  readonly statusCode: number;
+  readonly details: Record<string, unknown>;
+  readonly cause?: Error;
+  readonly recoverable: boolean;
+  readonly timestamp: Date;
 
   constructor(options: AppErrorOptions) {
     super(options.message);
@@ -144,7 +144,7 @@ export class AppError extends Error {
 export function createError(
   code: ErrorCode,
   message: string,
-  options?: Partial<Omit<AppErrorOptions, 'code' | 'message'>>
+  options?: Partial<Omit<AppErrorOptions, 'code' | 'message'>>,
 ): AppError {
   return new AppError({
     code,
@@ -153,55 +153,36 @@ export function createError(
   });
 }
 
-export function createValidationError(
-  message: string,
-  details?: Record<string, unknown>
-): AppError {
+export function createValidationError(message: string, details?: Record<string, unknown>): AppError {
   return createError(ErrorCode.VALIDATION_ERROR, message, { details });
 }
 
-export function createAuthError(
-  message: string = 'غير مصرح',
-  code: ErrorCode = ErrorCode.UNAUTHORIZED
-): AppError {
+export function createAuthError(message: string = 'غير مصرح', code: ErrorCode = ErrorCode.UNAUTHORIZED): AppError {
   return createError(code, message);
 }
 
-export function createNotFoundError(
-  resource: string,
-  identifier?: string
-): AppError {
-  const message = identifier
-    ? `${resource} غير موجود: ${identifier}`
-    : `${resource} غير موجود`;
+export function createNotFoundError(resource: string, identifier?: string): AppError {
+  const message = identifier ? `${resource} غير موجود: ${identifier}` : `${resource} غير موجود`;
   return createError(ErrorCode.NOT_FOUND, message);
 }
 
-export function createNetworkError(
-  message: string = 'خطأ في الاتصال بالشبكة',
-  cause?: Error
-): AppError {
+export function createNetworkError(message: string = 'خطأ في الاتصال بالشبكة', cause?: Error): AppError {
   return createError(ErrorCode.NETWORK_ERROR, message, {
     cause,
     recoverable: true,
   });
 }
 
-export function createTimeoutError(
-  operation: string,
-  timeoutMs: number
-): AppError {
-  return createError(
-    ErrorCode.TIMEOUT_ERROR,
-    `انتهت مهلة العملية: ${operation} (${timeoutMs}ms)`,
-    { recoverable: true }
-  );
+export function createTimeoutError(operation: string, timeoutMs: number): AppError {
+  return createError(ErrorCode.TIMEOUT_ERROR, `انتهت مهلة العملية: ${operation} (${timeoutMs}ms)`, {
+    recoverable: true,
+  });
 }
 
 export function createLLMError(
   message: string,
   code: ErrorCode = ErrorCode.LLM_ERROR,
-  details?: Record<string, unknown>
+  details?: Record<string, unknown>,
 ): AppError {
   return createError(code, message, { details, recoverable: true });
 }
@@ -245,10 +226,8 @@ export const defaultErrorHandler: ErrorHandler = (error) => {
     };
   }
 
-  const appError = createError(
-    ErrorCode.UNKNOWN_ERROR,
-    'حدث خطأ غير معروف'
-  );
+  const appError = createError(ErrorCode.UNKNOWN_ERROR, 'حدث خطأ غير معروف');
+
   return {
     success: false,
     error: appError,
@@ -322,14 +301,16 @@ function getUserFriendlyMessage(code: ErrorCode, defaultMessage: string): string
  */
 export function withErrorHandling<T extends (...args: unknown[]) => unknown>(
   fn: T,
-  handler: ErrorHandler = defaultErrorHandler
+  handler: ErrorHandler = defaultErrorHandler,
 ): (...args: Parameters<T>) => ReturnType<T> | ErrorHandlerResult {
   return (...args: Parameters<T>) => {
     try {
       const result = fn(...args);
+
       if (result instanceof Promise) {
         return result.catch((error) => handler(error)) as ReturnType<T>;
       }
+
       return result;
     } catch (error) {
       return handler(error);
@@ -347,14 +328,13 @@ export async function withRetry<T>(
     delay?: number;
     backoff?: number;
     shouldRetry?: (error: unknown) => boolean;
-  } = {}
+  } = {},
 ): Promise<T> {
   const {
     maxRetries = 3,
     delay = 1000,
     backoff = 2,
-    shouldRetry = (error) =>
-      error instanceof AppError ? error.recoverable : false,
+    shouldRetry = (error) => (error instanceof AppError ? error.recoverable : false),
   } = options;
 
   let lastError: unknown;
@@ -389,10 +369,7 @@ export function isValidationError(error: unknown): boolean {
 }
 
 export function isAuthError(error: unknown): boolean {
-  return (
-    isAppError(error) &&
-    (error.code === ErrorCode.UNAUTHORIZED || error.code === ErrorCode.FORBIDDEN)
-  );
+  return isAppError(error) && (error.code === ErrorCode.UNAUTHORIZED || error.code === ErrorCode.FORBIDDEN);
 }
 
 export function isNetworkError(error: unknown): boolean {

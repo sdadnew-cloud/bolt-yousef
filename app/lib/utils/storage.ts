@@ -131,9 +131,12 @@ export class StorageManager {
     try {
       const stored = this.getStorage(type).getItem(this.getKey(key));
 
-      if (!stored) return null;
+      if (!stored) {
+        return null;
+      }
 
       let serialized = stored;
+
       if (encrypt) {
         serialized = decrypt(stored);
       }
@@ -179,6 +182,7 @@ export class StorageManager {
 
       for (let i = 0; i < storage.length; i++) {
         const key = storage.key(i);
+
         if (key?.startsWith(this.prefix)) {
           keysToRemove.push(key);
         }
@@ -211,6 +215,7 @@ export class StorageManager {
 
     for (let i = 0; i < storage.length; i++) {
       const key = storage.key(i);
+
       if (key?.startsWith(this.prefix)) {
         keys.push(key.slice(this.prefix.length));
       }
@@ -230,8 +235,10 @@ export class StorageManager {
 
     for (let i = 0; i < storage.length; i++) {
       const key = storage.key(i);
+
       if (key?.startsWith(this.prefix)) {
         const value = storage.getItem(key);
+
         if (value) {
           size += key.length + value.length;
         }
@@ -364,6 +371,7 @@ export function getCookie(name: string): string | null {
 
   for (const cookie of cookies) {
     const [cookieName, cookieValue] = cookie.trim().split('=');
+
     if (decodeURIComponent(cookieName) === name) {
       return decodeURIComponent(cookieValue);
     }
@@ -391,6 +399,7 @@ export function getAllCookies(): Record<string, string> {
 
   document.cookie.split(';').forEach((cookie) => {
     const [name, value] = cookie.trim().split('=');
+
     if (name && value) {
       cookies[decodeURIComponent(name)] = decodeURIComponent(value);
     }
@@ -420,12 +429,15 @@ export class IndexedDBManager {
    * @returns وعد بقاعدة البيانات
    */
   async open(): Promise<IDBDatabase> {
-    if (this.db) return this.db;
+    if (this.db) {
+      return this.db;
+    }
 
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(this.dbName, this.version);
 
       request.onerror = () => reject(request.error);
+
       request.onsuccess = () => {
         this.db = request.result;
         resolve(request.result);
@@ -433,6 +445,7 @@ export class IndexedDBManager {
 
       request.onupgradeneeded = (event) => {
         const db = (event.target as IDBOpenDBRequest).result;
+
         if (!db.objectStoreNames.contains('data')) {
           db.createObjectStore('data', { keyPath: 'key' });
         }
@@ -470,6 +483,7 @@ export class IndexedDBManager {
     return new Promise((resolve, reject) => {
       const request = store.get(key);
       request.onerror = () => reject(request.error);
+
       request.onsuccess = () => {
         const result = request.result;
         resolve(result ? result.value : null);

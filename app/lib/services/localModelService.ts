@@ -37,7 +37,7 @@ export const defaultLocalModels: LocalModel[] = [
     defaultModel: 'llama3:latest',
     apiBaseUrl: 'http://localhost:11434',
     capabilities: ['text-generation', 'code-completion', 'reasoning'],
-    status: 'available'
+    status: 'available',
   },
   {
     id: 'ollama-mistral',
@@ -47,7 +47,7 @@ export const defaultLocalModels: LocalModel[] = [
     defaultModel: 'mistral:latest',
     apiBaseUrl: 'http://localhost:11434',
     capabilities: ['text-generation', 'code-completion', 'fast-response'],
-    status: 'available'
+    status: 'available',
   },
   {
     id: 'ollama-codegemma',
@@ -57,7 +57,7 @@ export const defaultLocalModels: LocalModel[] = [
     defaultModel: 'codegemma:latest',
     apiBaseUrl: 'http://localhost:11434',
     capabilities: ['code-completion', 'debugging', 'refactoring'],
-    status: 'available'
+    status: 'available',
   },
   {
     id: 'lmstudio-llama2',
@@ -67,7 +67,7 @@ export const defaultLocalModels: LocalModel[] = [
     defaultModel: 'llama2',
     apiBaseUrl: 'http://localhost:1234',
     capabilities: ['text-generation', 'code-completion', 'chat'],
-    status: 'available'
+    status: 'available',
   },
   {
     id: 'lmstudio-gemma',
@@ -77,8 +77,8 @@ export const defaultLocalModels: LocalModel[] = [
     defaultModel: 'gemma',
     apiBaseUrl: 'http://localhost:1234',
     capabilities: ['text-generation', 'code-completion', 'multimodal'],
-    status: 'available'
-  }
+    status: 'available',
+  },
 ];
 
 export class LocalModelService {
@@ -87,13 +87,13 @@ export class LocalModelService {
     ollama: {
       enabled: false,
       apiBaseUrl: 'http://localhost:11434',
-      defaultModel: 'llama3:latest'
+      defaultModel: 'llama3:latest',
     },
     lmstudio: {
       enabled: false,
       apiBaseUrl: 'http://localhost:1234',
-      defaultModel: 'llama2'
-    }
+      defaultModel: 'llama2',
+    },
   };
 
   private _models: LocalModel[] = [...defaultLocalModels];
@@ -103,6 +103,7 @@ export class LocalModelService {
     if (!LocalModelService._instance) {
       LocalModelService._instance = new LocalModelService();
     }
+
     return LocalModelService._instance;
   }
 
@@ -117,7 +118,7 @@ export class LocalModelService {
    * Get a specific model by ID
    */
   getModelById(id: string): LocalModel | undefined {
-    return this._models.find(model => model.id === id);
+    return this._models.find((model) => model.id === id);
   }
 
   /**
@@ -127,7 +128,7 @@ export class LocalModelService {
     if (!this._selectedModelId) {
       return null;
     }
-    
+
     return this.getModelById(this._selectedModelId) || null;
   }
 
@@ -138,10 +139,12 @@ export class LocalModelService {
     if (id === null) {
       this._selectedModelId = null;
       logger.info('Local model support disabled');
+
       return;
     }
 
     const model = this.getModelById(id);
+
     if (model) {
       this._selectedModelId = id;
       logger.info(`Selected local model: ${model.name}`);
@@ -186,6 +189,7 @@ export class LocalModelService {
    */
   async testConnection(modelId: string): Promise<boolean> {
     const model = this.getModelById(modelId);
+
     if (!model) {
       throw new Error(`Model ${modelId} not found`);
     }
@@ -195,7 +199,7 @@ export class LocalModelService {
 
     try {
       let connected = false;
-      
+
       if (model.provider === 'ollama') {
         connected = await this._testOllamaConnection(model);
       } else if (model.provider === 'lmstudio') {
@@ -214,6 +218,7 @@ export class LocalModelService {
     } catch (error) {
       this._updateModelStatus(modelId, 'error', error instanceof Error ? error.message : 'Unknown error');
       logger.error(`Connection test failed for ${model.name}:`, error);
+
       return false;
     }
   }
@@ -226,9 +231,9 @@ export class LocalModelService {
       const response = await fetch(`${model.apiBaseUrl}/api/tags`, {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        signal: AbortSignal.timeout(5000)
+        signal: AbortSignal.timeout(5000),
       });
 
       return response.ok;
@@ -246,9 +251,9 @@ export class LocalModelService {
       const response = await fetch(`${model.apiBaseUrl}/v1/models`, {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        signal: AbortSignal.timeout(5000)
+        signal: AbortSignal.timeout(5000),
       });
 
       return response.ok;
@@ -262,11 +267,7 @@ export class LocalModelService {
    * Update model status
    */
   private _updateModelStatus(modelId: string, status: LocalModel['status'], error?: string): void {
-    this._models = this._models.map(model => 
-      model.id === modelId 
-        ? { ...model, status, error } 
-        : model
-    );
+    this._models = this._models.map((model) => (model.id === modelId ? { ...model, status, error } : model));
   }
 
   /**
@@ -278,9 +279,9 @@ export class LocalModelService {
       const response = await fetch(`${config.apiBaseUrl}/api/tags`, {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        signal: AbortSignal.timeout(5000)
+        signal: AbortSignal.timeout(5000),
       });
 
       if (response.ok) {
@@ -304,9 +305,9 @@ export class LocalModelService {
       const response = await fetch(`${config.apiBaseUrl}/v1/models`, {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        signal: AbortSignal.timeout(5000)
+        signal: AbortSignal.timeout(5000),
       });
 
       if (response.ok) {
@@ -324,25 +325,29 @@ export class LocalModelService {
   /**
    * Generate text using local model
    */
-  async generateText(prompt: string, options?: {
-    model?: string;
-    temperature?: number;
-    maxTokens?: number;
-  }): Promise<string> {
+  async generateText(
+    prompt: string,
+    options?: {
+      model?: string;
+      temperature?: number;
+      maxTokens?: number;
+    },
+  ): Promise<string> {
     if (!this._selectedModelId) {
       throw new Error('No local model selected');
     }
 
     const model = this.getModelById(this._selectedModelId);
+
     if (!model) {
       throw new Error('Selected model not found');
     }
 
     const effectiveModel = options?.model || model.defaultModel;
-    
+
     try {
       let response: Response;
-      
+
       if (model.provider === 'ollama') {
         response = await this._generateWithOllama(prompt, effectiveModel, options);
       } else if (model.provider === 'lmstudio') {
@@ -356,7 +361,7 @@ export class LocalModelService {
       }
 
       const data = await response.json();
-      
+
       if (model.provider === 'ollama') {
         return data.response;
       } else {
@@ -373,11 +378,11 @@ export class LocalModelService {
    */
   private async _generateWithOllama(prompt: string, model: string, options?: any): Promise<Response> {
     const config = this._config.ollama;
-    
+
     return fetch(`${config.apiBaseUrl}/api/generate`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         model,
@@ -385,9 +390,9 @@ export class LocalModelService {
         stream: false,
         options: {
           temperature: options?.temperature ?? 0.7,
-          num_predict: options?.maxTokens ?? 4096
-        }
-      })
+          num_predict: options?.maxTokens ?? 4096,
+        },
+      }),
     });
   }
 
@@ -396,19 +401,19 @@ export class LocalModelService {
    */
   private async _generateWithLMStudio(prompt: string, model: string, options?: any): Promise<Response> {
     const config = this._config.lmstudio;
-    
+
     return fetch(`${config.apiBaseUrl}/v1/completions`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         model,
         prompt,
         temperature: options?.temperature ?? 0.7,
         max_tokens: options?.maxTokens ?? 4096,
-        stream: false
-      })
+        stream: false,
+      }),
     });
   }
 
@@ -417,6 +422,7 @@ export class LocalModelService {
    */
   async isModelAvailable(modelId: string): Promise<boolean> {
     const model = this.getModelById(modelId);
+
     if (!model) {
       return false;
     }
@@ -433,12 +439,12 @@ export class LocalModelService {
     memoryUsage?: number;
   }> {
     const startTime = Date.now();
-    
+
     try {
       const prompt = 'Hello, how are you?';
       const response = await this.generateText(prompt, {
         maxTokens: 100,
-        temperature: 0.1
+        temperature: 0.1,
       });
 
       const responseTime = Date.now() - startTime;
@@ -446,13 +452,13 @@ export class LocalModelService {
 
       return {
         responseTime,
-        tokenCount
+        tokenCount,
       };
     } catch (error) {
       logger.error('Performance metric calculation failed:', error);
       return {
         responseTime: 0,
-        tokenCount: 0
+        tokenCount: 0,
       };
     }
   }

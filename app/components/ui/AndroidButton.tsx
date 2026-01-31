@@ -22,11 +22,12 @@ export const AndroidButton: React.FC<AndroidButtonProps> = ({
   icon,
 }) => {
   const baseClasses = 'relative overflow-hidden rounded-lg transition-all duration-200 font-medium';
-  
+
   const variantClasses = {
     primary: 'bg-[#1E88E5] text-white hover:bg-[#1976D2] active:bg-[#1565C0] shadow-md hover:shadow-lg',
     secondary: 'bg-[#42A5F5] text-white hover:bg-[#1E88E5] active:bg-[#1976D2] shadow-md hover:shadow-lg',
-    outline: 'bg-transparent border-2 border-[#1E88E5] text-[#1E88E5] hover:bg-[#1E88E5] hover:text-white active:bg-[#1976D2]',
+    outline:
+      'bg-transparent border-2 border-[#1E88E5] text-[#1E88E5] hover:bg-[#1E88E5] hover:text-white active:bg-[#1976D2]',
     text: 'bg-transparent text-[#1E88E5] hover:bg-[#1E88E5]/10 active:bg-[#1E88E5]/20',
   };
 
@@ -47,7 +48,7 @@ export const AndroidButton: React.FC<AndroidButtonProps> = ({
         variantClasses[variant],
         sizeClasses[size],
         disabled ? disabledClasses : '',
-        className
+        className,
       )}
       whileHover={{ scale: disabled ? 1 : 1.02 }}
       whileTap={{ scale: disabled ? 1 : 0.98 }}
@@ -57,15 +58,17 @@ export const AndroidButton: React.FC<AndroidButtonProps> = ({
         {icon && <i className={icon}></i>}
         {children}
       </div>
-      
+
       {/* Ripple effect */}
       <span className="absolute inset-0 bg-white opacity-0 rounded-lg transform scale-0 transition-all duration-300" />
     </motion.button>
   );
 };
 
-// Usage examples:
-// <AndroidButton onClick={() => console.log('Clicked')}>Primary Button</AndroidButton>
-// <AndroidButton variant="secondary" size="large">Secondary Button</AndroidButton>
-// <AndroidButton variant="outline" icon="i-ph:plus">Add Item</AndroidButton>
-// <AndroidButton variant="text" size="small" disabled>Disabled Button</AndroidButton>
+/*
+ * Usage examples:
+ * <AndroidButton onClick={() => console.log('Clicked')}>Primary Button</AndroidButton>
+ * <AndroidButton variant="secondary" size="large">Secondary Button</AndroidButton>
+ * <AndroidButton variant="outline" icon="i-ph:plus">Add Item</AndroidButton>
+ * <AndroidButton variant="text" size="small" disabled>Disabled Button</AndroidButton>
+ */

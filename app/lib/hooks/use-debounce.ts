@@ -18,8 +18,10 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 export interface UseDebounceOptions {
   /** المدة بالمللي ثانية */
   delay: number;
+
   /** تنفيذ على الفور للاستدعاء الأول */
   leading?: boolean;
+
   /** تنفيذ بعد انتهاء المهلة */
   trailing?: boolean;
 }
@@ -27,10 +29,13 @@ export interface UseDebounceOptions {
 export interface UseDebounceResult<T> {
   /** القيمة المتأخرة */
   value: T;
+
   /** حالة الانتظار */
   isPending: boolean;
+
   /** إلغاء التأخير */
   cancel: () => void;
+
   /** تنفيذ فوري */
   flush: () => void;
 }
@@ -41,10 +46,7 @@ export interface UseDebounceResult<T> {
  * ═══════════════════════════════════════════════════════════════════════════════
  */
 
-export function useDebounce<T>(
-  value: T,
-  delay: number = 500
-): T {
+export function useDebounce<T>(value: T, delay: number = 500): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
 
   useEffect(() => {
@@ -68,11 +70,11 @@ export function useDebounce<T>(
 
 export function useDebounceCallback<T extends (...args: unknown[]) => unknown>(
   callback: T,
-  options: UseDebounceOptions | number = 500
+  options: UseDebounceOptions | number = 500,
 ): [(...args: Parameters<T>) => void, () => void] {
   const delay = typeof options === 'number' ? options : options.delay;
   const leading = typeof options === 'object' ? options.leading : false;
-  const trailing = typeof options === 'object' ? options.trailing ?? true : true;
+  const trailing = typeof options === 'object' ? (options.trailing ?? true) : true;
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const callbackRef = useRef(callback);
@@ -103,6 +105,7 @@ export function useDebounceCallback<T extends (...args: unknown[]) => unknown>(
       if (leading && leadingRef.current) {
         leadingRef.current = false;
         invoke();
+
         return;
       }
 
@@ -114,7 +117,7 @@ export function useDebounceCallback<T extends (...args: unknown[]) => unknown>(
         timeoutRef.current = setTimeout(invoke, delay);
       }
     },
-    [delay, leading, trailing, clear]
+    [delay, leading, trailing, clear],
   );
 
   // تنظيف عند إلغاء التثبيت
@@ -133,7 +136,7 @@ export function useDebounceCallback<T extends (...args: unknown[]) => unknown>(
 
 export function useDebounceState<T>(
   initialValue: T,
-  delay: number = 500
+  delay: number = 500,
 ): [T, T, (value: T | ((prev: T) => T)) => void] {
   const [value, setValue] = useState<T>(initialValue);
   const [debouncedValue, setDebouncedValue] = useState<T>(initialValue);
@@ -148,14 +151,9 @@ export function useDebounceState<T>(
     };
   }, [value, delay]);
 
-  const setDebouncedState = useCallback(
-    (newValue: T | ((prev: T) => T)) => {
-      setValue((prev) =>
-        newValue instanceof Function ? newValue(prev) : newValue
-      );
-    },
-    []
-  );
+  const setDebouncedState = useCallback((newValue: T | ((prev: T) => T)) => {
+    setValue((prev) => (newValue instanceof Function ? newValue(prev) : newValue));
+  }, []);
 
   return [value, debouncedValue, setDebouncedState];
 }
@@ -168,7 +166,7 @@ export function useDebounceState<T>(
 
 export function useDebounceFn<T extends (...args: unknown[]) => unknown>(
   fn: T,
-  delay: number = 500
+  delay: number = 500,
 ): {
   run: (...args: Parameters<T>) => void;
   cancel: () => void;
@@ -221,7 +219,7 @@ export function useDebounceFn<T extends (...args: unknown[]) => unknown>(
         forceUpdate({});
       }, delay);
     },
-    [delay]
+    [delay],
   );
 
   useEffect(() => {
@@ -276,7 +274,7 @@ export function useThrottle<T>(value: T, limit: number = 500): T {
 
 export function useThrottleCallback<T extends (...args: unknown[]) => unknown>(
   callback: T,
-  limit: number = 500
+  limit: number = 500,
 ): [(...args: Parameters<T>) => void, () => void] {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const callbackRef = useRef(callback);
@@ -311,7 +309,7 @@ export function useThrottleCallback<T extends (...args: unknown[]) => unknown>(
         timeoutRef.current = setTimeout(invoke, limit - timeSinceLastRun);
       }
     },
-    [limit, clear]
+    [limit, clear],
   );
 
   useEffect(() => {

@@ -18,6 +18,7 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       const saved = localStorage.getItem('bolt_design_scheme');
       return saved ? JSON.parse(saved) : defaultDesignScheme;
     }
+
     return defaultDesignScheme;
   });
 
@@ -25,13 +26,13 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
   // Update the theme when the theme store changes
   useEffect(() => {
-    const unsubscribe = themeStore.listen((newTheme) => {
-      setCurrentTheme(newTheme);
+    const unsubscribe = themeStore.listen((_newTheme) => {
+      setCurrentTheme(themeStore.get());
     });
-    
+
     // Initial theme
     setCurrentTheme(themeStore.get());
-    
+
     return unsubscribe;
   }, []);
 
@@ -42,9 +43,9 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   }, [designScheme]);
 
   const updateDesignScheme = (newScheme: Partial<DesignScheme>) => {
-    setDesignScheme(prev => ({
+    setDesignScheme((prev) => ({
       ...prev,
-      ...newScheme
+      ...newScheme,
     }));
   };
 
@@ -55,6 +56,7 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
   const toggleTheme = () => {
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
     // Toggle the theme using the themeStore function
     const toggleFn = () => {
       const current = themeStore.get();
@@ -71,20 +73,18 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     updateDesignScheme,
     resetToDefault,
     currentTheme,
-    toggleTheme
+    toggleTheme,
   };
 
-  return (
-    <ThemeContext.Provider value={value}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 };
 
 export const useTheme = (): ThemeContextType => {
   const context = useContext(ThemeContext);
+
   if (context === undefined) {
     throw new Error('useTheme must be used within a ThemeProvider');
   }
+
   return context;
 };

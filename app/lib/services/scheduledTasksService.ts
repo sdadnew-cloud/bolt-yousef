@@ -36,6 +36,7 @@ export class ScheduledTasksService {
     if (!ScheduledTasksService._instance) {
       ScheduledTasksService._instance = new ScheduledTasksService();
     }
+
     return ScheduledTasksService._instance;
   }
 
@@ -50,6 +51,7 @@ export class ScheduledTasksService {
   private _loadTasks(): void {
     try {
       const stored = localStorage.getItem('scheduledTasks');
+
       if (stored) {
         this._tasks = JSON.parse(stored);
       }
@@ -97,7 +99,7 @@ export class ScheduledTasksService {
    */
   private async _checkScheduledTasks(): Promise<void> {
     const now = Date.now();
-    
+
     for (const task of this._tasks) {
       if (task.status === 'pending' && now >= task.scheduledTime) {
         await this._runTask(task.id);
@@ -109,7 +111,8 @@ export class ScheduledTasksService {
    * Run a specific task
    */
   private async _runTask(taskId: string): Promise<void> {
-    const task = this._tasks.find(t => t.id === taskId);
+    const task = this._tasks.find((t) => t.id === taskId);
+
     if (!task) {
       logger.error(`Task ${taskId} not found`);
       return;
@@ -122,27 +125,27 @@ export class ScheduledTasksService {
 
     try {
       const result = await this._executeTask(task);
-      
+
       task.status = result.success ? 'completed' : 'failed';
       task.endTime = Date.now();
       task.duration = task.endTime - task.startTime;
       task.progress = 100;
       task.result = result.message;
-      
+
       if (result.details) {
         task.result = `${result.message}\n\n${JSON.stringify(result.details, null, 2)}`;
       }
-      
+
       if (!result.success) {
         task.error = result.message;
       }
-      
+
       this._saveTasks();
-      
+
       if (task.notifications) {
         this._sendNotification(task);
       }
-      
+
       logger.info(`Task ${task.name} completed in ${task.duration}ms`);
     } catch (error) {
       task.status = 'failed';
@@ -151,11 +154,11 @@ export class ScheduledTasksService {
       task.progress = 100;
       task.error = error instanceof Error ? error.message : 'Unknown error';
       this._saveTasks();
-      
+
       if (task.notifications) {
         this._sendNotification(task);
       }
-      
+
       logger.error(`Task ${task.name} failed:`, error);
     }
   }
@@ -179,17 +182,17 @@ export class ScheduledTasksService {
         build: 10000,
         test: 8000,
         audit: 12000,
-        deploy: 18000
+        deploy: 18000,
       };
 
       const duration = durationMap[task.type] || 10000;
-      await new Promise(resolve => setTimeout(resolve, duration));
+      await new Promise((resolve) => setTimeout(resolve, duration));
 
       clearInterval(progressInterval);
-      
+
       // Randomly fail some tasks for testing
       const shouldFail = Math.random() < 0.1; // 10% failure rate
-      
+
       if (shouldFail) {
         throw new Error(`Simulated failure for task type: ${task.type}`);
       }
@@ -201,8 +204,8 @@ export class ScheduledTasksService {
           duration,
           filesProcessed: Math.floor(Math.random() * 100),
           changesMade: Math.floor(Math.random() * 20),
-          errorsFound: Math.floor(Math.random() * 5)
-        }
+          errorsFound: Math.floor(Math.random() * 5),
+        },
       };
     } catch (error) {
       clearInterval(progressInterval);
@@ -220,18 +223,17 @@ export class ScheduledTasksService {
     }
 
     if (Notification.permission === 'granted') {
-      const title = task.status === 'completed' 
-        ? `Task Completed: ${task.name}` 
-        : `Task Failed: ${task.name}`;
-      
-      const body = task.status === 'completed' 
-        ? `Task finished successfully in ${Math.round(task.duration! / 1000)} seconds`
-        : `Task failed: ${task.error}`;
-      
+      const title = task.status === 'completed' ? `Task Completed: ${task.name}` : `Task Failed: ${task.name}`;
+
+      const body =
+        task.status === 'completed'
+          ? `Task finished successfully in ${Math.round(task.duration! / 1000)} seconds`
+          : `Task failed: ${task.error}`;
+
       new Notification(title, {
         body,
         icon: task.status === 'completed' ? '/icons/success.svg' : '/icons/error.svg',
-        tag: `task-${task.id}`
+        tag: `task-${task.id}`,
       });
     } else if (Notification.permission !== 'denied') {
       Notification.requestPermission();
@@ -241,18 +243,21 @@ export class ScheduledTasksService {
   /**
    * Create a new scheduled task
    */
-  createTask(task: Omit<ScheduledTask, 'id' | 'status' | 'startTime' | 'endTime' | 'duration' | 'progress' | 'result' | 'error'>): ScheduledTask {
+  createTask(
+    task: Omit<ScheduledTask, 'id' | 'status' | 'startTime' | 'endTime' | 'duration' | 'progress' | 'result' | 'error'>,
+  ): ScheduledTask {
     const newTask: ScheduledTask = {
       ...task,
       id: `task-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       status: 'pending',
-      progress: 0
+      progress: 0,
     };
 
     this._tasks.push(newTask);
     this._saveTasks();
 
     logger.info(`Task created: ${task.name}`);
+
     return newTask;
   }
 
@@ -267,34 +272,37 @@ export class ScheduledTasksService {
    * Get task by ID
    */
   getTaskById(id: string): ScheduledTask | undefined {
-    return this._tasks.find(task => task.id === id);
+    return this._tasks.find((task) => task.id === id);
   }
 
   /**
    * Get tasks by status
    */
   getTasksByStatus(status: ScheduledTask['status']): ScheduledTask[] {
-    return this._tasks.filter(task => task.status === status);
+    return this._tasks.filter((task) => task.status === status);
   }
 
   /**
    * Get tasks by type
    */
   getTasksByType(type: ScheduledTask['type']): ScheduledTask[] {
-    return this._tasks.filter(task => task.type === type);
+    return this._tasks.filter((task) => task.type === type);
   }
 
   /**
    * Cancel a task
    */
   cancelTask(id: string): boolean {
-    const task = this._tasks.find(task => task.id === id);
+    const task = this._tasks.find((task) => task.id === id);
+
     if (task && (task.status === 'pending' || task.status === 'running')) {
       task.status = 'cancelled';
       this._saveTasks();
       logger.info(`Task cancelled: ${task.name}`);
+
       return true;
     }
+
     return false;
   }
 
@@ -302,18 +310,23 @@ export class ScheduledTasksService {
    * Delete a task
    */
   deleteTask(id: string): boolean {
-    const taskIndex = this._tasks.findIndex(task => task.id === id);
+    const taskIndex = this._tasks.findIndex((task) => task.id === id);
+
     if (taskIndex !== -1) {
       const task = this._tasks[taskIndex];
+
       if (task.status === 'running') {
         logger.warn(`Cannot delete running task: ${task.name}`);
         return false;
       }
+
       this._tasks.splice(taskIndex, 1);
       this._saveTasks();
       logger.info(`Task deleted: ${task.name}`);
+
       return true;
     }
+
     return false;
   }
 
@@ -321,13 +334,16 @@ export class ScheduledTasksService {
    * Update task
    */
   updateTask(id: string, updates: Partial<ScheduledTask>): boolean {
-    const task = this._tasks.find(task => task.id === id);
+    const task = this._tasks.find((task) => task.id === id);
+
     if (task) {
       Object.assign(task, updates);
       this._saveTasks();
       logger.info(`Task updated: ${task.name}`);
+
       return true;
     }
+
     return false;
   }
 
@@ -349,11 +365,12 @@ export class ScheduledTasksService {
     const completed = this.getTasksByStatus('completed').length;
     const failed = this.getTasksByStatus('failed').length;
     const cancelled = this.getTasksByStatus('cancelled').length;
-    
+
     const completedTasks = this.getTasksByStatus('completed');
-    const averageDuration = completedTasks.length > 0 
-      ? Math.round(completedTasks.reduce((sum, task) => sum + (task.duration || 0), 0) / completedTasks.length) 
-      : 0;
+    const averageDuration =
+      completedTasks.length > 0
+        ? Math.round(completedTasks.reduce((sum, task) => sum + (task.duration || 0), 0) / completedTasks.length)
+        : 0;
 
     return {
       total,
@@ -362,7 +379,7 @@ export class ScheduledTasksService {
       completed,
       failed,
       cancelled,
-      averageDuration
+      averageDuration,
     };
   }
 
@@ -370,8 +387,8 @@ export class ScheduledTasksService {
    * Clear completed tasks
    */
   clearCompletedTasks(): void {
-    this._tasks = this._tasks.filter(task => 
-      task.status !== 'completed' && task.status !== 'failed' && task.status !== 'cancelled'
+    this._tasks = this._tasks.filter(
+      (task) => task.status !== 'completed' && task.status !== 'failed' && task.status !== 'cancelled',
     );
     this._saveTasks();
     logger.info('Completed tasks cleared');
@@ -384,6 +401,7 @@ export class ScheduledTasksService {
     if ('Notification' in window) {
       return await Notification.requestPermission();
     }
+
     return 'denied';
   }
 

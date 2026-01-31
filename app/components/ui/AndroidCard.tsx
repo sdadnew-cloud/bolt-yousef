@@ -21,15 +21,16 @@ export const AndroidCard: React.FC<AndroidCardProps> = ({
   hoverEffect = true,
   className = '',
 }) => {
-  const baseClasses = 'bg-[#121212] rounded-lg border border-[#212121] overflow-hidden shadow-md transition-all duration-200';
-  
+  const baseClasses =
+    'bg-[#121212] rounded-lg border border-[#212121] overflow-hidden shadow-md transition-all duration-200';
+
   return (
     <motion.div
       onClick={onClick}
       className={classNames(
         baseClasses,
         hoverEffect && onClick ? 'hover:shadow-lg hover:-translate-y-1 cursor-pointer' : '',
-        className
+        className,
       )}
       whileHover={hoverEffect && onClick ? { scale: 1.01 } : {}}
       whileTap={hoverEffect && onClick ? { scale: 0.99 } : {}}
@@ -43,10 +44,8 @@ export const AndroidCard: React.FC<AndroidCardProps> = ({
           </div>
         </div>
       )}
-      
-      <div className="p-4">
-        {children}
-      </div>
+
+      <div className="p-4">{children}</div>
     </motion.div>
   );
 };

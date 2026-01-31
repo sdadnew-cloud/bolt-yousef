@@ -20,14 +20,19 @@ export type AsyncStatus = 'idle' | 'loading' | 'success' | 'error';
 export interface AsyncState<T> {
   /** حالة العملية */
   status: AsyncStatus;
+
   /** البيانات (في حالة النجاح) */
   data: T | null;
+
   /** الخطأ (في حالة الفشل) */
   error: Error | null;
+
   /** هل العملية قيد التنفيذ */
   isLoading: boolean;
+
   /** هل اكتملت العملية بنجاح */
   isSuccess: boolean;
+
   /** هل فشلت العملية */
   isError: boolean;
 }
@@ -35,12 +40,16 @@ export interface AsyncState<T> {
 export interface UseAsyncOptions<T> {
   /** القيمة الافتراضية */
   initialData?: T;
+
   /** تنفيذ على الفور */
   immediate?: boolean;
+
   /** دالة معالجة الأخطاء */
   onError?: (error: Error) => void;
+
   /** دالة معالجة النجاح */
   onSuccess?: (data: T) => void;
+
   /** إلغاء العملية السابقة عند تنفيذ جديدة */
   cancelOnNew?: boolean;
 }
@@ -48,10 +57,13 @@ export interface UseAsyncOptions<T> {
 export interface UseAsyncReturn<T, Args extends unknown[] = []> {
   /** حالة العملية */
   state: AsyncState<T>;
+
   /** تنفيذ العملية */
   execute: (...args: Args) => Promise<T>;
+
   /** إعادة تعيين الحالة */
   reset: () => void;
+
   /** إلغاء العملية الحالية */
   cancel: () => void;
 }
@@ -64,15 +76,9 @@ export interface UseAsyncReturn<T, Args extends unknown[] = []> {
 
 export function useAsync<T, Args extends unknown[] = []>(
   asyncFunction: (...args: Args) => Promise<T>,
-  options: UseAsyncOptions<T> = {}
+  options: UseAsyncOptions<T> = {},
 ): UseAsyncReturn<T, Args> {
-  const {
-    initialData = null,
-    immediate = false,
-    onError,
-    onSuccess,
-    cancelOnNew = true,
-  } = options;
+  const { initialData = null, immediate = false, onError, onSuccess, cancelOnNew = true } = options;
 
   const [state, setState] = useState<AsyncState<T>>({
     status: 'idle',
@@ -149,6 +155,7 @@ export function useAsync<T, Args extends unknown[] = []>(
         });
 
         onSuccess?.(result);
+
         return result;
       } catch (error) {
         // التحقق من أن المكون لا يزال مثبتاً وأن العملية لم تُلغَ
@@ -171,7 +178,7 @@ export function useAsync<T, Args extends unknown[] = []>(
         throw errorObject;
       }
     },
-    [asyncFunction, cancelOnNew, cancel, onSuccess, onError]
+    [asyncFunction, cancelOnNew, cancel, onSuccess, onError],
   );
 
   return {
@@ -190,7 +197,7 @@ export function useAsync<T, Args extends unknown[] = []>(
 
 export function useAsyncFn<T, Args extends unknown[] = []>(
   asyncFunction: (...args: Args) => Promise<T>,
-  options: UseAsyncOptions<T> = {}
+  options: UseAsyncOptions<T> = {},
 ): [AsyncState<T>, (...args: Args) => Promise<T>, () => void] {
   const { state, execute, reset } = useAsync(asyncFunction, options);
   return [state, execute, reset];
@@ -205,16 +212,15 @@ export function useAsyncFn<T, Args extends unknown[] = []>(
 export interface UseFetchOptions extends RequestInit {
   /** URL أساسي */
   baseUrl?: string;
+
   /** إعادة المحاولة عند الفشل */
   retry?: number;
+
   /** تأخير إعادة المحاولة */
   retryDelay?: number;
 }
 
-export function useFetch<T>(
-  url: string | null,
-  options: UseFetchOptions = {}
-): UseAsyncReturn<T, []> {
+export function useFetch<T>(url: string | null, options: UseFetchOptions = {}): UseAsyncReturn<T, []> {
   const { baseUrl = '', retry = 0, retryDelay = 1000, ...fetchOptions } = options;
 
   const fetchData = useCallback(async (): Promise<T> => {
@@ -235,6 +241,7 @@ export function useFetch<T>(
         }
 
         const contentType = response.headers.get('content-type');
+
         if (contentType?.includes('application/json')) {
           return (await response.json()) as T;
         }
@@ -269,7 +276,7 @@ export interface UseMutationOptions<T, Variables> {
 
 export function useMutation<T, Variables = unknown>(
   mutationFn: (variables: Variables) => Promise<T>,
-  options: UseMutationOptions<T, Variables> = {}
+  options: UseMutationOptions<T, Variables> = {},
 ): UseAsyncReturn<T, [Variables]> & { mutate: (variables: Variables) => void } {
   const { onSuccess, onError, onSettled } = options;
 
@@ -279,6 +286,7 @@ export function useMutation<T, Variables = unknown>(
         const result = await mutationFn(variables);
         onSuccess?.(result, variables);
         onSettled?.(result, null, variables);
+
         return result;
       } catch (error) {
         const errorObject = error instanceof Error ? error : new Error(String(error));
@@ -287,7 +295,7 @@ export function useMutation<T, Variables = unknown>(
         throw errorObject;
       }
     },
-    [mutationFn, onSuccess, onError, onSettled]
+    [mutationFn, onSuccess, onError, onSettled],
   );
 
   const asyncResult = useAsync(wrappedMutation);
@@ -298,7 +306,7 @@ export function useMutation<T, Variables = unknown>(
         // الأخطاء تُعالج في wrappedMutation
       });
     },
-    [asyncResult]
+    [asyncResult],
   );
 
   return {
@@ -395,7 +403,7 @@ export interface UseRetryOptions {
 
 export function useRetry<T, Args extends unknown[] = []>(
   asyncFunction: (...args: Args) => Promise<T>,
-  options: UseRetryOptions = {}
+  options: UseRetryOptions = {},
 ): UseAsyncReturn<T, Args> {
   const { maxRetries = 3, retryDelay = 1000, shouldRetry } = options;
 
@@ -421,7 +429,7 @@ export function useRetry<T, Args extends unknown[] = []>(
 
       throw lastError;
     },
-    [asyncFunction, maxRetries, retryDelay, shouldRetry]
+    [asyncFunction, maxRetries, retryDelay, shouldRetry],
   );
 
   return useAsync(retryFunction);

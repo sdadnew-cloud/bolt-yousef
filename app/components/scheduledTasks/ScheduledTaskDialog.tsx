@@ -22,7 +22,9 @@ export const ScheduledTaskDialog = ({ task, isOpen, onClose, onTaskUpdated }: Sc
     }
   }, [task]);
 
-  if (!isOpen || !task) return null;
+  if (!isOpen || !task) {
+    return null;
+  }
 
   const getStatusIcon = (status: ScheduledTask['status']) => {
     switch (status) {
@@ -81,19 +83,28 @@ export const ScheduledTaskDialog = ({ task, isOpen, onClose, onTaskUpdated }: Sc
   };
 
   const formatDate = (timestamp: number | undefined) => {
-    if (!timestamp) return 'N/A';
+    if (!timestamp) {
+      return 'N/A';
+    }
+
     const date = new Date(timestamp);
+
     return date.toLocaleString();
   };
 
   const formatDuration = (duration: number | undefined) => {
-    if (!duration) return 'N/A';
+    if (!duration) {
+      return 'N/A';
+    }
+
     const seconds = Math.floor(duration / 1000);
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
+
     if (minutes > 0) {
       return `${minutes}m ${remainingSeconds}s`;
     }
+
     return `${seconds}s`;
   };
 
@@ -135,7 +146,7 @@ export const ScheduledTaskDialog = ({ task, isOpen, onClose, onTaskUpdated }: Sc
         priority: task.priority,
         scheduledTime: Date.now() + 60000, // 1 minute from now
         notifications: task.notifications,
-        recurrence: task.recurrence || 'none'
+        recurrence: task.recurrence || 'none',
       });
       onTaskUpdated?.();
       onClose();
@@ -218,9 +229,7 @@ export const ScheduledTaskDialog = ({ task, isOpen, onClose, onTaskUpdated }: Sc
                     rows={3}
                   />
                 ) : (
-                  <p className="text-bolt-elements-textPrimary">
-                    {task.description || 'No description provided'}
-                  </p>
+                  <p className="text-bolt-elements-textPrimary">{task.description || 'No description provided'}</p>
                 )}
               </div>
 
@@ -313,7 +322,9 @@ export const ScheduledTaskDialog = ({ task, isOpen, onClose, onTaskUpdated }: Sc
 
               {/* Notifications */}
               <div className="flex items-center gap-2">
-                <i className={`${task.notifications ? 'i-ph:bell text-green-500' : 'i-ph:bell-slash text-gray-500'}`}></i>
+                <i
+                  className={`${task.notifications ? 'i-ph:bell text-green-500' : 'i-ph:bell-slash text-gray-500'}`}
+                ></i>
                 <span className="text-sm text-bolt-elements-textSecondary">
                   Notifications {task.notifications ? 'enabled' : 'disabled'}
                 </span>

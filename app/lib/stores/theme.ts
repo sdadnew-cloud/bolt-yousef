@@ -65,13 +65,12 @@ export function applyDesignScheme() {
 
   try {
     const designSchemeStr = localStorage.getItem(kDesignScheme);
-    const designScheme: DesignScheme = designSchemeStr
-      ? JSON.parse(designSchemeStr)
-      : defaultDesignScheme;
+    const designScheme: DesignScheme = designSchemeStr ? JSON.parse(designSchemeStr) : defaultDesignScheme;
 
     applyDesignSchemeToDOM(designScheme);
   } catch (error) {
     console.error('Error applying design scheme:', error);
+
     // Fallback to default scheme
     applyDesignSchemeToDOM(defaultDesignScheme);
   }
@@ -91,23 +90,29 @@ function applyDesignSchemeToDOM(scheme: DesignScheme) {
   // Apply font family
   root.style.setProperty('--font-family', scheme.font.join(', ') || 'system-ui, sans-serif');
 
-  // Apply feature-related CSS classes
-  // Clear previous feature classes
+  /*
+   * Apply feature-related CSS classes
+   * Clear previous feature classes
+   */
   root.classList.remove('rounded-corners', 'subtle-borders', 'gradient-accent', 'soft-shadow', 'frosted-glass');
 
   // Add current feature classes
   if (scheme.features.includes('rounded')) {
     root.classList.add('rounded-corners');
   }
+
   if (scheme.features.includes('border')) {
     root.classList.add('subtle-borders');
   }
+
   if (scheme.features.includes('gradient')) {
     root.classList.add('gradient-accent');
   }
+
   if (scheme.features.includes('shadow')) {
     root.classList.add('soft-shadow');
   }
+
   if (scheme.features.includes('frosted-glass')) {
     root.classList.add('frosted-glass');
   }

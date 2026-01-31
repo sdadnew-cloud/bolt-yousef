@@ -7,7 +7,7 @@
  * ═══════════════════════════════════════════════════════════════════════════════
  */
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 /**
  * ═══════════════════════════════════════════════════════════════════════════════
@@ -43,12 +43,17 @@ export const defaultBreakpoints: BreakpointValues = {
 
 export function useMediaQuery(query: string): boolean {
   const [matches, setMatches] = useState<boolean>(() => {
-    if (typeof window === 'undefined') return false;
+    if (typeof window === 'undefined') {
+      return false;
+    }
+
     return window.matchMedia(query).matches;
   });
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined') {
+      return;
+    }
 
     const media = window.matchMedia(query);
 
@@ -80,29 +85,42 @@ export function useMediaQuery(query: string): boolean {
  */
 
 export function useBreakpoint(breakpoints: Partial<BreakpointValues> = {}): Breakpoint {
-  const mergedBreakpoints = useMemo(() => ({
-    ...defaultBreakpoints,
-    ...breakpoints,
-  }), [breakpoints]);
+  const mergedBreakpoints = useMemo(
+    () => ({
+      ...defaultBreakpoints,
+      ...breakpoints,
+    }),
+    [breakpoints],
+  );
 
   const [currentBreakpoint, setCurrentBreakpoint] = useState<Breakpoint>('xs');
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined') {
+      return;
+    }
 
     const handleResize = () => {
       const width = window.innerWidth;
 
-      if (width >= mergedBreakpoints['2xl']) setCurrentBreakpoint('2xl');
-      else if (width >= mergedBreakpoints.xl) setCurrentBreakpoint('xl');
-      else if (width >= mergedBreakpoints.lg) setCurrentBreakpoint('lg');
-      else if (width >= mergedBreakpoints.md) setCurrentBreakpoint('md');
-      else if (width >= mergedBreakpoints.sm) setCurrentBreakpoint('sm');
-      else setCurrentBreakpoint('xs');
+      if (width >= mergedBreakpoints['2xl']) {
+        setCurrentBreakpoint('2xl');
+      } else if (width >= mergedBreakpoints.xl) {
+        setCurrentBreakpoint('xl');
+      } else if (width >= mergedBreakpoints.lg) {
+        setCurrentBreakpoint('lg');
+      } else if (width >= mergedBreakpoints.md) {
+        setCurrentBreakpoint('md');
+      } else if (width >= mergedBreakpoints.sm) {
+        setCurrentBreakpoint('sm');
+      } else {
+        setCurrentBreakpoint('xs');
+      }
     };
 
     handleResize();
     window.addEventListener('resize', handleResize);
+
     return () => window.removeEventListener('resize', handleResize);
   }, [mergedBreakpoints]);
 
@@ -125,13 +143,8 @@ export function useIsMobile(breakpoint: number = 768): boolean {
  * ═══════════════════════════════════════════════════════════════════════════════
  */
 
-export function useIsTablet(
-  minBreakpoint: number = 768,
-  maxBreakpoint: number = 1024
-): boolean {
-  return useMediaQuery(
-    `(min-width: ${minBreakpoint}px) and (max-width: ${maxBreakpoint - 1}px)`
-  );
+export function useIsTablet(minBreakpoint: number = 768, maxBreakpoint: number = 1024): boolean {
+  return useMediaQuery(`(min-width: ${minBreakpoint}px) and (max-width: ${maxBreakpoint - 1}px)`);
 }
 
 /**
@@ -162,7 +175,9 @@ export function useScreenSize(): ScreenSize {
   });
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined') {
+      return;
+    }
 
     const handleResize = () => {
       setSize({
@@ -173,6 +188,7 @@ export function useScreenSize(): ScreenSize {
 
     handleResize();
     window.addEventListener('resize', handleResize);
+
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
@@ -229,7 +245,9 @@ export function useHover(): {
   const [element, setElement] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
-    if (!element) return;
+    if (!element) {
+      return;
+    }
 
     const handleMouseEnter = () => setIsHovered(true);
     const handleMouseLeave = () => setIsHovered(false);
@@ -260,7 +278,9 @@ export function useFocus(): {
   const [element, setElement] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
-    if (!element) return;
+    if (!element) {
+      return;
+    }
 
     const handleFocus = () => setIsFocused(true);
     const handleBlur = () => setIsFocused(false);
@@ -291,7 +311,9 @@ export function useActive(): {
   const [element, setElement] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
-    if (!element) return;
+    if (!element) {
+      return;
+    }
 
     const handleMouseDown = () => setIsActive(true);
     const handleMouseUp = () => setIsActive(false);
@@ -322,10 +344,7 @@ export function useActive(): {
  * ═══════════════════════════════════════════════════════════════════════════════
  */
 
-export function useResponsiveValue<T>(
-  values: Partial<Record<Breakpoint, T>>,
-  defaultValue: T
-): T {
+export function useResponsiveValue<T>(values: Partial<Record<Breakpoint, T>>, defaultValue: T): T {
   const breakpoint = useBreakpoint();
 
   const orderedBreakpoints: Breakpoint[] = ['2xl', 'xl', 'lg', 'md', 'sm', 'xs'];
@@ -373,7 +392,13 @@ export function usePointer(): PointerType {
   const hasFine = useMediaQuery('(pointer: fine)');
   const hasCoarse = useMediaQuery('(pointer: coarse)');
 
-  if (hasFine) return 'fine';
-  if (hasCoarse) return 'coarse';
+  if (hasFine) {
+    return 'fine';
+  }
+
+  if (hasCoarse) {
+    return 'coarse';
+  }
+
   return 'none';
 }

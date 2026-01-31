@@ -64,7 +64,7 @@ export function HeaderActionButtons({ chatStarted: _chatStarted }: HeaderActionB
           <button
             onClick={() => {
               const newFeatures = designScheme.features.includes('rounded')
-                ? designScheme.features.filter(f => f !== 'rounded')
+                ? designScheme.features.filter((f) => f !== 'rounded')
                 : [...designScheme.features, 'rounded'];
               updateDesignScheme({ features: newFeatures });
               toast.success(`Rounded corners ${newFeatures.includes('rounded') ? 'enabled' : 'disabled'}`);
@@ -72,13 +72,15 @@ export function HeaderActionButtons({ chatStarted: _chatStarted }: HeaderActionB
             className="items-center justify-center [&:is(:disabled,.disabled)]:cursor-not-allowed [&:is(:disabled,.disabled)]:opacity-60 px-2 py-1.5 text-xs bg-accent-500 text-white hover:text-bolt-elements-item-contentAccent [&:not(:disabled,.disabled)]:hover:bg-bolt-elements-button-primary-backgroundHover outline-accent-500 flex gap-1"
             title="Toggle Rounded Corners"
           >
-            <div className={`i-ph:shapes-duotone ${designScheme.features.includes('rounded') ? 'text-yellow-300' : ''}`} />
+            <div
+              className={`i-ph:shapes-duotone ${designScheme.features.includes('rounded') ? 'text-yellow-300' : ''}`}
+            />
           </button>
 
           <button
             onClick={() => {
               const newFeatures = designScheme.features.includes('shadow')
-                ? designScheme.features.filter(f => f !== 'shadow')
+                ? designScheme.features.filter((f) => f !== 'shadow')
                 : [...designScheme.features, 'shadow'];
               updateDesignScheme({ features: newFeatures });
               toast.success(`Shadows ${newFeatures.includes('shadow') ? 'enabled' : 'disabled'}`);
@@ -86,7 +88,9 @@ export function HeaderActionButtons({ chatStarted: _chatStarted }: HeaderActionB
             className="items-center justify-center [&:is(:disabled,.disabled)]:cursor-not-allowed [&:is(:disabled,.disabled)]:opacity-60 px-2 py-1.5 text-xs bg-accent-500 text-white hover:text-bolt-elements-item-contentAccent [&:not(:disabled,.disabled)]:hover:bg-bolt-elements-button-primary-backgroundHover outline-accent-500 flex gap-1"
             title="Toggle Shadows"
           >
-            <div className={`i-ph:drop-shadow-duotone ${designScheme.features.includes('shadow') ? 'text-gray-300' : ''}`} />
+            <div
+              className={`i-ph:drop-shadow-duotone ${designScheme.features.includes('shadow') ? 'text-gray-300' : ''}`}
+            />
           </button>
 
           <button

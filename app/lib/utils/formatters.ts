@@ -20,11 +20,7 @@
  * @param locale - اللغة والمنطقة (افتراضي: ar-SA)
  * @returns النص المنسق للعملة
  */
-export function formatCurrency(
-  value: number,
-  currency: string = 'USD',
-  locale: string = 'ar-SA'
-): string {
+export function formatCurrency(value: number, currency: string = 'USD', locale: string = 'ar-SA'): string {
   return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency,
@@ -59,11 +55,7 @@ export function formatCompactCurrency(value: number, currency: string = 'USD'): 
  * @param locale - اللغة والمنطقة
  * @returns النص المنسق
  */
-export function formatNumber(
-  value: number,
-  decimals: number = 0,
-  locale: string = 'ar-SA'
-): string {
+export function formatNumber(value: number, decimals: number = 0, locale: string = 'ar-SA'): string {
   return new Intl.NumberFormat(locale, {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
@@ -89,11 +81,7 @@ export function formatCompactNumber(value: number, locale: string = 'ar-SA'): st
  * @param locale - اللغة والمنطقة
  * @returns النص المنسق للنسبة المئوية
  */
-export function formatPercentage(
-  value: number,
-  decimals: number = 0,
-  locale: string = 'ar-SA'
-): string {
+export function formatPercentage(value: number, decimals: number = 0, locale: string = 'ar-SA'): string {
   return new Intl.NumberFormat(locale, {
     style: 'percent',
     minimumFractionDigits: decimals,
@@ -116,7 +104,9 @@ const SIZE_UNITS = ['بايت', 'كيلوبايت', 'ميغابايت', 'جيغ�
  * @returns النص المنسق للحجم
  */
 export function formatFileSize(bytes: number, decimals: number = 2): string {
-  if (bytes === 0) return '0 بايت';
+  if (bytes === 0) {
+    return '0 بايت';
+  }
 
   const k = 1024;
   const dm = decimals < 0 ? 0 : decimals;
@@ -141,9 +131,13 @@ export function parseFileSize(size: string): number {
   };
 
   const match = size.match(/^([\d.]+)\s*(B|KB|MB|GB|TB|PB)$/i);
-  if (!match) return 0;
+
+  if (!match) {
+    return 0;
+  }
 
   const [, value, unit] = match;
+
   return parseFloat(value) * (units[unit.toUpperCase()] || 1);
 }
 
@@ -159,10 +153,7 @@ export function parseFileSize(size: string): number {
  * @param locale - اللغة والمنطقة
  * @returns النص المنسق للتاريخ النسبي
  */
-export function formatRelativeTime(
-  date: Date | string | number,
-  locale: string = 'ar-SA'
-): string {
+export function formatRelativeTime(date: Date | string | number, locale: string = 'ar-SA'): string {
   const now = new Date();
   const targetDate = new Date(date);
   const diffInSeconds = Math.floor((now.getTime() - targetDate.getTime()) / 1000);
@@ -172,18 +163,23 @@ export function formatRelativeTime(
   if (diffInSeconds < 60) {
     return rtf.format(-diffInSeconds, 'second');
   }
+
   if (diffInSeconds < 3600) {
     return rtf.format(-Math.floor(diffInSeconds / 60), 'minute');
   }
+
   if (diffInSeconds < 86400) {
     return rtf.format(-Math.floor(diffInSeconds / 3600), 'hour');
   }
+
   if (diffInSeconds < 2592000) {
     return rtf.format(-Math.floor(diffInSeconds / 86400), 'day');
   }
+
   if (diffInSeconds < 31536000) {
     return rtf.format(-Math.floor(diffInSeconds / 2592000), 'month');
   }
+
   return rtf.format(-Math.floor(diffInSeconds / 31536000), 'year');
 }
 
@@ -193,10 +189,7 @@ export function formatRelativeTime(
  * @param locale - اللغة والمنطقة
  * @returns النص المنسق للتاريخ
  */
-export function formatShortDate(
-  date: Date | string | number,
-  locale: string = 'ar-SA'
-): string {
+export function formatShortDate(date: Date | string | number, locale: string = 'ar-SA'): string {
   return new Intl.DateTimeFormat(locale, {
     year: 'numeric',
     month: 'short',
@@ -210,10 +203,7 @@ export function formatShortDate(
  * @param locale - اللغة والمنطقة
  * @returns النص المنسق للتاريخ
  */
-export function formatLongDate(
-  date: Date | string | number,
-  locale: string = 'ar-SA'
-): string {
+export function formatLongDate(date: Date | string | number, locale: string = 'ar-SA'): string {
   return new Intl.DateTimeFormat(locale, {
     year: 'numeric',
     month: 'long',
@@ -236,7 +226,10 @@ export function formatLongDate(
  * @returns النص المقصر
  */
 export function truncateText(text: string, maxLength: number, suffix: string = '...'): string {
-  if (text.length <= maxLength) return text;
+  if (text.length <= maxLength) {
+    return text;
+  }
+
   return text.slice(0, maxLength - suffix.length) + suffix;
 }
 
@@ -373,8 +366,17 @@ export function formatDuration(milliseconds: number): string {
   const hours = Math.floor(minutes / 60);
   const days = Math.floor(hours / 24);
 
-  if (days > 0) return `${days} يوم ${hours % 24} ساعة`;
-  if (hours > 0) return `${hours} ساعة ${minutes % 60} دقيقة`;
-  if (minutes > 0) return `${minutes} دقيقة ${seconds % 60} ثانية`;
+  if (days > 0) {
+    return `${days} يوم ${hours % 24} ساعة`;
+  }
+
+  if (hours > 0) {
+    return `${hours} ساعة ${minutes % 60} دقيقة`;
+  }
+
+  if (minutes > 0) {
+    return `${minutes} دقيقة ${seconds % 60} ثانية`;
+  }
+
   return `${seconds} ثانية`;
 }

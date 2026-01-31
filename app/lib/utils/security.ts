@@ -47,9 +47,11 @@ export function base64Decode(encoded: string): string {
  */
 export function xorEncrypt(text: string, key: string): string {
   let result = '';
+
   for (let i = 0; i < text.length; i++) {
     result += String.fromCharCode(text.charCodeAt(i) ^ key.charCodeAt(i % key.length));
   }
+
   return base64Encode(result);
 }
 
@@ -62,9 +64,11 @@ export function xorEncrypt(text: string, key: string): string {
 export function xorDecrypt(encoded: string, key: string): string {
   const decoded = base64Decode(encoded);
   let result = '';
+
   for (let i = 0; i < decoded.length; i++) {
     result += String.fromCharCode(decoded.charCodeAt(i) ^ key.charCodeAt(i % key.length));
   }
+
   return result;
 }
 
@@ -100,6 +104,7 @@ export function generateUUID(): string {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0;
     const v = c === 'x' ? r : (r & 0x3) | 0x8;
+
     return v.toString(16);
   });
 }
@@ -136,6 +141,7 @@ export function generateSecretKey(length: number = 64): string {
 export function sanitizeHtml(html: string): string {
   const div = document.createElement('div');
   div.textContent = html;
+
   return div.innerHTML;
 }
 
@@ -157,11 +163,7 @@ export function sanitizeText(text: string): string {
  * @returns الإدخال المطهر
  */
 export function sanitizeInput(input: string): string {
-  return input
-    .trim()
-    .replace(/[<>]/g, '')
-    .replace(/['"]/g, '')
-    .replace(/;/g, '');
+  return input.trim().replace(/[<>]/g, '').replace(/['"]/g, '').replace(/;/g, '');
 }
 
 /**
@@ -202,15 +204,12 @@ export function validateCSRFToken(token: string, storedToken: string): boolean {
  */
 export async function createHMAC(message: string, secret: string): Promise<string> {
   const encoder = new TextEncoder();
-  const key = await crypto.subtle.importKey(
-    'raw',
-    encoder.encode(secret),
-    { name: 'HMAC', hash: 'SHA-256' },
-    false,
-    ['sign']
-  );
+  const key = await crypto.subtle.importKey('raw', encoder.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, [
+    'sign',
+  ]);
 
   const signature = await crypto.subtle.sign('HMAC', key, encoder.encode(message));
+
   return Array.from(new Uint8Array(signature))
     .map((b) => b.toString(16).padStart(2, '0'))
     .join('');
@@ -244,6 +243,7 @@ export async function sha256(message: string): Promise<string> {
   const data = encoder.encode(message);
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
+
   return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
 }
 
@@ -257,6 +257,7 @@ export async function sha512(message: string): Promise<string> {
   const data = encoder.encode(message);
   const hashBuffer = await crypto.subtle.digest('SHA-512', data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
+
   return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
 }
 
@@ -283,7 +284,7 @@ const rateLimitStore = new Map<string, RateLimitEntry>();
 export function checkRateLimit(
   key: string,
   maxRequests: number = 100,
-  windowMs: number = 60000
+  windowMs: number = 60000,
 ): { allowed: boolean; remaining: number; resetTime: number } {
   const now = Date.now();
   const entry = rateLimitStore.get(key);
@@ -301,6 +302,7 @@ export function checkRateLimit(
   }
 
   entry.count++;
+
   return { allowed: true, remaining: maxRequests - entry.count, resetTime: entry.resetTime };
 }
 
@@ -376,6 +378,7 @@ export const defaultCSP: CSPDirectives = {
 export function escapeXSS(text: string): string {
   const div = document.createElement('div');
   div.textContent = text;
+
   return div.innerHTML;
 }
 
@@ -387,6 +390,7 @@ export function escapeXSS(text: string): string {
 export function unescapeXSS(html: string): string {
   const div = document.createElement('div');
   div.innerHTML = html;
+
   return div.textContent || '';
 }
 
@@ -406,6 +410,7 @@ export async function hashPassword(password: string, salt?: string): Promise<{ h
   const usedSalt = salt || generateToken(16);
   const combined = password + usedSalt;
   const hash = await sha256(combined);
+
   return { hash, salt: usedSalt };
 }
 
@@ -465,13 +470,10 @@ export async function encryptData(data: string, password: string): Promise<strin
   const decoder = new TextDecoder();
 
   // توليد مفتاح من كلمة المرور
-  const keyMaterial = await crypto.subtle.importKey(
-    'raw',
-    encoder.encode(password),
-    'PBKDF2',
-    false,
-    ['deriveBits', 'deriveKey']
-  );
+  const keyMaterial = await crypto.subtle.importKey('raw', encoder.encode(password), 'PBKDF2', false, [
+    'deriveBits',
+    'deriveKey',
+  ]);
 
   const salt = crypto.getRandomValues(new Uint8Array(16));
   const iv = crypto.getRandomValues(new Uint8Array(12));
@@ -486,14 +488,10 @@ export async function encryptData(data: string, password: string): Promise<strin
     keyMaterial,
     { name: 'AES-GCM', length: 256 },
     false,
-    ['encrypt']
+    ['encrypt'],
   );
 
-  const encrypted = await crypto.subtle.encrypt(
-    { name: 'AES-GCM', iv },
-    key,
-    encoder.encode(data)
-  );
+  const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, encoder.encode(data));
 
   // دمج الملح + IV + البيانات المشفرة
   const result = new Uint8Array(salt.length + iv.length + encrypted.byteLength);
@@ -514,21 +512,16 @@ export async function decryptData(encryptedData: string, password: string): Prom
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
 
-  const data = new Uint8Array(
-    Array.from(base64Decode(encryptedData)).map((c) => c.charCodeAt(0))
-  );
+  const data = new Uint8Array(Array.from(base64Decode(encryptedData)).map((c) => c.charCodeAt(0)));
 
   const salt = data.slice(0, 16);
   const iv = data.slice(16, 28);
   const encrypted = data.slice(28);
 
-  const keyMaterial = await crypto.subtle.importKey(
-    'raw',
-    encoder.encode(password),
-    'PBKDF2',
-    false,
-    ['deriveBits', 'deriveKey']
-  );
+  const keyMaterial = await crypto.subtle.importKey('raw', encoder.encode(password), 'PBKDF2', false, [
+    'deriveBits',
+    'deriveKey',
+  ]);
 
   const key = await crypto.subtle.deriveKey(
     {
@@ -540,14 +533,10 @@ export async function decryptData(encryptedData: string, password: string): Prom
     keyMaterial,
     { name: 'AES-GCM', length: 256 },
     false,
-    ['decrypt']
+    ['decrypt'],
   );
 
-  const decrypted = await crypto.subtle.decrypt(
-    { name: 'AES-GCM', iv },
-    key,
-    encrypted
-  );
+  const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, encrypted);
 
   return decoder.decode(decrypted);
 }

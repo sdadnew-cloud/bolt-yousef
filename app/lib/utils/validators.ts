@@ -16,7 +16,8 @@
 /**
  * نمط التحقق من البريد الإلكتروني
  */
-const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+const EMAIL_REGEX =
+  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
 /**
  * التحقق من صحة البريد الإلكتروني
@@ -39,7 +40,7 @@ export function isValidEmailStrict(
     allowedDomains?: string[];
     blockedDomains?: string[];
     maxLength?: number;
-  } = {}
+  } = {},
 ): boolean {
   const { allowedDomains, blockedDomains, maxLength = 254 } = options;
 
@@ -90,7 +91,11 @@ const PHONE_PATTERNS: Record<string, RegExp> = {
  */
 export function isValidPhone(phone: string, countryCode: string = 'SA'): boolean {
   const pattern = PHONE_PATTERNS[countryCode];
-  if (!pattern) return false;
+
+  if (!pattern) {
+    return false;
+  }
+
   return pattern.test(phone.replace(/\s/g, ''));
 }
 
@@ -117,7 +122,10 @@ export function normalizePhone(phone: string, countryCode: string = 'SA'): strin
   };
 
   const prefix = countryPrefixes[countryCode];
-  if (!prefix) return cleaned;
+
+  if (!prefix) {
+    return cleaned;
+  }
 
   if (cleaned.startsWith(prefix)) {
     return `+${cleaned}`;
@@ -156,10 +164,7 @@ export function isValidUrl(url: string): boolean {
  * @param protocols - البروتوكولات المسموحة
  * @returns true إذا كان صحيحاً
  */
-export function isValidUrlWithProtocol(
-  url: string,
-  protocols: string[] = ['http:', 'https:']
-): boolean {
+export function isValidUrlWithProtocol(url: string, protocols: string[] = ['http:', 'https:']): boolean {
   try {
     const parsed = new URL(url);
     return protocols.includes(parsed.protocol);
@@ -176,6 +181,7 @@ export function isValidUrlWithProtocol(
 export function isValidIP(ip: string): boolean {
   const ipv4Regex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
   const ipv6Regex = /^(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$/;
+
   return ipv4Regex.test(ip) || ipv6Regex.test(ip);
 }
 
@@ -205,7 +211,7 @@ export function validatePassword(
     requireLowercase?: boolean;
     requireNumbers?: boolean;
     requireSpecialChars?: boolean;
-  } = {}
+  } = {},
 ): PasswordValidationResult {
   const {
     minLength = 8,
@@ -239,16 +245,38 @@ export function validatePassword(
 
   // حساب قوة كلمة المرور
   let strengthScore = 0;
-  if (password.length >= minLength) strengthScore++;
-  if (/[A-Z]/.test(password)) strengthScore++;
-  if (/[a-z]/.test(password)) strengthScore++;
-  if (/[0-9]/.test(password)) strengthScore++;
-  if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) strengthScore++;
-  if (password.length >= 12) strengthScore++;
+
+  if (password.length >= minLength) {
+    strengthScore++;
+  }
+
+  if (/[A-Z]/.test(password)) {
+    strengthScore++;
+  }
+
+  if (/[a-z]/.test(password)) {
+    strengthScore++;
+  }
+
+  if (/[0-9]/.test(password)) {
+    strengthScore++;
+  }
+
+  if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+    strengthScore++;
+  }
+
+  if (password.length >= 12) {
+    strengthScore++;
+  }
 
   let strength: 'weak' | 'medium' | 'strong' = 'weak';
-  if (strengthScore >= 5) strength = 'strong';
-  else if (strengthScore >= 3) strength = 'medium';
+
+  if (strengthScore >= 5) {
+    strength = 'strong';
+  } else if (strengthScore >= 3) {
+    strength = 'medium';
+  }
 
   return {
     isValid: errors.length === 0,
@@ -423,7 +451,9 @@ export function isValidUUID(uuid: string): boolean {
  * @returns true إذا كان صحيحاً
  */
 export function isValidSaudiID(id: string): boolean {
-  if (!/^\d{10}$/.test(id)) return false;
+  if (!/^\d{10}$/.test(id)) {
+    return false;
+  }
 
   const digits = id.split('').map(Number);
   let sum = 0;
@@ -438,6 +468,7 @@ export function isValidSaudiID(id: string): boolean {
   }
 
   const checkDigit = (10 - (sum % 10)) % 10;
+
   return checkDigit === digits[9];
 }
 
@@ -455,7 +486,9 @@ export function isValidSaudiID(id: string): boolean {
 export function isValidCreditCard(cardNumber: string): boolean {
   const cleaned = cardNumber.replace(/\D/g, '');
 
-  if (cleaned.length < 13 || cleaned.length > 19) return false;
+  if (cleaned.length < 13 || cleaned.length > 19) {
+    return false;
+  }
 
   let sum = 0;
   let isEven = false;
@@ -465,7 +498,10 @@ export function isValidCreditCard(cardNumber: string): boolean {
 
     if (isEven) {
       digit *= 2;
-      if (digit > 9) digit -= 9;
+
+      if (digit > 9) {
+        digit -= 9;
+      }
     }
 
     sum += digit;
@@ -493,7 +529,9 @@ export function getCreditCardType(cardNumber: string): string {
   };
 
   for (const [type, pattern] of Object.entries(patterns)) {
-    if (pattern.test(cleaned)) return type;
+    if (pattern.test(cleaned)) {
+      return type;
+    }
   }
 
   return 'unknown';
@@ -534,9 +572,7 @@ export function isValidRgbColor(color: string): boolean {
  * @param validator - دالة التحقق
  * @returns دالة التحقق المخصصة
  */
-export function createValidator<T>(
-  validator: (value: T) => boolean
-): (value: T) => boolean {
+export function createValidator<T>(validator: (value: T) => boolean): (value: T) => boolean {
   return validator;
 }
 
@@ -545,9 +581,7 @@ export function createValidator<T>(
  * @param validators - دوال التحقق
  * @returns دالة تحقق موحدة
  */
-export function combineValidators<T>(
-  ...validators: ((value: T) => boolean)[]
-): (value: T) => boolean {
+export function combineValidators<T>(...validators: ((value: T) => boolean)[]): (value: T) => boolean {
   return (value: T) => validators.every((validator) => validator(value));
 }
 
@@ -556,8 +590,6 @@ export function combineValidators<T>(
  * @param validators - دوال التحقق
  * @returns دالة تحقق موحدة
  */
-export function anyValidator<T>(
-  ...validators: ((value: T) => boolean)[]
-): (value: T) => boolean {
+export function anyValidator<T>(...validators: ((value: T) => boolean)[]): (value: T) => boolean {
   return (value: T) => validators.some((validator) => validator(value));
 }
