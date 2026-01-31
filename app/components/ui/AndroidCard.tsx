@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import { classNames } from '~/utils/classNames';
 
@@ -50,21 +50,3 @@ export const AndroidCard: React.FC<AndroidCardProps> = ({
     </motion.div>
   );
 };
-
-// Usage examples:
-// <AndroidCard title="Card Title">
-//   <p>Card content here</p>
-// </AndroidCard>
-
-// <AndroidCard 
-//   title="Featured Item" 
-//   subtitle="Description text" 
-//   icon="i-ph:star"
-//   onClick={() => console.log('Card clicked')}
-// >
-//   <p>Interactive card with hover effects</p>
-// </AndroidCard>
-
-// <AndroidCard className="mt-4">
-//   <p>Card without title</p>
-// </AndroidCard>
