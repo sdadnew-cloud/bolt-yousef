@@ -20,7 +20,7 @@ export interface UseToggleReturn {
   value: boolean;
   /** تبديل القيمة */
   toggle: () => void;
-  ** تعيين القيمة إلى true */
+  /** تعيين القيمة إلى true */
   setOn: () => void;
   /** تعيين القيمة إلى false */
   setOff: () => void;

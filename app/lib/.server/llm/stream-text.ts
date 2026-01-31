@@ -10,6 +10,7 @@ import { createScopedLogger } from '~/utils/logger';
 import { createFilesContext, extractPropertiesFromMessage } from './utils';
 import { discussPrompt } from '~/lib/common/prompts/discuss-prompt';
 import type { DesignScheme } from '~/types/design-scheme';
+import { PromptManager } from '~/lib/modules/llm/prompt-manager';
 
 export type Messages = Message[];
 
@@ -149,7 +150,7 @@ export async function streamText(props: {
     `Token limits for model ${modelDetails.name}: maxTokens=${safeMaxTokens}, maxTokenAllowed=${modelDetails.maxTokenAllowed}, maxCompletionTokens=${modelDetails.maxCompletionTokens}`,
   );
 
-  let systemPrompt =
+  let baseSystemPrompt =
     PromptLibrary.getPropmtFromLibrary(promptId || 'default', {
       cwd: WORK_DIR,
       allowedHtmlElements: allowedHTMLElements,
@@ -161,6 +162,12 @@ export async function streamText(props: {
         credentials: options?.supabaseConnection?.credentials || undefined,
       },
     }) ?? getSystemPrompt();
+
+  let systemPrompt = PromptManager.enhanceSystemPrompt(
+    baseSystemPrompt,
+    provider.name,
+    (options as any)?.promptPreset,
+  );
 
   if (chatMode === 'build' && contextFiles && contextOptimization) {
     const codeContext = createFilesContext(contextFiles, true);
@@ -273,6 +280,8 @@ export async function streamText(props: {
     ),
   );
 
+  const preset = PromptManager.getPreset((options as any)?.promptPreset);
+
   const streamParams = {
     model: provider.getModelInstance({
       model: modelDetails.name,
@@ -283,6 +292,7 @@ export async function streamText(props: {
     system: chatMode === 'build' ? systemPrompt : discussPrompt(),
     ...tokenParams,
     messages: convertToCoreMessages(processedMessages as any),
+    temperature: preset.temperature,
     ...filteredOptions,
 
     // Set temperature to 1 for reasoning models (required by OpenAI API)
