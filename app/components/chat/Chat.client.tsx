@@ -117,6 +117,24 @@ export const ChatImpl = memo(
     const [selectedElement, setSelectedElement] = useState<ElementInfo | null>(null);
     const mcpSettings = useMCPStore((state) => state.settings);
 
+    useEffect(() => {
+      if (chatData) {
+        const agentUpdates = chatData.filter(
+          (x: any) => typeof x === 'object' && x.type === 'agentProgress',
+        ) as any[];
+
+        if (agentUpdates.length > 0) {
+          const lastUpdate = agentUpdates[agentUpdates.length - 1];
+          workbenchStore.agentState.set({
+            active: lastUpdate.status === 'working' || lastUpdate.status === 'info',
+            agentName: lastUpdate.agentName,
+            step: lastUpdate.stepId,
+            message: lastUpdate.message,
+          });
+        }
+      }
+    }, [chatData]);
+
     const {
       messages,
       isLoading,

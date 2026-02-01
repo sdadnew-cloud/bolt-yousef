@@ -1,3 +1,9 @@
+/**
+ * 📁 ملف: ResponsiveLayout.tsx
+ * 📝 وصف: نظام التخطيط المتجاوب (Responsive Layout System)
+ * 🔧 الغرض: التبديل التلقائي بين واجهات الموبايل، التابلت، والديسكتاب
+ */
+
 import React, { useState, useEffect, forwardRef } from 'react';
 import { useMediaQuery } from '~/lib/hooks/use-media-query';
 import { MobileHeader } from './MobileHeader';
@@ -14,18 +20,20 @@ interface ResponsiveLayoutProps {
 
 export const ResponsiveLayout = forwardRef<HTMLDivElement, ResponsiveLayoutProps>(
   ({ children, sidebar, header, workbench }, ref) => {
+    // كشف حجم الشاشة
     const isMobile = useMediaQuery('(max-width: 767px)');
     const isTablet = useMediaQuery('(min-width: 768px) and (max-width: 1023px)');
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [mobileTab, setMobileTab] = useState<'chat' | 'workbench'>('chat');
 
-    // Close sidebar when switching to desktop
+    // إغلاق القائمة الجانبية عند التبديل لنسخة الديسكتاب
     useEffect(() => {
       if (!isMobile) {
         setIsSidebarOpen(false);
       }
     }, [isMobile]);
 
+    // تخطيط الموبايل (أقل من 768 بكسل)
     if (isMobile) {
       return (
         <div ref={ref} className="flex flex-col h-screen w-full bg-bolt-elements-background overflow-hidden">
@@ -47,25 +55,26 @@ export const ResponsiveLayout = forwardRef<HTMLDivElement, ResponsiveLayoutProps
             </div>
           </main>
 
-          {/* Mobile Bottom Navigation */}
+          {/* شريط التنقل السفلي للموبايل */}
           <div className="flex border-t border-bolt-elements-borderColor bg-bolt-elements-background-depth-1">
             <TabButton
               active={mobileTab === 'chat'}
               onClick={() => setMobileTab('chat')}
               icon="i-ph:chat-centered-text"
-              label="Chat"
+              label="الدردشة"
             />
             <TabButton
               active={mobileTab === 'workbench'}
               onClick={() => setMobileTab('workbench')}
               icon="i-ph:code-block"
-              label="Workbench"
+              label="بيئة العمل"
             />
           </div>
         </div>
       );
     }
 
+    // تخطيط التابلت (768 بكسل - 1023 بكسل)
     if (isTablet) {
       return (
         <div ref={ref} className="flex h-screen w-full bg-bolt-elements-background overflow-hidden">
@@ -85,6 +94,7 @@ export const ResponsiveLayout = forwardRef<HTMLDivElement, ResponsiveLayoutProps
       );
     }
 
+    // تخطيط الديسكتاب (أكبر من 1024 بكسل)
     return (
       <div ref={ref} className="h-full w-full">
         <DesktopLayout sidebar={sidebar} header={header} workbench={workbench}>

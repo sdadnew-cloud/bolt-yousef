@@ -67,6 +67,7 @@ export async function streamText(props: {
   messageSliceId?: number;
   chatMode?: 'discuss' | 'build';
   designScheme?: DesignScheme;
+  onAgentProgress?: (update: any) => void;
 }) {
   const {
     messages,
@@ -324,7 +325,7 @@ export async function streamText(props: {
      * In a full implementation, this would return a specialized stream.
      */
     console.log('Triggering Multi-Agent Workflow');
-    agentSystem.runWorkflow(task, fileList);
+    agentSystem.runWorkflow(task, fileList, props.onAgentProgress);
   }
 
   return await _streamText(streamParams);

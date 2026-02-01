@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
 import { classNames } from '~/utils/classNames';
-import { DesignScheme, defaultDesignScheme, paletteRoles, designFeatures, designFonts } from '~/types/design-scheme';
+import { type DesignScheme, defaultDesignScheme, paletteRoles, designFeatures, designFonts } from '~/types/design-scheme';
 import { themeStore } from '~/lib/stores/theme';
 
 export default function ThemeDesigner() {

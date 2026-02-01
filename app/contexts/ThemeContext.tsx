@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
-import { DesignScheme, defaultDesignScheme } from '~/types/design-scheme';
+import { type DesignScheme, defaultDesignScheme } from '~/types/design-scheme';
 import { themeStore, applyDesignScheme } from '~/lib/stores/theme';
 
 interface ThemeContextType {

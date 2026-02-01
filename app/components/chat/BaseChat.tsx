@@ -27,6 +27,7 @@ import type { ModelInfo } from '~/lib/modules/llm/types';
 import ProgressCompilation from './ProgressCompilation';
 import type { ProgressAnnotation } from '~/types/context';
 import { SupabaseChatAlert } from '~/components/chat/SupabaseAlert';
+import { AgentProgress } from './AgentProgress';
 import { expoUrlAtom } from '~/lib/stores/qrCodeStore';
 import { useStore } from '@nanostores/react';
 import { StickToBottom, useStickToBottomContext } from '~/lib/hooks';
@@ -437,6 +438,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                 )}
                 {llmErrorAlert && <LlmErrorAlert alert={llmErrorAlert} clearAlert={() => clearLlmErrorAlert?.()} />}
               </div>
+              <AgentProgress />
               {progressAnnotations && <ProgressCompilation data={progressAnnotations} />}
               <ChatBox
                 isModelSettingsCollapsed={isModelSettingsCollapsed}
@@ -506,7 +508,13 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
       </ResponsiveLayout>
     );
 
-    return <Tooltip.Provider delayDuration={200}>{baseChat}</Tooltip.Provider>;
+    return (
+      <Tooltip.Provider delayDuration={200}>
+        <div className={styles.BaseChat} data-chat-visible={_showChat}>
+          {baseChat}
+        </div>
+      </Tooltip.Provider>
+    );
   },
 );
 

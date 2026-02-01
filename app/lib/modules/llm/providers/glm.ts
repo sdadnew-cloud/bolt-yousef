@@ -1,3 +1,9 @@
+/**
+ * 📁 ملف: glm.ts
+ * 📝 وصف: مزود خدمة GLM (Zhipu AI / BigModel)
+ * 🔧 الغرض: التكامل مع نماذج GLM-4 للبرمجة والمحادثة
+ */
+
 import { BaseProvider } from '~/lib/modules/llm/base-provider';
 import type { ModelInfo } from '~/lib/modules/llm/types';
 import type { IProviderSetting } from '~/types/model';

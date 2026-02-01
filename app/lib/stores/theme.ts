@@ -1,6 +1,6 @@
 import { atom } from 'nanostores';
 import { logStore } from './logs';
-import { DesignScheme, defaultDesignScheme } from '~/types/design-scheme';
+import { type DesignScheme, defaultDesignScheme } from '~/types/design-scheme';
 
 export type Theme = 'dark' | 'light';
 

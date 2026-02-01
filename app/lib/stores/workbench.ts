@@ -54,6 +54,12 @@ export class WorkbenchStore {
     import.meta.hot?.data.supabaseAlert ?? atom<SupabaseAlert | undefined>(undefined);
   deployAlert: WritableAtom<DeployAlert | undefined> =
     import.meta.hot?.data.deployAlert ?? atom<DeployAlert | undefined>(undefined);
+  agentState: WritableAtom<{
+    active: boolean;
+    agentName?: string;
+    step?: string;
+    message?: string;
+  }> = import.meta.hot?.data.agentState ?? atom({ active: false });
   modifiedFiles = new Set<string>();
   artifactIdList: string[] = [];
   #globalExecutionQueue = Promise.resolve();
@@ -66,6 +72,7 @@ export class WorkbenchStore {
       import.meta.hot.data.actionAlert = this.actionAlert;
       import.meta.hot.data.supabaseAlert = this.supabaseAlert;
       import.meta.hot.data.deployAlert = this.deployAlert;
+      import.meta.hot.data.agentState = this.agentState;
 
       // Ensure binary files are properly preserved across hot reloads
       const filesMap = this.files.get();

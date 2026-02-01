@@ -280,6 +280,12 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
               designScheme,
               summary,
               messageSliceId,
+              onAgentProgress: (update) => {
+                dataStream.writeData({
+                  type: 'agentProgress',
+                  ...update,
+                });
+              },
             });
 
             result.mergeIntoDataStream(dataStream);
@@ -321,6 +327,12 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
           designScheme,
           summary,
           messageSliceId,
+          onAgentProgress: (update) => {
+            dataStream.writeData({
+              type: 'agentProgress',
+              ...update,
+            });
+          },
         });
 
         (async () => {
