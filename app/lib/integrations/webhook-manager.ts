@@ -1,3 +1,9 @@
+/**
+ * 📁 ملف: webhook-manager.ts
+ * 📝 وصف: مدير الروابط البرمجية (Webhook Manager)
+ * 🔧 الغرض: التكامل مع خدمات خارجية مثل N8N عبر إرسال تنبيهات تلقائية عند حدوث أحداث معينة
+ */
+
 export type WebhookEvent =
   | 'project.created'
   | 'project.deployed'
@@ -42,6 +48,9 @@ export class WebhookManager {
     }
   }
 
+  /**
+   * إضافة Webhook جديد حقيقي
+   */
   addWebhook(config: WebhookConfig) {
     this._webhooks.push(config);
     this._saveToStorage();
@@ -51,6 +60,9 @@ export class WebhookManager {
     return this._webhooks;
   }
 
+  /**
+   * إطلاق الحدث وإرسال البيانات إلى جميع الروابط المشتركة
+   */
   async trigger(event: WebhookEvent, data: any) {
     const payload = {
       event,
@@ -60,6 +72,7 @@ export class WebhookManager {
 
     const activeWebhooks = this._webhooks.filter(w => w.enabled && w.events.includes(event));
 
+    // إرسال البيانات بشكل متوازي لجميع المشتركين
     const results = await Promise.allSettled(
       activeWebhooks.map(webhook =>
         fetch(webhook.url, {
@@ -73,7 +86,7 @@ export class WebhookManager {
       )
     );
 
-    console.log(`Webhook triggers for ${event}:`, results);
+    console.log(`[Webhooks] Triggered ${event} for ${activeWebhooks.length} endpoints`, results);
   }
 }
 

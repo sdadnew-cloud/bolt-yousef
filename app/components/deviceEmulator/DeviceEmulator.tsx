@@ -280,13 +280,13 @@ export const DeviceEmulator = ({ previewUrl, onLoad, onError }: DeviceEmulatorPr
 
         {/* Device Selection */}
         <div className="flex flex-wrap gap-2 mb-4">
-          {devices.map(device => (
+          {devices.map((device) => (
             <button
               key={device.id}
               onClick={() => setSelectedDeviceId(device.id)}
-              className={`px-3 py-1.5 text-sm rounded-lg transition-all ${\
-                selectedDeviceId === device.id 
-                  ? 'bg-bolt-elements-primary text-white' 
+              className={`px-3 py-1.5 text-sm rounded-lg transition-all ${
+                selectedDeviceId === device.id
+                  ? 'bg-bolt-elements-primary text-white'
                   : 'bg-bolt-elements-background-depth-2 hover:bg-bolt-elements-background-depth-3'
               }`}
             >

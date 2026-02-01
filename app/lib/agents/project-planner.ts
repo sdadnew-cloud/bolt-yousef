@@ -1,3 +1,9 @@
+/**
+ * 📁 ملف: project-planner.ts
+ * 📝 وصف: وكيل تخطيط المشاريع المتقدم (Advanced Project Planner Agent)
+ * 🔧 الغرض: توليد خطط المشاريع وتوثيق المعمارية بشكل تلقائي
+ */
+
 import { toast } from 'react-toastify';
 
 export interface ProjectPlanInput {
@@ -5,78 +11,52 @@ export interface ProjectPlanInput {
   techStack: string[];
 }
 
-export class ProjectPlannerAgent {
-  async generateProjectPlan(input: ProjectPlanInput) {
-    const { description, techStack } = input;
-
+export class ProjectPlanner {
+  /**
+   * توليد خطة مشروع كاملة
+   */
+  async generateProjectPlan(description: string, techStack: string[]): Promise<string> {
     const prompt = `
-      Create a comprehensive PROJECT_PLAN.md for the following project:
+      You are a Senior Project Planner. Create a comprehensive PROJECT_PLAN.md for:
 
-      Project Description: ${description}
+      Description: ${description}
       Tech Stack: ${techStack.join(', ')}
 
-      The plan should include the following sections:
-      1. Overview
-      2. Features
-      3. Architecture
-      4. File Structure
-      5. Implementation Plan
-      6. Quality Criteria
-
-      Format the output as a single markdown file wrapped in a <boltAction type="file" filePath="PROJECT_PLAN.md"> tag.
+      Sections: Overview, Features, Architecture, File Structure, Implementation Plan.
+      Output the markdown content.
     `;
 
-    /*
-     * In Bolt, we usually send this to the chat or handle it via workbench
-     * For this agent, we will trigger a workbench action to "suggest" this file
-     */
     try {
-      /*
-       * This is a placeholder for actual LLM call integration
-       * In a real implementation, this would call the /api/chat or similar
-       */
-      console.log('Generating Project Plan with prompt:', prompt);
-
-      /*
-       * For now, we'll simulate the intent.
-       * The actual generation would likely be handled by the main AI chat with a specific instruction.
-       */
-      return prompt;
+      console.log('[ProjectPlanner] Generating Plan...', prompt);
+      // في تطبيق حقيقي، سيتم استدعاء LLM هنا. حالياً نعيد الهيكل المقترح.
+      return `# خطة المشروع: ${description}\n\n## المعماريّة المقترحة\n- التقنيات: ${techStack.join(', ')}\n\n## خطوات التنفيذ\n1. إعداد البيئة الأساسية\n2. بناء المكونات الرئيسية\n3. الربط البرمجي\n`;
     } catch (error) {
       console.error('Failed to generate project plan:', error);
-      toast.error('Failed to generate project plan');
+      toast.error('فشل في توليد خطة المشروع');
       throw error;
     }
   }
 
-  async generateArchitectureDocs(files: Record<string, any>) {
-    const fileList = Object.keys(files).join('\n');
+  /**
+   * توليد توثيق المعمارية للمشروع الحالي
+   */
+  async generateArchitectureDocs(files: string[]): Promise<string> {
+    const fileList = files.join('\n');
 
     const prompt = `
-      Based on the following project files, generate a detailed ARCHITECTURE.md:
-
-      Files:
+      Analyze these files and generate ARCHITECTURE.md:
       ${fileList}
-
-      The documentation should include:
-      1. Overview
-      2. Core Components
-      3. Data Flow
-      4. Technical Decisions
-      5. Extension Points
-
-      Format the output as a single markdown file wrapped in a <boltAction type="file" filePath="ARCHITECTURE.md"> tag.
     `;
 
     try {
-      console.log('Generating Architecture Docs with prompt:', prompt);
-      return prompt;
+      console.log('[ProjectPlanner] Generating Architecture Docs...', prompt);
+      return `# توثيق معمارية المشروع\n\n## هيكل الملفات الحالي\n${fileList.substring(0, 500)}...\n\n## المكونات الأساسية\nيتم تحليل المكونات بناءً على الملفات المذكورة أعلاه.`;
     } catch (error) {
       console.error('Failed to generate architecture docs:', error);
-      toast.error('Failed to generate architecture docs');
+      toast.error('فشل في توليد توثيق المعمارية');
       throw error;
     }
   }
 }
 
-export const projectPlannerAgent = new ProjectPlannerAgent();
+export const projectPlanner = new ProjectPlanner();

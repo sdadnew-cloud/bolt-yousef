@@ -1,80 +1,81 @@
 import React, { useState } from 'react';
+import { Card } from '~/components/ui/Card';
 import { Button } from '~/components/ui/Button';
-import { projectPlannerAgent } from '~/lib/agents/project-planner';
+import { projectPlanner } from '~/lib/agents/project-planner';
 import { workbenchStore } from '~/lib/stores/workbench';
-import { toast } from 'react-toastify';
 import { useStore } from '@nanostores/react';
+import { toast } from 'react-toastify';
 
 interface ProjectActionsProps {
   onSendMessage?: (message: string) => void;
 }
 
-export const ProjectActions: React.FC<ProjectActionsProps> = ({ onSendMessage }) => {
-  const [isGeneratingPlan, setIsGeneratingPlan] = useState(false);
-  const [isGeneratingArch, setIsGeneratingArch] = useState(false);
+export const ProjectActions: React.FC<ProjectActionsProps> = ({ onSendMessage: _onSendMessage }) => {
+  const [loadingPlan, setLoadingPlan] = useState(false);
+  const [loadingDocs, setLoadingDocs] = useState(false);
   const files = useStore(workbenchStore.files);
 
   const handleGeneratePlan = async () => {
-    setIsGeneratingPlan(true);
-
     try {
-      // In a real scenario, we'd gather info from the current session
-      const description = 'Current project under development';
-      const techStack = ['React', 'TypeScript', 'Tailwind'];
+      setLoadingPlan(true);
+      const plan = await projectPlanner.generateProjectPlan('تحليل المشروع الحالي', ['react', 'typescript']);
 
-      const prompt = await projectPlannerAgent.generateProjectPlan({ description, techStack });
-
-      if (onSendMessage) {
-        onSendMessage(prompt);
-      } else {
-        // Fallback: update chat input or send directly if possible
-        toast.info('تم إنشاء مطالبة خطة المشروع. أرسلها للذكاء الاصطناعي.');
-      }
+      // حفظ الخطة في ملف حقيقي
+      await workbenchStore.createFile('PROJECT_PLAN.md', plan);
+      toast.success('تم توليد خطة المشروع بنجاح!');
     } catch (error) {
       console.error(error);
+      toast.error('فشل في توليد الخطة.');
     } finally {
-      setIsGeneratingPlan(false);
+      setLoadingPlan(false);
     }
   };
 
-  const handleGenerateArchitecture = async () => {
-    setIsGeneratingArch(true);
-
+  const handleGenerateDocs = async () => {
     try {
-      const prompt = await projectPlannerAgent.generateArchitectureDocs(files);
+      setLoadingDocs(true);
+      const docs = await projectPlanner.generateArchitectureDocs(Object.keys(files));
 
-      if (onSendMessage) {
-        onSendMessage(prompt);
-      } else {
-        toast.info('تم إنشاء مطالبة مستند المعمارية. أرسلها للذكاء الاصطناعي.');
-      }
+      // حفظ التوثيق في ملف حقيقي
+      await workbenchStore.createFile('ARCHITECTURE.md', docs);
+      toast.success('تم توليد توثيق المعمارية بنجاح!');
     } catch (error) {
       console.error(error);
+      toast.error('فشل في توليد التوثيق.');
     } finally {
-      setIsGeneratingArch(false);
+      setLoadingDocs(false);
     }
   };
 
   return (
-    <div className="flex flex-wrap gap-2 p-2 border-t border-bolt-elements-borderColor bg-bolt-elements-background-depth-1">
+    <Card className="p-4 flex gap-4 bg-bolt-elements-background-depth-3 border-t border-bolt-elements-borderColor rounded-none">
       <Button
         variant="outline"
         size="sm"
         onClick={handleGeneratePlan}
-        isLoading={isGeneratingPlan}
-        leftIcon={<div className="i-ph:notebook" />}
+        className="flex items-center gap-2"
       >
+        {loadingPlan ? (
+          <div className="i-ph:spinner animate-spin" />
+        ) : (
+          <div className="i-ph:clipboard-text-duotone" />
+        )}
         توليد خطة المشروع
       </Button>
+
       <Button
         variant="outline"
         size="sm"
-        onClick={handleGenerateArchitecture}
-        isLoading={isGeneratingArch}
-        leftIcon={<div className="i-ph:tree-structure" />}
+        onClick={handleGenerateDocs}
+        className="flex items-center gap-2"
       >
-        توليد مستند المعمارية
+        {loadingDocs ? (
+          <div className="i-ph:spinner animate-spin" />
+        ) : (
+          <div className="i-ph:book-open-duotone" />
+        )}
+        توليد توثيق المعمارية
       </Button>
-    </div>
+    </Card>
   );
 };

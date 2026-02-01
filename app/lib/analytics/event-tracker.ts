@@ -1,5 +1,7 @@
 /**
- * نظام تتبع الأحداث لمنصة yousef sh
+ * 📁 ملف: event-tracker.ts
+ * 📝 وصف: نظام تتبع الأحداث الحقيقي (Real Event Tracking System)
+ * 🔧 الغرض: تسجيل نشاطات المستخدم وأداء المنصة للتحليل
  */
 
 export interface TrackedEvent {
@@ -11,10 +13,9 @@ export interface TrackedEvent {
 class EventTracker {
   private static instance: EventTracker;
   private webhooks: string[] = [];
+  private STORAGE_KEY = 'yousef_sh_analytics';
 
-  private constructor() {
-    // التحميل الأولي للإعدادات إذا لزم الأمر
-  }
+  private constructor() {}
 
   public static getInstance(): EventTracker {
     if (!EventTracker.instance) {
@@ -24,7 +25,7 @@ class EventTracker {
   }
 
   /**
-   * تسجيل حدث جديد
+   * تسجيل حدث جديد بشكل حقيقي
    */
   public async track(event: TrackedEvent['event'], properties: Record<string, any>) {
     const eventData: TrackedEvent = {
@@ -33,23 +34,42 @@ class EventTracker {
       properties,
     };
 
-    console.log(`[Analytics] Tracking event: ${event}`, eventData);
+    console.log(`[Analytics] Tracking: ${event}`, eventData);
 
-    // 1. التخزين في قاعدة البيانات الداخلية (محاكاة هنا)
-    await this.saveToInternalDB(eventData);
+    // 1. التخزين المحلي (للوصول السريع في لوحة التحكم)
+    this.saveToLocal(eventData);
 
-    // 2. إرسال إلى Webhooks المشتركة
+    // 2. الإرسال إلى الخادم (للتخزين الدائم)
+    await this.sendToServer(eventData);
+
+    // 3. إشعار الـ Webhooks
     await this.notifyWebhooks(eventData);
+  }
 
-    // 3. التكامل مع Google Analytics (اختياري)
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', event, properties);
+  private saveToLocal(event: TrackedEvent) {
+    if (typeof window === 'undefined') return;
+
+    try {
+      const history = JSON.parse(localStorage.getItem(this.STORAGE_KEY) || '[]');
+      history.push(event);
+      // الاحتفاظ بآخر 1000 حدث لتجنب امتلاء المساحة
+      if (history.length > 1000) history.shift();
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(history));
+    } catch (e) {
+      console.error('Failed to save to localStorage', e);
     }
   }
 
-  private async saveToInternalDB(event: TrackedEvent) {
-    // في بيئة حقيقية، سيتم استدعاء API أو Prisma هنا
-    // حالياً نكتفي بتسجيلها في الكونسول
+  private async sendToServer(event: TrackedEvent) {
+    try {
+      await fetch('/api/analytics', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(event),
+      });
+    } catch (e) {
+      console.warn('[Analytics] Could not send to server, but saved locally.');
+    }
   }
 
   private async notifyWebhooks(event: TrackedEvent) {
@@ -57,22 +77,22 @@ class EventTracker {
       try {
         await fetch(url, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Analytics-Event': event.event,
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(event),
         });
       } catch (error) {
-        console.error(`[Analytics] Failed to notify webhook: ${url}`, error);
+        console.error(`[Analytics] Webhook failed: ${url}`, error);
       }
     }
   }
 
+  public getLocalEvents(): TrackedEvent[] {
+    if (typeof window === 'undefined') return [];
+    return JSON.parse(localStorage.getItem(this.STORAGE_KEY) || '[]');
+  }
+
   public addWebhook(url: string) {
-    if (!this.webhooks.includes(url)) {
-      this.webhooks.push(url);
-    }
+    if (!this.webhooks.includes(url)) this.webhooks.push(url);
   }
 }
 

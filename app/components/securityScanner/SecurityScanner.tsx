@@ -85,13 +85,13 @@ export const SecurityScanner = ({ onScanComplete }: SecurityScannerProps) => {
     }
   };
 
-  const filteredVulnerabilities = filter === 'all' 
-    ? scanResult?.vulnerabilities || [] 
-    : scanResult?.vulnerabilities.filter(vuln => 
-        filter === 'high' && (vuln.severity === 'high' || vuln.severity === 'critical') ||
-        filter === 'medium' && vuln.severity === 'medium' ||
-        filter === 'low' && (vuln.severity === 'low' || vuln.severity === 'low')
-      ) || [];
+  const filteredVulnerabilities = filter === 'all'
+    ? scanResult?.vulnerabilities || []
+    : scanResult?.vulnerabilities.filter(vuln => (
+        (filter === 'high' && (vuln.severity === 'high' || vuln.severity === 'critical')) ||
+        (filter === 'medium' && vuln.severity === 'medium') ||
+        (filter === 'low' && vuln.severity === 'low')
+      )) || [];
 
   return (
     <div className="flex flex-col h-full bg-bolt-elements-background-depth-1 rounded-lg border border-bolt-elements-borderColor">
@@ -104,7 +104,7 @@ export const SecurityScanner = ({ onScanComplete }: SecurityScannerProps) => {
           <button
             onClick={runScan}
             disabled={scanning}
-            className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${\
+            className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
               scanning 
                 ? 'bg-gray-500 text-white cursor-not-allowed' 
                 : 'bg-bolt-elements-primary text-white hover:bg-bolt-elements-primary/90'
@@ -173,7 +173,7 @@ export const SecurityScanner = ({ onScanComplete }: SecurityScannerProps) => {
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setFilter('all')}
-              className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${\
+              className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
                 filter === 'all' 
                   ? 'bg-bolt-elements-primary text-white' 
                   : 'bg-bolt-elements-background-depth-2 hover:bg-bolt-elements-background-depth-3'
@@ -183,7 +183,7 @@ export const SecurityScanner = ({ onScanComplete }: SecurityScannerProps) => {
             </button>
             <button
               onClick={() => setFilter('high')}
-              className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${\
+              className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
                 filter === 'high' 
                   ? 'bg-bolt-elements-primary text-white' 
                   : 'bg-bolt-elements-background-depth-2 hover:bg-bolt-elements-background-depth-3'
@@ -193,7 +193,7 @@ export const SecurityScanner = ({ onScanComplete }: SecurityScannerProps) => {
             </button>
             <button
               onClick={() => setFilter('medium')}
-              className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${\
+              className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
                 filter === 'medium' 
                   ? 'bg-bolt-elements-primary text-white' 
                   : 'bg-bolt-elements-background-depth-2 hover:bg-bolt-elements-background-depth-3'
@@ -203,7 +203,7 @@ export const SecurityScanner = ({ onScanComplete }: SecurityScannerProps) => {
             </button>
             <button
               onClick={() => setFilter('low')}
-              className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${\
+              className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
                 filter === 'low' 
                   ? 'bg-bolt-elements-primary text-white' 
                   : 'bg-bolt-elements-background-depth-2 hover:bg-bolt-elements-background-depth-3'
@@ -271,7 +271,7 @@ export const SecurityScanner = ({ onScanComplete }: SecurityScannerProps) => {
                       )}
                     </div>
                     <div className="flex flex-col items-end gap-2 ml-4">
-                      <span className={`px-2 py-0.5 text-xs font-medium rounded ${\
+                      <span className={`px-2 py-0.5 text-xs font-medium rounded ${
                         vuln.severity === 'critical' ? 'bg-red-100 text-red-800' :
                         vuln.severity === 'high' ? 'bg-orange-100 text-orange-800' :
                         vuln.severity === 'medium' ? 'bg-yellow-100 text-yellow-800' :

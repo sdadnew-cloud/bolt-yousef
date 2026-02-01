@@ -28,6 +28,7 @@ import type { ElementInfo } from '~/components/workbench/Inspector';
 import type { TextUIPart, FileUIPart, Attachment } from '@ai-sdk/ui-utils';
 import { useMCPStore } from '~/lib/stores/mcp';
 import type { LlmErrorAlertType } from '~/types/actions';
+import { eventTracker } from '~/lib/analytics/event-tracker';
 
 const logger = createScopedLogger('Chat');
 
@@ -117,24 +118,6 @@ export const ChatImpl = memo(
     const [selectedElement, setSelectedElement] = useState<ElementInfo | null>(null);
     const mcpSettings = useMCPStore((state) => state.settings);
 
-    useEffect(() => {
-      if (chatData) {
-        const agentUpdates = chatData.filter(
-          (x: any) => typeof x === 'object' && x.type === 'agentProgress',
-        ) as any[];
-
-        if (agentUpdates.length > 0) {
-          const lastUpdate = agentUpdates[agentUpdates.length - 1];
-          workbenchStore.agentState.set({
-            active: lastUpdate.status === 'working' || lastUpdate.status === 'info',
-            agentName: lastUpdate.agentName,
-            step: lastUpdate.stepId,
-            message: lastUpdate.message,
-          });
-        }
-      }
-    }, [chatData]);
-
     const {
       messages,
       isLoading,
@@ -187,6 +170,13 @@ export const ChatImpl = memo(
             usage,
             messageLength: message.content.length,
           });
+
+          // تتبع حدث توليد الكود بشكل حقيقي
+          eventTracker.track('code_generated', {
+            model,
+            provider: provider.name,
+            tokens: usage.totalTokens,
+          });
         }
 
         logger.debug('Finished streaming');
@@ -194,6 +184,24 @@ export const ChatImpl = memo(
       initialMessages,
       initialInput: Cookies.get(PROMPT_COOKIE_KEY) || '',
     });
+
+    useEffect(() => {
+      if (chatData) {
+        const agentUpdates = chatData.filter(
+          (x: any) => typeof x === 'object' && x.type === 'agentProgress',
+        ) as any[];
+
+        if (agentUpdates.length > 0) {
+          const lastUpdate = agentUpdates[agentUpdates.length - 1];
+          workbenchStore.agentState.set({
+            active: lastUpdate.status === 'working' || lastUpdate.status === 'info',
+            agentName: lastUpdate.agentName,
+            step: lastUpdate.stepId,
+            message: lastUpdate.message,
+          });
+        }
+      }
+    }, [chatData]);
     useEffect(() => {
       const prompt = searchParams.get('prompt');
 
@@ -252,6 +260,13 @@ export const ChatImpl = memo(
     const handleError = useCallback(
       (error: any, context: 'chat' | 'template' | 'llmcall' = 'chat') => {
         logger.error(`${context} request failed`, error);
+
+        // تتبع الأخطاء بشكل حقيقي
+        eventTracker.track('error_occurred', {
+          message: error.message,
+          context,
+          provider: provider.name,
+        });
 
         stop();
         setFakeLoading(false);
@@ -429,6 +444,13 @@ export const ChatImpl = memo(
 
       if (!chatStarted) {
         setFakeLoading(true);
+
+        // تتبع إنشاء مشروع جديد
+        eventTracker.track('project_created', {
+          initialPrompt: finalMessageContent.substring(0, 100),
+          model,
+          provider: provider.name,
+        });
 
         if (autoSelectTemplate) {
           const { template, title } = await selectStarterTemplate({
@@ -677,7 +699,7 @@ export const ChatImpl = memo(
         chatMode={chatMode}
         setChatMode={setChatMode}
         append={append}
-        onSendMessage={sendMessage}
+        onSendMessage={(msg) => sendMessage({} as any, msg)}
         designScheme={designScheme}
         setDesignScheme={setDesignScheme}
         selectedElement={selectedElement}

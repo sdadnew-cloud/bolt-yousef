@@ -1,3 +1,9 @@
+/**
+ * 📁 ملف: git-service.ts
+ * 📝 وصف: خدمة Git المركزية (Central Git Service)
+ * 🔧 الغرض: إدارة العمليات عبر مختلف مزودي خدمات Git
+ */
+
 import { GitHubAdapter } from '../adapters/github-adapter';
 import { GitLabAdapter } from '../adapters/gitlab-adapter';
 import { BitbucketAdapter } from '../adapters/bitbucket-adapter';
@@ -31,11 +37,14 @@ export class GitService {
     return this._adapters.get(this._currentProvider)!;
   }
 
-  async autoCommit(task: string, files: any) {
-    const message = `AI: ${task}`;
+  /**
+   * تنفيذ التزام تلقائي (Auto-Commit)
+   */
+  async autoCommit(task: string, files: Record<string, string>, owner: string, repo: string) {
+    const message = `AI Integration: ${task}`;
     const adapter = this.getAdapter();
-    console.log(`Auto-committing to ${adapter.name}...`);
-    await adapter.commit('', message, files);
+    console.log(`[GitService] Auto-committing to ${adapter.name}...`);
+    return await adapter.commitAndPush(owner, repo, message, files);
   }
 }
 

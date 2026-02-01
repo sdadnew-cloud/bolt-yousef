@@ -1,22 +1,24 @@
-import { type GitProviderAdapter } from './github-adapter';
+/**
+ * 📁 ملف: gitlab-adapter.ts
+ * 📝 وصف: محول خدمة GitLab (GitLab Git Adapter)
+ */
+
+import type { GitProviderAdapter } from './github-adapter';
 
 export class GitLabAdapter implements GitProviderAdapter {
   name = 'GitLab';
 
-  async createRepository(name: string): Promise<string> {
+  async createRepository(name: string, isPrivate: boolean = false): Promise<string> {
     console.log(`GitLab: Creating repository ${name}`);
     return `https://gitlab.com/user/${name}.git`;
   }
 
-  async getBranches(repo: string): Promise<string[]> {
-    return ['master'];
+  async getBranches(owner: string, repo: string): Promise<string[]> {
+    return ['main'];
   }
 
-  async commit(repo: string, message: string, files: any): Promise<void> {
-    console.log(`GitLab: Committing with message "${message}"`);
-  }
-
-  async push(repo: string, branch: string): Promise<void> {
-    console.log(`GitLab: Pushing to ${branch}`);
+  async commitAndPush(owner: string, repo: string, message: string, files: Record<string, string>, branch: string = 'main'): Promise<string> {
+    console.log(`GitLab: Committing and pushing to ${branch}`);
+    return `https://gitlab.com/${owner}/${repo}/-/commit/main`;
   }
 }

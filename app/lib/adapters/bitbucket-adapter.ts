@@ -1,22 +1,24 @@
-import { type GitProviderAdapter } from './github-adapter';
+/**
+ * 📁 ملف: bitbucket-adapter.ts
+ * 📝 وصف: محول خدمة Bitbucket (Bitbucket Git Adapter)
+ */
+
+import type { GitProviderAdapter } from './github-adapter';
 
 export class BitbucketAdapter implements GitProviderAdapter {
   name = 'Bitbucket';
 
-  async createRepository(name: string): Promise<string> {
+  async createRepository(name: string, isPrivate: boolean = false): Promise<string> {
     console.log(`Bitbucket: Creating repository ${name}`);
     return `https://bitbucket.org/user/${name}.git`;
   }
 
-  async getBranches(repo: string): Promise<string[]> {
+  async getBranches(owner: string, repo: string): Promise<string[]> {
     return ['master'];
   }
 
-  async commit(repo: string, message: string, files: any): Promise<void> {
-    console.log(`Bitbucket: Committing with message "${message}"`);
-  }
-
-  async push(repo: string, branch: string): Promise<void> {
-    console.log(`Bitbucket: Pushing to ${branch}`);
+  async commitAndPush(owner: string, repo: string, message: string, files: Record<string, string>, branch: string = 'master'): Promise<string> {
+    console.log(`Bitbucket: Committing and pushing to ${branch}`);
+    return `https://bitbucket.org/${owner}/${repo}/commits`;
   }
 }

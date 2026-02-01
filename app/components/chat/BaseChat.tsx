@@ -84,7 +84,7 @@ interface BaseChatProps {
   setSelectedElement?: (element: ElementInfo | null) => void;
   addToolResult?: ({ toolCallId, result }: { toolCallId: string; result: any }) => void;
   header?: React.ReactNode;
-  onSendMessage?: (message: string) => void;
+  onSendMessage?: (event: React.UIEvent, messageInput?: string) => void;
 }
 
 export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
@@ -356,7 +356,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                 chatStarted={chatStarted}
                 isStreaming={isStreaming}
                 setSelectedElement={setSelectedElement}
-                onSendMessage={onSendMessage}
+                onSendMessage={sendMessage}
               />
             )}
           </ClientOnly>

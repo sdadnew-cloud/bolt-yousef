@@ -1,84 +1,75 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { Card } from '~/components/ui/Card';
 import { Button } from '~/components/ui/Button';
 import { Input } from '~/components/ui/Input';
-import { webhookManager, type WebhookEvent, type WebhookConfig } from '~/lib/integrations/webhook-manager';
-import { toast } from 'react-toastify';
+import { webhookManager, type WebhookEvent } from '~/lib/integrations/webhook-manager';
 
 export const WebhookSettings: React.FC = () => {
-  const [webhooks, setWebhooks] = useState<WebhookConfig[]>([]);
-  const [newUrl, setNewUrl] = useState('');
-  const [newSecret, setNewSecret] = useState('');
+  const [url, setUrl] = useState('');
+  const [secret, setSecret] = useState('');
+  const [webhooks, setWebhooks] = useState(webhookManager.getWebhooks());
 
-  useEffect(() => {
-    setWebhooks(webhookManager.getWebhooks());
-  }, []);
+  const addWebhook = () => {
+    if (!url) return;
 
-  const handleAddWebhook = () => {
-    if (!newUrl) {
-      toast.error('الرجاء إدخال URL صالح');
-      return;
-    }
-
-    const config: WebhookConfig = {
-      url: newUrl,
-      secret: newSecret,
+    webhookManager.addWebhook({
+      url,
+      secret,
       enabled: true,
-      events: ['project.created', 'project.deployed', 'code.generated', 'error.occurred', 'file.changed'],
-    };
+      events: ['project.created', 'code.generated', 'error.occurred']
+    });
 
-    webhookManager.addWebhook(config);
-    setWebhooks([...webhooks, config]);
-    setNewUrl('');
-    setNewSecret('');
-    toast.success('تم إضافة Webhook بنجاح');
+    setWebhooks([...webhookManager.getWebhooks()]);
+    setUrl('');
+    setSecret('');
   };
 
   return (
-    <div className="space-y-6 p-4 bg-bolt-elements-background-depth-2 rounded-lg border border-bolt-elements-borderColor">
-      <div>
-        <h3 className="text-lg font-medium text-bolt-elements-textPrimary mb-2">N8N / Webhooks Integration</h3>
-        <p className="text-sm text-bolt-elements-textSecondary mb-4">
-          قم بتوصيل المنصة بـ N8N أو أي خدمة خارجية لتلقي إشعارات عن الأحداث المهمة.
-        </p>
-      </div>
+    <div className="flex flex-col gap-6 p-4">
+      <Card className="p-6 border-bolt-elements-borderColor">
+        <h3 className="text-lg font-bold mb-4 text-bolt-elements-textPrimary">إدارة Webhooks</h3>
 
-      <div className="space-y-4 border-b border-bolt-elements-borderColor pb-6">
-        <Input
-          label="Webhook URL"
-          placeholder="https://n8n.your-instance.com/webhook/..."
-          value={newUrl}
-          onChange={(e) => setNewUrl(e.target.value)}
-        />
-        <Input
-          label="Secret (Optional)"
-          type="password"
-          placeholder="كلمة مرور للتحقق"
-          value={newSecret}
-          onChange={(e) => setNewSecret(e.target.value)}
-        />
-        <Button onClick={handleAddWebhook} variant="primary">
-          إضافة Webhook جديد
-        </Button>
-      </div>
-
-      <div className="space-y-4">
-        <h4 className="text-md font-medium text-bolt-elements-textPrimary">الروابط النشطة ({webhooks.length})</h4>
-        {webhooks.length === 0 ? (
-          <p className="text-sm text-bolt-elements-textTertiary italic">لا يوجد أي Webhooks مهيأة حالياً.</p>
-        ) : (
-          <div className="space-y-2">
-            {webhooks.map((webhook, idx) => (
-              <div key={idx} className="flex items-center justify-between p-3 bg-bolt-elements-background-depth-1 rounded-md border border-bolt-elements-borderColor">
-                <div className="truncate flex-1 mr-4">
-                  <p className="text-sm font-medium text-bolt-elements-textPrimary truncate">{webhook.url}</p>
-                  <p className="text-xs text-bolt-elements-textTertiary">{webhook.events.length} events configured</p>
-                </div>
-                <div className={`h-2.5 w-2.5 rounded-full ${webhook.enabled ? 'bg-green-500' : 'bg-gray-400'}`} />
-              </div>
-            ))}
+        <div className="flex flex-col gap-4 mb-6">
+          <div className="flex flex-col gap-2">
+            <label className="text-sm text-bolt-elements-textSecondary">رابط الـ Webhook (N8N, Zapier...)</label>
+            <Input
+              placeholder="https://n8n.example.com/webhook/..."
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+            />
           </div>
-        )}
-      </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-sm text-bolt-elements-textSecondary">السر (Secret) للتحقق</label>
+            <Input
+              type="password"
+              placeholder="أدخل السر هنا..."
+              value={secret}
+              onChange={(e) => setSecret(e.target.value)}
+            />
+          </div>
+
+          <Button onClick={addWebhook} className="w-fit bg-accent-500 hover:bg-accent-600 text-white">
+            إضافة Webhook حقيقي
+          </Button>
+        </div>
+
+        <div className="space-y-4">
+          <h4 className="text-sm font-semibold text-bolt-elements-textSecondary border-b pb-2">الروابط النشطة</h4>
+          {webhooks.length > 0 ? (
+            webhooks.map((w, i) => (
+              <div key={i} className="flex justify-between items-center p-3 bg-bolt-elements-background-depth-3 rounded-lg text-sm border border-bolt-elements-borderColor">
+                <div className="truncate flex-1 mr-4 text-bolt-elements-textPrimary">{w.url}</div>
+                <div className={`text-[10px] px-2 py-0.5 rounded-full ${w.enabled ? 'bg-green-500/20 text-green-500' : 'bg-red-500/20 text-red-500'}`}>
+                  {w.enabled ? 'نشط' : 'معطل'}
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-xs text-bolt-elements-textTertiary text-center py-4">لا توجد روابط نشطة حالياً.</p>
+          )}
+        </div>
+      </Card>
     </div>
   );
 };
