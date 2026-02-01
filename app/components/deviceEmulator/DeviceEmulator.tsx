@@ -17,33 +17,63 @@ export interface Device {
 
 export const devices: Device[] = [
   {
-    id: 'iphone14',
-    name: 'iPhone 14',
-    type: 'mobile',
-    width: 390,
-    height: 844,
-    devicePixelRatio: 3,
-    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1',
-    platform: 'iOS'
-  },
-  {
-    id: 'iphone14pro',
-    name: 'iPhone 14 Pro',
-    type: 'mobile',
-    width: 393,
-    height: 852,
-    devicePixelRatio: 3,
-    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1',
-    platform: 'iOS'
-  },
-  {
-    id: 'samsung-s23',
-    name: 'Samsung S23',
+    id: 'samsung-s24',
+    name: 'Samsung Galaxy S24',
     type: 'mobile',
     width: 360,
     height: 800,
     devicePixelRatio: 3,
-    userAgent: 'Mozilla/5.0 (Linux; Android 13; SM-S918B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Mobile Safari/537.36',
+    userAgent: 'Mozilla/5.0 (Linux; Android 14; SM-S921B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36',
+    platform: 'Android'
+  },
+  {
+    id: 'samsung-s24ultra',
+    name: 'Samsung Galaxy S24 Ultra',
+    type: 'mobile',
+    width: 380,
+    height: 840,
+    devicePixelRatio: 3,
+    userAgent: 'Mozilla/5.0 (Linux; Android 14; SM-S928B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36',
+    platform: 'Android'
+  },
+  {
+    id: 'pixel-8',
+    name: 'Google Pixel 8',
+    type: 'mobile',
+    width: 360,
+    height: 780,
+    devicePixelRatio: 3,
+    userAgent: 'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36',
+    platform: 'Android'
+  },
+  {
+    id: 'pixel-8pro',
+    name: 'Google Pixel 8 Pro',
+    type: 'mobile',
+    width: 360,
+    height: 800,
+    devicePixelRatio: 3,
+    userAgent: 'Mozilla/5.0 (Linux; Android 14; Pixel 8 Pro) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36',
+    platform: 'Android'
+  },
+  {
+    id: 'oneplus-12',
+    name: 'OnePlus 12',
+    type: 'mobile',
+    width: 360,
+    height: 800,
+    devicePixelRatio: 3,
+    userAgent: 'Mozilla/5.0 (Linux; Android 14; OnePlus 12) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36',
+    platform: 'Android'
+  },
+  {
+    id: 'samsung-tab-s9',
+    name: 'Samsung Galaxy Tab S9',
+    type: 'tablet',
+    width: 800,
+    height: 1280,
+    devicePixelRatio: 2,
+    userAgent: 'Mozilla/5.0 (Linux; Android 14; SM-X710) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
     platform: 'Android'
   },
   {
@@ -53,17 +83,7 @@ export const devices: Device[] = [
     width: 820,
     height: 1180,
     devicePixelRatio: 2,
-    userAgent: 'Mozilla/5.0 (iPad; CPU OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1',
-    platform: 'iOS'
-  },
-  {
-    id: 'ipad-pro',
-    name: 'iPad Pro',
-    type: 'tablet',
-    width: 1024,
-    height: 1366,
-    devicePixelRatio: 2,
-    userAgent: 'Mozilla/5.0 (iPad; CPU OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1',
+    userAgent: 'Mozilla/5.0 (iPad; CPU OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
     platform: 'iOS'
   },
   {
@@ -73,7 +93,7 @@ export const devices: Device[] = [
     width: 1280,
     height: 720,
     devicePixelRatio: 1,
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36',
+    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
     platform: 'Desktop'
   }
 ];
@@ -170,12 +190,27 @@ export const DeviceEmulator = ({ previewUrl, onLoad, onError }: DeviceEmulatorPr
           </div>
         )}
 
+        {/* Android Status Bar */}
+        {isMobile && selectedDevice.platform === 'Android' && (
+          <div className="absolute top-0 left-0 right-0 h-6 bg-black z-10 flex items-center justify-between px-4 text-white text-xs">
+            <div className="flex items-center gap-1">
+              <div className="i-ph:signal text-white"></div>
+              <div className="i-ph:wifi text-white"></div>
+              <div className="i-ph:battery-medium text-white"></div>
+            </div>
+            <div className="text-white font-medium">
+              {new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+            </div>
+          </div>
+        )}
+
         {/* Device Screen */}
         <div 
           className="w-full h-full bg-white rounded-lg overflow-hidden relative"
           style={{
             borderTopLeftRadius: isMobile && selectedDevice.platform === 'iOS' ? '2rem' : '0.5rem',
-            borderTopRightRadius: isMobile && selectedDevice.platform === 'iOS' ? '2rem' : '0.5rem'
+            borderTopRightRadius: isMobile && selectedDevice.platform === 'iOS' ? '2rem' : '0.5rem',
+            paddingTop: isMobile && selectedDevice.platform === 'Android' ? '1.5rem' : '0'
           }}
         >
           {isLoading && (
@@ -205,6 +240,21 @@ export const DeviceEmulator = ({ previewUrl, onLoad, onError }: DeviceEmulatorPr
         {isMobile && selectedDevice.platform === 'iOS' && (
           <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gray-600 rounded-full z-10"></div>
         )}
+
+        {/* Android Navigation Bar */}
+        {isMobile && selectedDevice.platform === 'Android' && (
+          <div className="absolute bottom-0 left-0 right-0 h-10 bg-black z-10 flex items-center justify-around">
+            <div className="w-8 h-8 flex items-center justify-center text-white">
+              <i className="i-ph:arrow-left-bold text-xl"></i>
+            </div>
+            <div className="w-8 h-8 flex items-center justify-center text-white">
+              <i className="i-ph:house-bold text-xl"></i>
+            </div>
+            <div className="w-8 h-8 flex items-center justify-center text-white">
+              <i className="i-ph:arrow-bend-down-left-bold text-xl"></i>
+            </div>
+          </div>
+        )}
       </motion.div>
     );
   };
@@ -230,13 +280,13 @@ export const DeviceEmulator = ({ previewUrl, onLoad, onError }: DeviceEmulatorPr
 
         {/* Device Selection */}
         <div className="flex flex-wrap gap-2 mb-4">
-          {devices.map(device => (
+          {devices.map((device) => (
             <button
               key={device.id}
               onClick={() => setSelectedDeviceId(device.id)}
-              className={`px-3 py-1.5 text-sm rounded-lg transition-all ${\
-                selectedDeviceId === device.id 
-                  ? 'bg-bolt-elements-primary text-white' 
+              className={`px-3 py-1.5 text-sm rounded-lg transition-all ${
+                selectedDeviceId === device.id
+                  ? 'bg-bolt-elements-primary text-white'
                   : 'bg-bolt-elements-background-depth-2 hover:bg-bolt-elements-background-depth-3'
               }`}
             >

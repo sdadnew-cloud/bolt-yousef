@@ -16,7 +16,7 @@ const DashboardTab = () => {
     securityIssues: 0,
     totalTasks: 0,
     activeTasks: 0,
-    availableAgents: 0
+    availableAgents: 0,
   });
 
   useEffect(() => {
@@ -29,7 +29,7 @@ const DashboardTab = () => {
         securityIssues: 2,
         totalTasks: 12,
         activeTasks: 3,
-        availableAgents: nicheAgentsService.getAgents().length
+        availableAgents: nicheAgentsService.getAgents().length,
       });
     };
 
@@ -39,9 +39,7 @@ const DashboardTab = () => {
   const StatCard = ({ title, value, subtitle, color = 'purple', icon }) => (
     <motion.div
       className={`p-4 rounded-xl border ${
-        theme === 'dark' 
-          ? 'bg-[#0A0A0A] border-[#1A1A1A]' 
-          : 'bg-white border-[#E5E5E5]'
+        theme === 'dark' ? 'bg-[#0A0A0A] border-[#1A1A1A]' : 'bg-white border-[#E5E5E5]'
       }`}
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
@@ -61,8 +59,8 @@ const DashboardTab = () => {
   const FeatureCard = ({ title, description, status, onClick }) => (
     <motion.div
       className={`p-4 rounded-xl border ${
-        theme === 'dark' 
-          ? 'bg-[#0A0A0A] border-[#1A1A1A] hover:bg-[#1A1A1A] cursor-pointer' 
+        theme === 'dark'
+          ? 'bg-[#0A0A0A] border-[#1A1A1A] hover:bg-[#1A1A1A] cursor-pointer'
           : 'bg-white border-[#E5E5E5] hover:bg-[#FAFAFA] cursor-pointer'
       }`}
       initial={{ opacity: 0, y: 10 }}
@@ -75,9 +73,11 @@ const DashboardTab = () => {
           <h3 className="font-medium text-bolt-elements-textPrimary">{title}</h3>
           <p className="text-sm text-bolt-elements-textSecondary mt-1">{description}</p>
         </div>
-        <div className={`px-2 py-1 rounded-full text-xs ${
-          status === 'active' ? 'bg-green-500/10 text-green-500' : 'bg-gray-500/10 text-gray-500'
-        }`}>
+        <div
+          className={`px-2 py-1 rounded-full text-xs ${
+            status === 'active' ? 'bg-green-500/10 text-green-500' : 'bg-gray-500/10 text-gray-500'
+          }`}
+        >
           {status}
         </div>
       </div>
@@ -88,9 +88,7 @@ const DashboardTab = () => {
     <div className="space-y-6 max-w-6xl mx-auto">
       <div>
         <h2 className="text-2xl font-bold text-bolt-elements-textPrimary">Platform Dashboard</h2>
-        <p className="text-bolt-elements-textSecondary">
-          Overview of your development environment and active features
-        </p>
+        <p className="text-bolt-elements-textSecondary">Overview of your development environment and active features</p>
       </div>
 
       {/* Stats Grid */}
@@ -168,25 +166,31 @@ const DashboardTab = () => {
       </div>
 
       {/* Recent Activity */}
-      <div className={`rounded-xl border p-4 ${
-        theme === 'dark' 
-          ? 'bg-[#0A0A0A] border-[#1A1A1A]' 
-          : 'bg-white border-[#E5E5E5]'
-      }`}>
+      <div
+        className={`rounded-xl border p-4 ${
+          theme === 'dark' ? 'bg-[#0A0A0A] border-[#1A1A1A]' : 'bg-white border-[#E5E5E5]'
+        }`}
+      >
         <h3 className="font-medium text-bolt-elements-textPrimary mb-3">Recent Activity</h3>
         <div className="space-y-3">
           {[
             { action: 'Security scan completed', time: '2 min ago', type: 'security' },
             { action: 'Dependency analysis updated', time: '15 min ago', type: 'analysis' },
             { action: 'Task scheduled: nightly build', time: '1 hour ago', type: 'task' },
-            { action: 'New agent selected: Cybersecurity Expert', time: '2 hours ago', type: 'agent' }
+            { action: 'New agent selected: Cybersecurity Expert', time: '2 hours ago', type: 'agent' },
           ].map((activity, index) => (
             <div key={index} className="flex items-center gap-3 text-sm">
-              <div className={`w-2 h-2 rounded-full ${
-                activity.type === 'security' ? 'bg-red-500' :
-                activity.type === 'analysis' ? 'bg-blue-500' :
-                activity.type === 'task' ? 'bg-green-500' : 'bg-purple-500'
-              }`} />
+              <div
+                className={`w-2 h-2 rounded-full ${
+                  activity.type === 'security'
+                    ? 'bg-red-500'
+                    : activity.type === 'analysis'
+                      ? 'bg-blue-500'
+                      : activity.type === 'task'
+                        ? 'bg-green-500'
+                        : 'bg-purple-500'
+                }`}
+              />
               <div className="flex-1 text-bolt-elements-textSecondary">{activity.action}</div>
               <div className="text-bolt-elements-textTertiary">{activity.time}</div>
             </div>
@@ -198,8 +202,8 @@ const DashboardTab = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <motion.div
           className={`p-4 rounded-xl border ${
-            theme === 'dark' 
-              ? 'bg-gradient-to-br from-purple-900/30 to-blue-900/30 border-purple-500/30' 
+            theme === 'dark'
+              ? 'bg-gradient-to-br from-purple-900/30 to-blue-900/30 border-purple-500/30'
               : 'bg-gradient-to-br from-purple-50 to-blue-50 border-purple-200'
           }`}
           initial={{ opacity: 0, y: 20 }}
@@ -217,8 +221,8 @@ const DashboardTab = () => {
 
         <motion.div
           className={`p-4 rounded-xl border ${
-            theme === 'dark' 
-              ? 'bg-gradient-to-br from-green-900/30 to-teal-900/30 border-green-500/30' 
+            theme === 'dark'
+              ? 'bg-gradient-to-br from-green-900/30 to-teal-900/30 border-green-500/30'
               : 'bg-gradient-to-br from-green-50 to-teal-50 border-green-200'
           }`}
           initial={{ opacity: 0, y: 20 }}
@@ -226,9 +230,7 @@ const DashboardTab = () => {
           transition={{ delay: 0.2 }}
         >
           <h3 className="font-medium text-bolt-elements-textPrimary mb-2">Schedule Task</h3>
-          <p className="text-sm text-bolt-elements-textSecondary mb-3">
-            Automate builds, tests, and deployments
-          </p>
+          <p className="text-sm text-bolt-elements-textSecondary mb-3">Automate builds, tests, and deployments</p>
           <button className="px-3 py-1.5 text-sm bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
             Configure
           </button>
@@ -236,8 +238,8 @@ const DashboardTab = () => {
 
         <motion.div
           className={`p-4 rounded-xl border ${
-            theme === 'dark' 
-              ? 'bg-gradient-to-br from-indigo-900/30 to-pink-900/30 border-indigo-500/30' 
+            theme === 'dark'
+              ? 'bg-gradient-to-br from-indigo-900/30 to-pink-900/30 border-indigo-500/30'
               : 'bg-gradient-to-br from-indigo-50 to-pink-50 border-indigo-200'
           }`}
           initial={{ opacity: 0, y: 20 }}

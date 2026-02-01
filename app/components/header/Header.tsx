@@ -20,36 +20,33 @@ export function Header() {
         'bg-[var(--color-background)]',
         'border-[var(--color-border)]',
         'text-[var(--color-text)]',
-        'transition-colors duration-300'
+        'transition-colors duration-300',
       )}
       style={{
         backgroundColor: designScheme.palette.background,
         color: designScheme.palette.text,
-        borderColor: designScheme.palette.border
+        borderColor: designScheme.palette.border,
       }}
     >
       <div className="flex items-center gap-2 z-logo cursor-pointer" style={{ color: designScheme.palette.text }}>
         <div className="i-ph:sidebar-simple-duotone text-xl" />
-        <a href="/" className="text-2xl font-semibold flex items-center" style={{ color: designScheme.palette.primary }}>
+        <a
+          href="/"
+          className="text-2xl font-semibold flex items-center"
+          style={{ color: designScheme.palette.primary }}
+        >
           <img
             src="/logo-light-styled.png"
             alt="logo"
             className="w-[90px] inline-block dark:hidden"
             style={{ filter: currentTheme === 'dark' ? 'invert(1) brightness(2)' : 'none' }}
           />
-          <img
-            src="/logo-dark-styled.png"
-            alt="logo"
-            className="w-[90px] inline-block hidden dark:block"
-          />
+          <img src="/logo-dark-styled.png" alt="logo" className="w-[90px] inline-block hidden dark:block" />
         </a>
       </div>
       {chat.started && ( // Display ChatDescription and HeaderActionButtons only when the chat has started.
         <>
-          <span
-            className="flex-1 px-4 truncate text-center"
-            style={{ color: designScheme.palette.textSecondary }}
-          >
+          <span className="flex-1 px-4 truncate text-center" style={{ color: designScheme.palette.textSecondary }}>
             <ClientOnly>{() => <ChatDescription />}</ClientOnly>
           </span>
           <ClientOnly>

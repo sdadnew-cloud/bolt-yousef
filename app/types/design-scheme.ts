@@ -6,19 +6,19 @@ export interface DesignScheme {
 
 export const defaultDesignScheme: DesignScheme = {
   palette: {
-    primary: '#9E7FFF',
-    secondary: '#38bdf8',
-    accent: '#f472b6',
-    background: '#171717',
-    surface: '#262626',
-    text: '#FFFFFF',
-    textSecondary: '#A3A3A3',
-    border: '#2F2F2F',
-    success: '#10b981',
-    warning: '#f59e0b',
-    error: '#ef4444',
+    primary: '#1E88E5', // Android Blue - Material Design 3
+    secondary: '#42A5F5', // Light Blue - Material Design 3
+    accent: '#FFC107', // Amber - Material Design 3
+    background: '#000000', // Dark background for AMOLED screens
+    surface: '#121212', // Material Design dark surface
+    text: '#FFFFFF', // White text
+    textSecondary: '#B3B3B3', // Light gray text
+    border: '#212121', // Dark border
+    success: '#4CAF50', // Material Green
+    warning: '#FF9800', // Material Orange
+    error: '#F44336', // Material Red
   },
-  features: ['rounded'],
+  features: ['rounded', 'shadow', 'border'],
   font: ['sans-serif'],
 };
 

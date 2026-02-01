@@ -54,6 +54,12 @@ export class WorkbenchStore {
     import.meta.hot?.data.supabaseAlert ?? atom<SupabaseAlert | undefined>(undefined);
   deployAlert: WritableAtom<DeployAlert | undefined> =
     import.meta.hot?.data.deployAlert ?? atom<DeployAlert | undefined>(undefined);
+  agentState: WritableAtom<{
+    active: boolean;
+    agentName?: string;
+    step?: string;
+    message?: string;
+  }> = import.meta.hot?.data.agentState ?? atom({ active: false });
   modifiedFiles = new Set<string>();
   artifactIdList: string[] = [];
   #globalExecutionQueue = Promise.resolve();
@@ -66,6 +72,7 @@ export class WorkbenchStore {
       import.meta.hot.data.actionAlert = this.actionAlert;
       import.meta.hot.data.supabaseAlert = this.supabaseAlert;
       import.meta.hot.data.deployAlert = this.deployAlert;
+      import.meta.hot.data.agentState = this.agentState;
 
       // Ensure binary files are properly preserved across hot reloads
       const filesMap = this.files.get();
@@ -482,37 +489,38 @@ export class WorkbenchStore {
       closed: false,
       type,
       runner: new ActionRunner(
-          webcontainer,
-          () => this.boltTerminal,
-          (alert) => {
-            if (this.#reloadedMessages.has(messageId)) {
-              return;
-            }
-  
-            this.actionAlert.set(alert);
-          },
-          (alert) => {
-            if (this.#reloadedMessages.has(messageId)) {
-              return;
-            }
-  
-            this.supabaseAlert.set(alert);
-          },
-          (alert) => {
-            if (this.#reloadedMessages.has(messageId)) {
-              return;
-            }
-  
-            this.deployAlert.set(alert);
-          },
-          (error, command) => {
-            // Auto-fix callback - this will be implemented later
-            console.log('Auto-fix requested for error:', error);
-            if (command) {
-              console.log('Command that caused error:', command);
-            }
-          },
-        ),
+        webcontainer,
+        () => this.boltTerminal,
+        (alert) => {
+          if (this.#reloadedMessages.has(messageId)) {
+            return;
+          }
+
+          this.actionAlert.set(alert);
+        },
+        (alert) => {
+          if (this.#reloadedMessages.has(messageId)) {
+            return;
+          }
+
+          this.supabaseAlert.set(alert);
+        },
+        (alert) => {
+          if (this.#reloadedMessages.has(messageId)) {
+            return;
+          }
+
+          this.deployAlert.set(alert);
+        },
+        (error, command) => {
+          // Auto-fix callback - this will be implemented later
+          console.log('Auto-fix requested for error:', error);
+
+          if (command) {
+            console.log('Command that caused error:', command);
+          }
+        },
+      ),
     });
   }
 

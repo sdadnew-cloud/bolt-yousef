@@ -20,6 +20,9 @@ import { cubicEasingFn } from '~/utils/easings';
 import { renderLogger } from '~/utils/logger';
 import { EditorPanel } from './EditorPanel';
 import { Preview } from './Preview';
+import { ProjectActions } from './ProjectActions';
+import { MobileEditor } from '~/components/editor/MobileEditor';
+import { TerminalTabs } from './terminal/TerminalTabs';
 import useViewport from '~/lib/hooks';
 
 import { usePreviewStore } from '~/lib/stores/previews';
@@ -38,6 +41,7 @@ interface WorkspaceProps {
   };
   updateChatMestaData?: (metadata: any) => void;
   setSelectedElement?: (element: ElementInfo | null) => void;
+  onSendMessage?: (message: string) => void;
 }
 
 const viewTransition = { ease: cubicEasingFn };
@@ -287,6 +291,7 @@ export const Workbench = memo(
     metadata: _metadata,
     updateChatMestaData: _updateChatMestaData,
     setSelectedElement,
+    onSendMessage,
   }: WorkspaceProps) => {
     renderLogger.trace('Workbench');
 
@@ -480,31 +485,45 @@ export const Workbench = memo(
                   />
                 </div>
                 <div className="relative flex-1 overflow-hidden">
-                  <View initial={{ x: '0%' }} animate={{ x: selectedView === 'code' ? '0%' : '-100%' }}>
-                    <EditorPanel
+                  {isSmallViewport ? (
+                    <MobileEditor
                       editorDocument={currentDocument}
+                      onCodeChange={onEditorChange}
+                      onCodeSave={onFileSave}
                       isStreaming={isStreaming}
-                      selectedFile={selectedFile}
-                      files={files}
-                      unsavedFiles={unsavedFiles}
-                      fileHistory={fileHistory}
-                      onFileSelect={onFileSelect}
-                      onEditorScroll={onEditorScroll}
-                      onEditorChange={onEditorChange}
-                      onFileSave={onFileSave}
-                      onFileReset={onFileReset}
+                      preview={<Preview setSelectedElement={setSelectedElement} />}
+                      terminal={<TerminalTabs />}
                     />
-                  </View>
-                  <View
-                    initial={{ x: '100%' }}
-                    animate={{ x: selectedView === 'diff' ? '0%' : selectedView === 'code' ? '100%' : '-100%' }}
-                  >
-                    <DiffView fileHistory={fileHistory} setFileHistory={setFileHistory} />
-                  </View>
-                  <View initial={{ x: '100%' }} animate={{ x: selectedView === 'preview' ? '0%' : '100%' }}>
-                    <Preview setSelectedElement={setSelectedElement} />
-                  </View>
+                  ) : (
+                    <>
+                      <View initial={{ x: '0%' }} animate={{ x: selectedView === 'code' ? '0%' : '-100%' }}>
+                        <EditorPanel
+                          editorDocument={currentDocument}
+                          isStreaming={isStreaming}
+                          selectedFile={selectedFile}
+                          files={files}
+                          unsavedFiles={unsavedFiles}
+                          fileHistory={fileHistory}
+                          onFileSelect={onFileSelect}
+                          onEditorScroll={onEditorScroll}
+                          onEditorChange={onEditorChange}
+                          onFileSave={onFileSave}
+                          onFileReset={onFileReset}
+                        />
+                      </View>
+                      <View
+                        initial={{ x: '100%' }}
+                        animate={{ x: selectedView === 'diff' ? '0%' : selectedView === 'code' ? '100%' : '-100%' }}
+                      >
+                        <DiffView fileHistory={fileHistory} setFileHistory={setFileHistory} />
+                      </View>
+                      <View initial={{ x: '100%' }} animate={{ x: selectedView === 'preview' ? '0%' : '100%' }}>
+                        <Preview setSelectedElement={setSelectedElement} />
+                      </View>
+                    </>
+                  )}
                 </div>
+                <ProjectActions onSendMessage={onSendMessage} />
               </div>
             </div>
           </div>

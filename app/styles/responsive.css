@@ -1,0 +1,84 @@
+/**
+ * Responsive Base Styles and Utilities for yousef sh Platform
+ */
+
+:root {
+  --mobile-padding: 16px;
+  --mobile-gap: 12px;
+  --desktop-padding: 24px;
+  --desktop-gap: 16px;
+  --header-height: 64px;
+  --bottom-nav-height: 64px;
+}
+
+/* Mobile Layout Utilities */
+@media (max-width: 767px) {
+  .mobile-only {
+    display: block;
+  }
+  .desktop-only {
+    display: none;
+  }
+  .responsive-container {
+    padding: var(--mobile-padding);
+    gap: var(--mobile-gap);
+  }
+  .stack-vertical {
+    flex-direction: column;
+  }
+}
+
+/* Tablet Layout Utilities */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .tablet-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Desktop Layout Utilities */
+@media (min-width: 1024px) {
+  .mobile-only {
+    display: none;
+  }
+  .desktop-only {
+    display: block;
+  }
+  .responsive-container {
+    padding: var(--desktop-padding);
+    gap: var(--desktop-gap);
+  }
+  .three-pane-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr 400px;
+    height: 100vh;
+  }
+}
+
+/* Touch-friendly targets for mobile */
+@media (pointer: coarse) {
+  button,
+  a,
+  input,
+  select {
+    min-height: 44px;
+  }
+}
+
+/* Hide scrollbars but allow scrolling */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Safe area insets for mobile */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.safe-area-top {
+  padding-top: env(safe-area-inset-top);
+}

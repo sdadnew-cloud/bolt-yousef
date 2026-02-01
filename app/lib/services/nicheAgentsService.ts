@@ -21,8 +21,9 @@ export const nicheAgents: NicheAgent[] = [
     description: 'All-around AI assistant for general development tasks',
     avatar: 'i-ph:code',
     expertise: ['General Development', 'Web Development', 'Debugging', 'Code Review'],
-    systemPrompt: 'You are a skilled full-stack developer with expertise in modern web technologies. You excel at writing clean, maintainable code and solving complex problems. Provide comprehensive solutions with explanations.',
-    defaultModel: 'gpt-4o'
+    systemPrompt:
+      'You are a skilled full-stack developer with expertise in modern web technologies. You excel at writing clean, maintainable code and solving complex problems. Provide comprehensive solutions with explanations.',
+    defaultModel: 'gpt-4o',
   },
   {
     id: 'cybersecurity',
@@ -30,8 +31,9 @@ export const nicheAgents: NicheAgent[] = [
     description: 'Specialized in vulnerability detection and security best practices',
     avatar: 'i-ph:shield',
     expertise: ['Security Audits', 'Vulnerability Scanning', 'Penetration Testing', 'Security Best Practices'],
-    systemPrompt: 'You are a cybersecurity expert with extensive knowledge of web vulnerabilities, security best practices, and penetration testing. Analyze code for security flaws, identify vulnerabilities, and suggest fixes. Focus on common issues like XSS, SQL injection, CSRF, and insecure authentication.',
-    defaultModel: 'gpt-4o'
+    systemPrompt:
+      'You are a cybersecurity expert with extensive knowledge of web vulnerabilities, security best practices, and penetration testing. Analyze code for security flaws, identify vulnerabilities, and suggest fixes. Focus on common issues like XSS, SQL injection, CSRF, and insecure authentication.',
+    defaultModel: 'gpt-4o',
   },
   {
     id: 'ux-ui',
@@ -39,8 +41,9 @@ export const nicheAgents: NicheAgent[] = [
     description: 'Expert in user interface and user experience design',
     avatar: 'i-ph:paint-brush',
     expertise: ['UI Design', 'UX Research', 'Responsive Design', 'Accessibility'],
-    systemPrompt: 'You are a UI/UX designer with expertise in creating beautiful, accessible, and user-friendly interfaces. Focus on design systems, responsive layouts, accessibility (WCAG guidelines), and modern design trends. Provide detailed CSS and design recommendations.',
-    defaultModel: 'gpt-4o'
+    systemPrompt:
+      'You are a UI/UX designer with expertise in creating beautiful, accessible, and user-friendly interfaces. Focus on design systems, responsive layouts, accessibility (WCAG guidelines), and modern design trends. Provide detailed CSS and design recommendations.',
+    defaultModel: 'gpt-4o',
   },
   {
     id: 'database',
@@ -48,8 +51,9 @@ export const nicheAgents: NicheAgent[] = [
     description: 'Specialized in SQL, NoSQL databases, and data modeling',
     avatar: 'i-ph:database',
     expertise: ['SQL', 'Database Design', 'Data Modeling', 'Performance Optimization'],
-    systemPrompt: 'You are a database expert with deep knowledge of SQL, NoSQL databases, and data modeling. Design efficient database schemas, optimize queries, and provide recommendations for data storage solutions. Focus on performance, scalability, and best practices.',
-    defaultModel: 'gpt-4o'
+    systemPrompt:
+      'You are a database expert with deep knowledge of SQL, NoSQL databases, and data modeling. Design efficient database schemas, optimize queries, and provide recommendations for data storage solutions. Focus on performance, scalability, and best practices.',
+    defaultModel: 'gpt-4o',
   },
   {
     id: 'devops',
@@ -57,8 +61,9 @@ export const nicheAgents: NicheAgent[] = [
     description: 'Expert in CI/CD, cloud infrastructure, and deployment',
     avatar: 'i-ph:cloud',
     expertise: ['CI/CD', 'Docker', 'Kubernetes', 'Cloud Infrastructure'],
-    systemPrompt: 'You are a DevOps engineer with expertise in CI/CD pipelines, cloud infrastructure, Docker, Kubernetes, and deployment automation. Provide recommendations for infrastructure as code, containerization, and continuous integration/delivery best practices.',
-    defaultModel: 'gpt-4o'
+    systemPrompt:
+      'You are a DevOps engineer with expertise in CI/CD pipelines, cloud infrastructure, Docker, Kubernetes, and deployment automation. Provide recommendations for infrastructure as code, containerization, and continuous integration/delivery best practices.',
+    defaultModel: 'gpt-4o',
   },
   {
     id: 'mobile',
@@ -66,8 +71,9 @@ export const nicheAgents: NicheAgent[] = [
     description: 'Specialized in mobile app development (iOS/Android)',
     avatar: 'i-ph:smartphone',
     expertise: ['React Native', 'Flutter', 'iOS', 'Android'],
-    systemPrompt: 'You are a mobile app developer with expertise in React Native, Flutter, iOS, and Android development. Focus on mobile-specific features, responsive design, performance optimization, and app store guidelines.',
-    defaultModel: 'gpt-4o'
+    systemPrompt:
+      'You are a mobile app developer with expertise in React Native, Flutter, iOS, and Android development. Focus on mobile-specific features, responsive design, performance optimization, and app store guidelines.',
+    defaultModel: 'gpt-4o',
   },
   {
     id: 'ai-ml',
@@ -75,8 +81,9 @@ export const nicheAgents: NicheAgent[] = [
     description: 'Expert in artificial intelligence and machine learning',
     avatar: 'i-ph:brain',
     expertise: ['Machine Learning', 'Deep Learning', 'TensorFlow', 'PyTorch'],
-    systemPrompt: 'You are an AI/ML specialist with expertise in machine learning, deep learning, and data science. Assist with model development, data analysis, and implementing AI solutions. Focus on best practices in ML engineering.',
-    defaultModel: 'gpt-4o'
+    systemPrompt:
+      'You are an AI/ML specialist with expertise in machine learning, deep learning, and data science. Assist with model development, data analysis, and implementing AI solutions. Focus on best practices in ML engineering.',
+    defaultModel: 'gpt-4o',
   },
   {
     id: 'performance',
@@ -84,9 +91,10 @@ export const nicheAgents: NicheAgent[] = [
     description: 'Specialized in optimizing application performance',
     avatar: 'i-ph:speedometer',
     expertise: ['Performance Optimization', 'Load Testing', 'Profiling', 'Web Vitals'],
-    systemPrompt: 'You are a performance optimization expert. Analyze code for performance bottlenecks, suggest optimizations, and help improve application speed. Focus on web vitals, load times, and resource optimization.',
-    defaultModel: 'gpt-4o'
-  }
+    systemPrompt:
+      'You are a performance optimization expert. Analyze code for performance bottlenecks, suggest optimizations, and help improve application speed. Focus on web vitals, load times, and resource optimization.',
+    defaultModel: 'gpt-4o',
+  },
 ];
 
 export class NicheAgentsService {
@@ -97,6 +105,7 @@ export class NicheAgentsService {
     if (!NicheAgentsService._instance) {
       NicheAgentsService._instance = new NicheAgentsService();
     }
+
     return NicheAgentsService._instance;
   }
 
@@ -111,7 +120,7 @@ export class NicheAgentsService {
    * Get a specific agent by ID
    */
   getAgentById(id: string): NicheAgent | undefined {
-    return nicheAgents.find(agent => agent.id === id);
+    return nicheAgents.find((agent) => agent.id === id);
   }
 
   /**
@@ -126,6 +135,7 @@ export class NicheAgentsService {
    */
   setSelectedAgent(id: string): void {
     const agent = this.getAgentById(id);
+
     if (agent) {
       this._selectedAgentId = id;
       logger.info(`Selected agent: ${agent.name}`);
@@ -137,35 +147,24 @@ export class NicheAgentsService {
    */
   getRecommendedAgents(projectType?: string): NicheAgent[] {
     const recommendations: NicheAgent[] = [];
-    
+
     if (projectType?.includes('react') || projectType?.includes('web')) {
       recommendations.push(
         this.getAgentById('general')!,
         this.getAgentById('ux-ui')!,
-        this.getAgentById('performance')!
+        this.getAgentById('performance')!,
       );
     } else if (projectType?.includes('mobile')) {
-      recommendations.push(
-        this.getAgentById('mobile')!,
-        this.getAgentById('general')!
-      );
+      recommendations.push(this.getAgentById('mobile')!, this.getAgentById('general')!);
     } else if (projectType?.includes('backend') || projectType?.includes('api')) {
-      recommendations.push(
-        this.getAgentById('general')!,
-        this.getAgentById('database')!
-      );
+      recommendations.push(this.getAgentById('general')!, this.getAgentById('database')!);
     } else if (projectType?.includes('ai') || projectType?.includes('ml')) {
-      recommendations.push(
-        this.getAgentById('ai-ml')!,
-        this.getAgentById('general')!
-      );
+      recommendations.push(this.getAgentById('ai-ml')!, this.getAgentById('general')!);
     } else {
       recommendations.push(this.getAgentById('general')!);
     }
-    
-    return recommendations.filter((agent, index, self) => 
-      index === self.findIndex(a => a.id === agent.id)
-    );
+
+    return recommendations.filter((agent, index, self) => index === self.findIndex((a) => a.id === agent.id));
   }
 
   /**
@@ -173,11 +172,12 @@ export class NicheAgentsService {
    */
   searchAgents(query: string): NicheAgent[] {
     const lowerQuery = query.toLowerCase();
-    
-    return nicheAgents.filter(agent => 
-      agent.name.toLowerCase().includes(lowerQuery) ||
-      agent.description.toLowerCase().includes(lowerQuery) ||
-      agent.expertise.some(exp => exp.toLowerCase().includes(lowerQuery))
+
+    return nicheAgents.filter(
+      (agent) =>
+        agent.name.toLowerCase().includes(lowerQuery) ||
+        agent.description.toLowerCase().includes(lowerQuery) ||
+        agent.expertise.some((exp) => exp.toLowerCase().includes(lowerQuery)),
     );
   }
 
@@ -185,8 +185,8 @@ export class NicheAgentsService {
    * Get agents by expertise
    */
   getAgentsByExpertise(expertise: string): NicheAgent[] {
-    return nicheAgents.filter(agent => 
-      agent.expertise.some(exp => exp.toLowerCase().includes(expertise.toLowerCase()))
+    return nicheAgents.filter((agent) =>
+      agent.expertise.some((exp) => exp.toLowerCase().includes(expertise.toLowerCase())),
     );
   }
 
@@ -194,9 +194,7 @@ export class NicheAgentsService {
    * Get most popular agents
    */
   getPopularAgents(limit: number = 5): NicheAgent[] {
-    return [...nicheAgents]
-      .sort((a, b) => (b.popularity || 0) - (a.popularity || 0))
-      .slice(0, limit);
+    return [...nicheAgents].sort((a, b) => (b.popularity || 0) - (a.popularity || 0)).slice(0, limit);
   }
 }
 

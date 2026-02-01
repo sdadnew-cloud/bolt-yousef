@@ -1,4 +1,7 @@
 .BaseChat {
+  width: 100%;
+  height: 100%;
+
   &[data-chat-visible='false'] {
     --workbench-inner-width: 100%;
     --workbench-left: 0;

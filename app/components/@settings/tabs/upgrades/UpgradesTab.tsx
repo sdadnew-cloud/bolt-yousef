@@ -21,19 +21,43 @@ const UpgradesTab = () => {
   const checkForUpdates = async () => {
     setIsLoading(true);
     setUpdateCheckStatus('checking');
-    
+
     try {
       // Simulate checking for updates
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
       // Mock available updates - in a real implementation, this would come from an API
       const mockUpdates = [
-        { id: 1, name: 'AI Pair Programmer', version: '1.2.4', type: 'feature', description: 'Enhanced reasoning visualization' },
-        { id: 2, name: 'Security Scanner', version: '2.1.0', type: 'security', description: 'Advanced vulnerability detection' },
-        { id: 3, name: 'Dependency Awareness', version: '1.5.1', type: 'improvement', description: 'Improved dependency analysis' },
-        { id: 4, name: 'Static Analysis', version: '1.3.2', type: 'tooling', description: 'Enhanced ESLint integration' }
+        {
+          id: 1,
+          name: 'AI Pair Programmer',
+          version: '1.2.4',
+          type: 'feature',
+          description: 'Enhanced reasoning visualization',
+        },
+        {
+          id: 2,
+          name: 'Security Scanner',
+          version: '2.1.0',
+          type: 'security',
+          description: 'Advanced vulnerability detection',
+        },
+        {
+          id: 3,
+          name: 'Dependency Awareness',
+          version: '1.5.1',
+          type: 'improvement',
+          description: 'Improved dependency analysis',
+        },
+        {
+          id: 4,
+          name: 'Static Analysis',
+          version: '1.3.2',
+          type: 'tooling',
+          description: 'Enhanced ESLint integration',
+        },
       ];
-      
+
       if (mockUpdates.length > 0) {
         setAvailableUpdates(mockUpdates);
         setUpdateCheckStatus('available');
@@ -53,6 +77,7 @@ const UpgradesTab = () => {
   // Run dependency scan
   const runDependencyScan = async () => {
     setIsLoading(true);
+
     try {
       const results = await dependencyAwarenessService.scanPackageJson();
       setDependencyStatus(results);
@@ -68,6 +93,7 @@ const UpgradesTab = () => {
   // Run security scan
   const runSecurityScan = async () => {
     setIsLoading(true);
+
     try {
       const results = await securityScannerService.runFullSecurityScan();
       setScanResults(results);
@@ -83,6 +109,7 @@ const UpgradesTab = () => {
   // Run static analysis
   const runStaticAnalysis = async () => {
     setIsLoading(true);
+
     try {
       const results = await staticAnalysisService.runFullAnalysis();
       toast.success('Static analysis completed');
@@ -97,9 +124,10 @@ const UpgradesTab = () => {
   // Install updates
   const installUpdates = async () => {
     setIsLoading(true);
+
     try {
       // Simulate update installation
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       setUpdateCheckStatus('up_to_date');
       setAvailableUpdates([]);
       toast.success('Updates installed successfully');
@@ -138,9 +166,7 @@ const UpgradesTab = () => {
       {/* Update Status Card */}
       <motion.div
         className={`p-4 rounded-lg border ${
-          theme === 'dark' 
-            ? 'bg-[#0A0A0A] border-[#1A1A1A]' 
-            : 'bg-white border-[#E5E5E5]'
+          theme === 'dark' ? 'bg-[#0A0A0A] border-[#1A1A1A]' : 'bg-white border-[#E5E5E5]'
         }`}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -149,16 +175,16 @@ const UpgradesTab = () => {
           <div>
             <h3 className="font-medium text-bolt-elements-textPrimary">System Updates</h3>
             <p className="text-sm text-bolt-elements-textSecondary">
-              {updateCheckStatus === 'idle' 
-                ? 'Check for available updates' 
-                : updateCheckStatus === 'checking' 
-                  ? 'Checking for updates...' 
-                  : updateCheckStatus === 'available' 
-                    ? `Found ${availableUpdates.length} updates` 
+              {updateCheckStatus === 'idle'
+                ? 'Check for available updates'
+                : updateCheckStatus === 'checking'
+                  ? 'Checking for updates...'
+                  : updateCheckStatus === 'available'
+                    ? `Found ${availableUpdates.length} updates`
                     : 'All systems up to date'}
             </p>
           </div>
-          
+
           <div className="flex gap-2">
             <button
               onClick={checkForUpdates}
@@ -171,7 +197,7 @@ const UpgradesTab = () => {
             >
               {updateCheckStatus === 'checking' ? 'Checking...' : 'Check Updates'}
             </button>
-            
+
             {updateCheckStatus === 'available' && (
               <button
                 onClick={installUpdates}
@@ -187,8 +213,8 @@ const UpgradesTab = () => {
         {availableUpdates.length > 0 && (
           <div className="mt-4 space-y-2">
             {availableUpdates.map((update) => (
-              <div 
-                key={update.id} 
+              <div
+                key={update.id}
                 className={`flex items-center justify-between p-3 rounded-lg ${
                   theme === 'dark' ? 'bg-[#1A1A1A]' : 'bg-[#FAFAFA]'
                 }`}
@@ -213,9 +239,7 @@ const UpgradesTab = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <motion.div
           className={`p-4 rounded-lg border ${
-            theme === 'dark' 
-              ? 'bg-[#0A0A0A] border-[#1A1A1A]' 
-              : 'bg-white border-[#E5E5E5]'
+            theme === 'dark' ? 'bg-[#0A0A0A] border-[#1A1A1A]' : 'bg-white border-[#E5E5E5]'
           }`}
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -239,9 +263,7 @@ const UpgradesTab = () => {
 
         <motion.div
           className={`p-4 rounded-lg border ${
-            theme === 'dark' 
-              ? 'bg-[#0A0A0A] border-[#1A1A1A]' 
-              : 'bg-white border-[#E5E5E5]'
+            theme === 'dark' ? 'bg-[#0A0A0A] border-[#1A1A1A]' : 'bg-white border-[#E5E5E5]'
           }`}
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -251,9 +273,7 @@ const UpgradesTab = () => {
             <div className="i-ph:shield-check text-green-500" />
             <h3 className="font-medium text-bolt-elements-textPrimary">Security Scan</h3>
           </div>
-          <p className="text-sm text-bolt-elements-textSecondary mb-3">
-            Analyze code for security vulnerabilities
-          </p>
+          <p className="text-sm text-bolt-elements-textSecondary mb-3">Analyze code for security vulnerabilities</p>
           <button
             onClick={runSecurityScan}
             disabled={isLoading}
@@ -265,9 +285,7 @@ const UpgradesTab = () => {
 
         <motion.div
           className={`p-4 rounded-lg border ${
-            theme === 'dark' 
-              ? 'bg-[#0A0A0A] border-[#1A1A1A]' 
-              : 'bg-white border-[#E5E5E5]'
+            theme === 'dark' ? 'bg-[#0A0A0A] border-[#1A1A1A]' : 'bg-white border-[#E5E5E5]'
           }`}
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -277,9 +295,7 @@ const UpgradesTab = () => {
             <div className="i-ph:code text-blue-500" />
             <h3 className="font-medium text-bolt-elements-textPrimary">Static Analysis</h3>
           </div>
-          <p className="text-sm text-bolt-elements-textSecondary mb-3">
-            Analyze code quality and style issues
-          </p>
+          <p className="text-sm text-bolt-elements-textSecondary mb-3">Analyze code quality and style issues</p>
           <button
             onClick={runStaticAnalysis}
             disabled={isLoading}
@@ -294,23 +310,23 @@ const UpgradesTab = () => {
       {(dependencyStatus || scanResults) && (
         <motion.div
           className={`p-4 rounded-lg border ${
-            theme === 'dark' 
-              ? 'bg-[#0A0A0A] border-[#1A1A1A]' 
-              : 'bg-white border-[#E5E5E5]'
+            theme === 'dark' ? 'bg-[#0A0A0A] border-[#1A1A1A]' : 'bg-white border-[#E5E5E5]'
           }`}
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
           <h3 className="font-medium text-bolt-elements-textPrimary mb-3">Scan Results</h3>
-          
+
           {dependencyStatus && (
             <div className="mb-4">
               <h4 className="font-medium text-bolt-elements-textSecondary mb-2">Dependency Analysis</h4>
               <div className="space-y-2">
                 {dependencyStatus.dependencies && (
                   <div className="text-sm">
-                    <div className="text-bolt-elements-textPrimary">Dependencies: {dependencyStatus.dependencies.length}</div>
+                    <div className="text-bolt-elements-textPrimary">
+                      Dependencies: {dependencyStatus.dependencies.length}
+                    </div>
                     {dependencyStatus.dependencies.some((dep: any) => dep.outdated) && (
                       <div className="text-yellow-500">Outdated dependencies detected</div>
                     )}
@@ -341,9 +357,7 @@ const UpgradesTab = () => {
       {/* Niche Agents Status */}
       <motion.div
         className={`p-4 rounded-lg border ${
-          theme === 'dark' 
-            ? 'bg-[#0A0A0A] border-[#1A1A1A]' 
-            : 'bg-white border-[#E5E5E5]'
+          theme === 'dark' ? 'bg-[#0A0A0A] border-[#1A1A1A]' : 'bg-white border-[#E5E5E5]'
         }`}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -356,19 +370,20 @@ const UpgradesTab = () => {
         <p className="text-sm text-bolt-elements-textSecondary mb-3">
           Specialized AI agents for different development tasks
         </p>
-        
+
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-          {nicheAgentsService.getAgents().slice(0, 4).map((agent) => (
-            <div 
-              key={agent.id}
-              className={`p-2 rounded text-center ${
-                theme === 'dark' ? 'bg-[#1A1A1A]' : 'bg-[#FAFAFA]'
-              }`}
-            >
-              <div className="text-xs font-medium text-bolt-elements-textPrimary truncate">{agent.name}</div>
-              <div className="text-xs text-bolt-elements-textSecondary">{agent.role}</div>
-            </div>
-          ))}
+          {nicheAgentsService
+            .getAgents()
+            .slice(0, 4)
+            .map((agent) => (
+              <div
+                key={agent.id}
+                className={`p-2 rounded text-center ${theme === 'dark' ? 'bg-[#1A1A1A]' : 'bg-[#FAFAFA]'}`}
+              >
+                <div className="text-xs font-medium text-bolt-elements-textPrimary truncate">{agent.name}</div>
+                <div className="text-xs text-bolt-elements-textSecondary">{agent.role}</div>
+              </div>
+            ))}
         </div>
       </motion.div>
     </div>

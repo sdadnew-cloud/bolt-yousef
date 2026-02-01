@@ -19,7 +19,7 @@ export function NewHeader() {
   const [isThemePickerOpen, setIsThemePickerOpen] = useState(false);
   const [isUpgradeMenuOpen, setIsUpgradeMenuOpen] = useState(false);
   const [isDesignMenuOpen, setIsDesignMenuOpen] = useState(false);
-  
+
   const runDependencyScan = async () => {
     try {
       const results = await dependencyAwarenessService.scanPackageJson();
@@ -69,7 +69,22 @@ export function NewHeader() {
           success: '#10b981',
           warning: '#f59e0b',
           error: '#ef4444',
-        }
+        },
+      },
+      android: {
+        palette: {
+          primary: '#1E88E5', // Android Blue - Material Design 3
+          secondary: '#42A5F5', // Light Blue - Material Design 3
+          accent: '#FFC107', // Amber - Material Design 3
+          background: '#000000', // Dark background for AMOLED screens
+          surface: '#121212', // Material Design dark surface
+          text: '#FFFFFF', // White text
+          textSecondary: '#B3B3B3', // Light gray text
+          border: '#212121', // Dark border
+          success: '#4CAF50', // Material Green
+          warning: '#FF9800', // Material Orange
+          error: '#F44336', // Material Red
+        },
       },
       ocean: {
         palette: {
@@ -84,7 +99,7 @@ export function NewHeader() {
           success: '#86efac',
           warning: '#fde68a',
           error: '#fecaca',
-        }
+        },
       },
       forest: {
         palette: {
@@ -99,7 +114,7 @@ export function NewHeader() {
           success: '#86efac',
           warning: '#fde68a',
           error: '#fecaca',
-        }
+        },
       },
       sunset: {
         palette: {
@@ -114,11 +129,12 @@ export function NewHeader() {
           success: '#86efac',
           warning: '#fde68a',
           error: '#fecaca',
-        }
-      }
+        },
+      },
     };
 
     const selectedPreset = presets[presetName];
+
     if (selectedPreset) {
       updateDesignScheme(selectedPreset);
       toast.success(`${presetName.charAt(0).toUpperCase() + presetName.slice(1)} theme applied!`);
@@ -133,24 +149,20 @@ export function NewHeader() {
         'bg-[var(--color-background)]',
         'border-[var(--color-border)]',
         'text-[var(--color-text)]',
-        'transition-colors duration-300'
+        'transition-colors duration-300',
       )}
     >
       {/* Logo */}
       <div className="flex items-center gap-2 z-logo text-[var(--color-text)] cursor-pointer">
         <div className="i-ph:palette-duotone text-xl" />
         <a href="/" className="text-2xl font-semibold flex items-center">
-          <img 
-            src="/logo-light-styled.png" 
-            alt="logo" 
-            className="w-[90px] inline-block dark:hidden invert brightness-100" 
+          <img
+            src="/logo-light-styled.png"
+            alt="logo"
+            className="w-[90px] inline-block dark:hidden invert brightness-100"
             style={{ filter: 'invert(1) brightness(2)' }}
           />
-          <img 
-            src="/logo-dark-styled.png" 
-            alt="logo" 
-            className="w-[90px] inline-block hidden dark:block" 
-          />
+          <img src="/logo-dark-styled.png" alt="logo" className="w-[90px] inline-block hidden dark:block" />
         </a>
       </div>
 
@@ -173,7 +185,7 @@ export function NewHeader() {
               </button>
 
               {isThemePickerOpen && (
-                <div 
+                <div
                   className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-[var(--color-surface)] ring-1 ring-[var(--color-border)] z-50"
                   onMouseLeave={() => setIsThemePickerOpen(false)}
                 >
@@ -183,6 +195,12 @@ export function NewHeader() {
                       className="block w-full text-left px-4 py-2 text-sm hover:bg-[var(--color-primary)]/[0.2] transition-colors"
                     >
                       Default Theme
+                    </button>
+                    <button
+                      onClick={() => applyCustomTheme('android')}
+                      className="block w-full text-left px-4 py-2 text-sm hover:bg-[var(--color-primary)]/[0.2] transition-colors"
+                    >
+                      Android Material
                     </button>
                     <button
                       onClick={() => applyCustomTheme('ocean')}
@@ -224,7 +242,7 @@ export function NewHeader() {
               </button>
 
               {isDesignMenuOpen && (
-                <div 
+                <div
                   className="absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-[var(--color-surface)] ring-1 ring-[var(--color-border)] z-50"
                   onMouseLeave={() => setIsDesignMenuOpen(false)}
                 >
@@ -234,8 +252,8 @@ export function NewHeader() {
                     </div>
                     <button
                       onClick={() => {
-                        const newFeatures = designScheme.features.includes('rounded') 
-                          ? designScheme.features.filter(f => f !== 'rounded')
+                        const newFeatures = designScheme.features.includes('rounded')
+                          ? designScheme.features.filter((f) => f !== 'rounded')
                           : [...designScheme.features, 'rounded'];
                         updateDesignScheme({ features: newFeatures });
                         toast.success(`Rounded corners ${newFeatures.includes('rounded') ? 'enabled' : 'disabled'}`);
@@ -248,8 +266,8 @@ export function NewHeader() {
                     </button>
                     <button
                       onClick={() => {
-                        const newFeatures = designScheme.features.includes('border') 
-                          ? designScheme.features.filter(f => f !== 'border')
+                        const newFeatures = designScheme.features.includes('border')
+                          ? designScheme.features.filter((f) => f !== 'border')
                           : [...designScheme.features, 'border'];
                         updateDesignScheme({ features: newFeatures });
                         toast.success(`Borders ${newFeatures.includes('border') ? 'enabled' : 'disabled'}`);
@@ -262,8 +280,8 @@ export function NewHeader() {
                     </button>
                     <button
                       onClick={() => {
-                        const newFeatures = designScheme.features.includes('shadow') 
-                          ? designScheme.features.filter(f => f !== 'shadow')
+                        const newFeatures = designScheme.features.includes('shadow')
+                          ? designScheme.features.filter((f) => f !== 'shadow')
                           : [...designScheme.features, 'shadow'];
                         updateDesignScheme({ features: newFeatures });
                         toast.success(`Shadows ${newFeatures.includes('shadow') ? 'enabled' : 'disabled'}`);
@@ -290,7 +308,7 @@ export function NewHeader() {
               </button>
 
               {isUpgradeMenuOpen && (
-                <div 
+                <div
                   className="absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-[var(--color-surface)] ring-1 ring-[var(--color-border)] z-50"
                   onMouseLeave={() => setIsUpgradeMenuOpen(false)}
                 >

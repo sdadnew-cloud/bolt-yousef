@@ -36,6 +36,7 @@ export class SecurityScannerService {
     if (!SecurityScannerService._instance) {
       SecurityScannerService._instance = new SecurityScannerService();
     }
+
     return SecurityScannerService._instance;
   }
 
@@ -47,8 +48,8 @@ export class SecurityScannerService {
     logger.info('Starting comprehensive security scan...');
 
     const vulnerabilities: SecurityVulnerability[] = [];
-    let totalFilesScanned = 0;
-    let vulnerableFiles = 0;
+    const totalFilesScanned = 0;
+    const vulnerableFiles = 0;
 
     // Run dependency vulnerability scan
     const dependencyVulnerabilities = await this.scanDependencies();
@@ -67,9 +68,11 @@ export class SecurityScannerService {
     vulnerabilities.push(...configVulnerabilities);
 
     const scanTime = Date.now() - startTime;
-    
+
     logger.info(`Security scan completed in ${scanTime}ms`);
-    logger.info(`Found ${vulnerabilities.length} vulnerabilities: ${vulnerabilities.filter(v => v.severity === 'critical').length} critical, ${vulnerabilities.filter(v => v.severity === 'high').length} high, ${vulnerabilities.filter(v => v.severity === 'medium').length} medium, ${vulnerabilities.filter(v => v.severity === 'low').length} low`);
+    logger.info(
+      `Found ${vulnerabilities.length} vulnerabilities: ${vulnerabilities.filter((v) => v.severity === 'critical').length} critical, ${vulnerabilities.filter((v) => v.severity === 'high').length} high, ${vulnerabilities.filter((v) => v.severity === 'medium').length} medium, ${vulnerabilities.filter((v) => v.severity === 'low').length} low`,
+    );
 
     return {
       vulnerabilities,
@@ -77,11 +80,11 @@ export class SecurityScannerService {
       totalFilesScanned,
       vulnerableFiles,
       statistics: {
-        critical: vulnerabilities.filter(v => v.severity === 'critical').length,
-        high: vulnerabilities.filter(v => v.severity === 'high').length,
-        medium: vulnerabilities.filter(v => v.severity === 'medium').length,
-        low: vulnerabilities.filter(v => v.severity === 'low').length
-      }
+        critical: vulnerabilities.filter((v) => v.severity === 'critical').length,
+        high: vulnerabilities.filter((v) => v.severity === 'high').length,
+        medium: vulnerabilities.filter((v) => v.severity === 'medium').length,
+        low: vulnerabilities.filter((v) => v.severity === 'low').length,
+      },
     };
   }
 
@@ -91,9 +94,9 @@ export class SecurityScannerService {
   async scanDependencies(): Promise<SecurityVulnerability[]> {
     try {
       const wc = await webcontainer;
-      
+
       const process = await wc.spawn('npm', ['audit', '--json']);
-      
+
       let output = '';
       process.output.pipeTo(
         new WritableStream({
@@ -102,11 +105,12 @@ export class SecurityScannerService {
           },
         }),
       );
-      
+
       await process.exit;
-      
+
       if (output) {
         const auditReport = JSON.parse(output);
+
         if (auditReport.vulnerabilities) {
           return Object.entries(auditReport.vulnerabilities).map(([name, info]: [string, any]) => ({
             id: `dep-${name}-${info.version}`,
@@ -115,11 +119,11 @@ export class SecurityScannerService {
             severity: this._mapNpmSeverity(info.severity),
             category: 'dependency',
             fix: info.fixAvailable ? 'Update to latest version' : 'No fix available',
-            references: info.advisories.map((adv: any) => adv.url)
+            references: info.advisories.map((adv: any) => adv.url),
           }));
         }
       }
-      
+
       return [];
     } catch (error) {
       logger.error('Dependency scan failed:', error);
@@ -135,43 +139,43 @@ export class SecurityScannerService {
       {
         pattern: /(?:^|\W)API_KEY\s*[=:]\s*['"]([a-zA-Z0-9_-]{16,})['"](?:$|\W)/,
         name: 'API Key',
-        severity: 'high'
+        severity: 'high',
       },
       {
         pattern: /(?:^|\W)API_TOKEN\s*[=:]\s*['"]([a-zA-Z0-9_-]{16,})['"](?:$|\W)/,
         name: 'API Token',
-        severity: 'high'
+        severity: 'high',
       },
       {
         pattern: /(?:^|\W)SECRET\s*[=:]\s*['"]([a-zA-Z0-9_-]{16,})['"](?:$|\W)/,
         name: 'Secret',
-        severity: 'high'
+        severity: 'high',
       },
       {
         pattern: /(?:^|\W)PASSWORD\s*[=:]\s*['"]([^\s'"]{8,})['"](?:$|\W)/,
         name: 'Password',
-        severity: 'critical'
+        severity: 'critical',
       },
       {
         pattern: /(?:^|\W)PRIVATE_KEY\s*[=:]\s*['"]([a-zA-Z0-9+/=]{64,})['"](?:$|\W)/,
         name: 'Private Key',
-        severity: 'critical'
+        severity: 'critical',
       },
       {
         pattern: /(?:^|\W)AWS_ACCESS_KEY_ID\s*[=:]\s*['"]([A-Z0-9]{16,})['"](?:$|\W)/,
         name: 'AWS Access Key',
-        severity: 'critical'
+        severity: 'critical',
       },
       {
         pattern: /(?:^|\W)AWS_SECRET_ACCESS_KEY\s*[=:]\s*['"]([a-zA-Z0-9+/=]{40,})['"](?:$|\W)/,
         name: 'AWS Secret Key',
-        severity: 'critical'
+        severity: 'critical',
       },
       {
         pattern: /(?:^|\W)GITHUB_TOKEN\s*[=:]\s*['"]([a-zA-Z0-9_]{40,})['"](?:$|\W)/,
         name: 'GitHub Token',
-        severity: 'high'
-      }
+        severity: 'high',
+      },
     ];
 
     const vulnerabilities: SecurityVulnerability[] = [];
@@ -183,10 +187,10 @@ export class SecurityScannerService {
       for (const filePath of files) {
         try {
           const content = await wc.fs.readFile(filePath, 'utf-8');
-          
+
           for (const { pattern, name, severity } of secretsPatterns) {
             const matches = content.matchAll(pattern);
-            
+
             for (const match of matches) {
               vulnerabilities.push({
                 id: `secret-${name}-${filePath}-${match.index}`,
@@ -196,7 +200,7 @@ export class SecurityScannerService {
                 category: 'secret',
                 location: filePath,
                 line: this._getLineNumber(content, match.index || 0),
-                fix: 'Remove or mask sensitive information'
+                fix: 'Remove or mask sensitive information',
               });
             }
           }
@@ -220,44 +224,44 @@ export class SecurityScannerService {
         pattern: /eval\s*\(/,
         name: 'Eval Usage',
         severity: 'high',
-        description: 'Use of eval() function which can lead to code injection vulnerabilities'
+        description: 'Use of eval() function which can lead to code injection vulnerabilities',
       },
       {
         pattern: /document\.write\s*\(/,
         name: 'Document Write',
         severity: 'medium',
-        description: 'Use of document.write() which can lead to XSS vulnerabilities'
+        description: 'Use of document.write() which can lead to XSS vulnerabilities',
       },
       {
         pattern: /innerHTML\s*[=]/,
         name: 'InnerHTML Assignment',
         severity: 'medium',
-        description: 'Direct assignment to innerHTML which can lead to XSS vulnerabilities'
+        description: 'Direct assignment to innerHTML which can lead to XSS vulnerabilities',
       },
       {
         pattern: /(?:^|\W)dangerouslySetInnerHTML\s*[=]/,
         name: 'Dangerously Set InnerHTML',
         severity: 'high',
-        description: 'Use of dangerouslySetInnerHTML which can lead to XSS vulnerabilities'
+        description: 'Use of dangerouslySetInnerHTML which can lead to XSS vulnerabilities',
       },
       {
         pattern: /(?:^|\W)localStorage\s*\[/,
         name: 'LocalStorage Usage',
         severity: 'low',
-        description: 'Use of localStorage which may expose sensitive data'
+        description: 'Use of localStorage which may expose sensitive data',
       },
       {
         pattern: /(?:^|\W)sessionStorage\s*\[/,
         name: 'SessionStorage Usage',
         severity: 'low',
-        description: 'Use of sessionStorage which may expose sensitive data'
+        description: 'Use of sessionStorage which may expose sensitive data',
       },
       {
         pattern: /(?:^|\W)fetch\s*\([^)]*['"][^'"]*password['"][^)]*\)/,
         name: 'Password in Fetch',
         severity: 'high',
-        description: 'Password parameter detected in fetch request'
-      }
+        description: 'Password parameter detected in fetch request',
+      },
     ];
 
     const vulnerabilities: SecurityVulnerability[] = [];
@@ -269,10 +273,10 @@ export class SecurityScannerService {
       for (const filePath of files) {
         try {
           const content = await wc.fs.readFile(filePath, 'utf-8');
-          
+
           for (const { pattern, name, severity, description } of codePatterns) {
             const matches = content.matchAll(pattern);
-            
+
             for (const match of matches) {
               vulnerabilities.push({
                 id: `code-${name}-${filePath}-${match.index}`,
@@ -281,7 +285,7 @@ export class SecurityScannerService {
                 severity: severity as any,
                 category: 'code',
                 location: filePath,
-                line: this._getLineNumber(content, match.index || 0)
+                line: this._getLineNumber(content, match.index || 0),
               });
             }
           }
@@ -304,7 +308,7 @@ export class SecurityScannerService {
 
     try {
       const wc = await webcontainer;
-      
+
       // Check if .env files exist and contain sensitive information
       try {
         const envContent = await wc.fs.readFile('.env', 'utf-8');
@@ -312,7 +316,7 @@ export class SecurityScannerService {
           { pattern: /(?:^|\W)NODE_ENV\s*=\s*['"]?development['"]?/i, name: 'Development Mode' },
           { pattern: /(?:^|\W)DEBUG\s*=\s*['"]?true['"]?/i, name: 'Debug Mode' },
           { pattern: /(?:^|\W)CORS\s*=\s*['"]?\*/i, name: 'Wildcard CORS' },
-          { pattern: /(?:^|\W)ALLOWED_ORIGINS\s*=\s*['"]?\*/i, name: 'Wildcard Origins' }
+          { pattern: /(?:^|\W)ALLOWED_ORIGINS\s*=\s*['"]?\*/i, name: 'Wildcard Origins' },
         ];
 
         for (const { pattern, name } of envPatterns) {
@@ -323,7 +327,7 @@ export class SecurityScannerService {
               description: `${name} configuration detected which may be insecure in production`,
               severity: 'medium',
               category: 'configuration',
-              location: '.env'
+              location: '.env',
             });
           }
         }
@@ -335,12 +339,12 @@ export class SecurityScannerService {
       try {
         const packageJsonContent = await wc.fs.readFile('package.json', 'utf-8');
         const packageJson = JSON.parse(packageJsonContent);
-        
+
         // Check for deprecated dependencies
         const deprecatedDependencies = Object.keys({
           ...packageJson.dependencies,
-          ...packageJson.devDependencies
-        }).filter(name => {
+          ...packageJson.devDependencies,
+        }).filter((name) => {
           return name.includes('deprecated') || name.includes('obsolete');
         });
 
@@ -351,7 +355,7 @@ export class SecurityScannerService {
             description: `Dependency ${dep} is deprecated and may contain security vulnerabilities`,
             severity: 'medium',
             category: 'configuration',
-            location: 'package.json'
+            location: 'package.json',
           });
         }
       } catch (error) {
@@ -373,26 +377,27 @@ export class SecurityScannerService {
 
     const walk = async (dir: string): Promise<void> => {
       const entries = await wc.fs.readdir(dir);
-      
+
       for (const entry of entries) {
         const fullPath = `${dir}/${entry}`;
-        
+
         // Skip node_modules and other directories
         if (entry === 'node_modules' || entry === '.git' || entry.startsWith('.')) {
           continue;
         }
 
         const stat = await wc.fs.stat(fullPath);
-        
+
         if (stat.isDirectory()) {
           await walk(fullPath);
-        } else if (extensions.some(ext => entry.endsWith(ext))) {
+        } else if (extensions.some((ext) => entry.endsWith(ext))) {
           files.push(fullPath);
         }
       }
     };
 
     await walk('.');
+
     return files;
   }
 
@@ -404,7 +409,7 @@ export class SecurityScannerService {
       low: 'low',
       moderate: 'medium',
       high: 'high',
-      critical: 'critical'
+      critical: 'critical',
     };
 
     return severityMap[npmSeverity] || 'medium';
@@ -439,15 +444,15 @@ export class SecurityScannerService {
       scanResult.vulnerabilities.forEach((vuln, index) => {
         report += `${index + 1}. ${vuln.title} (${vuln.severity})\n`;
         report += `   ${vuln.description}\n`;
-        
+
         if (vuln.location) {
           report += `   Location: ${vuln.location}${vuln.line ? `:${vuln.line}` : ''}\n`;
         }
-        
+
         if (vuln.fix) {
           report += `   Fix: ${vuln.fix}\n`;
         }
-        
+
         report += `\n`;
       });
     }
@@ -459,10 +464,12 @@ export class SecurityScannerService {
    * Priority-based fix recommendations
    */
   getFixRecommendations(scanResult: SecurityScanResult): SecurityVulnerability[] {
-    return [...scanResult.vulnerabilities].sort((a, b) => {
-      const severityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
-      return severityOrder[b.severity] - severityOrder[a.severity];
-    }).slice(0, 10); // Top 10 most critical vulnerabilities
+    return [...scanResult.vulnerabilities]
+      .sort((a, b) => {
+        const severityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
+        return severityOrder[b.severity] - severityOrder[a.severity];
+      })
+      .slice(0, 10); // Top 10 most critical vulnerabilities
   }
 }
 
